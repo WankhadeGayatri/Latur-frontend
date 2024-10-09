@@ -1,0 +1,91 @@
+/* Dashboard.module.css .glowCard {
+  background-color: #313432;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(3, 80, 188, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.glowCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(2, 239, 192, 0.4);
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.chartContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.bell-icon {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #1d4ed8;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+.bell-icon:hover {
+  background-color: #2563eb;
+}
+
+.dropdown-menu {
+  position: absolute;
+  bottom: 3rem;
+  right: 2rem;
+  background-color: #fff;
+  color: #000;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+
+.glow-effect {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(0, 0, 0, 0.5)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.glow-effect::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: rgba(0, 255, 255, 0.2);
+  border-radius: inherit;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.hover\:shadow-glow:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.glow-text {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 0, 0, 0.8),
+    0 0 15px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.8),
+    0 0 25px rgba(255, 0, 0, 0.8);
+} */
