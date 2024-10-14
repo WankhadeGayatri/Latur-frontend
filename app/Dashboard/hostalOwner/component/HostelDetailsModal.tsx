@@ -43,16 +43,23 @@ import "swiper/css/pagination";
 type HostelType = "boys" | "girls";
 type PaymentStatus = "pending" | "paid";
 
-interface RentStructure {
+interface ExistingRentStructure {
+  _id: string;
   studentsPerRoom: number;
   rentPerStudent: number;
-  _id: string;
 }
 
+interface NewRentStructure {
+  studentsPerRoom: number;
+  rentPerStudent: number;
+}
+
+type RentStructure = ExistingRentStructure | NewRentStructure;
+
 interface PendingVisit {
-  visitDate: string;
+  student: string;
+  visitDate: Date;
   visitTime: string;
-  status: string;
 }
 
 interface Feedback {
@@ -62,10 +69,16 @@ interface Feedback {
 }
 
 interface Complaint {
-  complaintType: string;
+  student: string;
   description: string;
+  isAnonymous: boolean;
+  images: {
+    data: string;
+    contentType: string;
+  }[];
+  date: Date;
   status: string;
-  date: string;
+  complaintType: string;
 }
 
 interface HostelImage {
@@ -97,9 +110,9 @@ interface HostelData {
   paymentStatus: PaymentStatus;
   rentStructure: RentStructure[];
   registerDate: string;
-  pendingVisits: PendingVisit[];
-  feedback: Feedback[];
-  complaints: Complaint[];
+  pendingVisits?: PendingVisit[];
+  feedback?: Feedback[];
+  complaints?: Complaint[];
 }
 
 interface HostelDetailsModalProps {

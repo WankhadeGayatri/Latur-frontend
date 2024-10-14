@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import {
   Dialog,
@@ -22,18 +22,18 @@ import {
 import { Delete as DeleteIcon, Add as AddIcon } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "@/config/api";
-
-interface RentStructure {
+interface ExistingRentStructure {
+  _id: string;
   studentsPerRoom: number;
   rentPerStudent: number;
-  _id: string;
 }
 
-interface PendingVisit {
-  visitDate: string;
-  visitTime: string;
-  status: string;
+interface NewRentStructure {
+  studentsPerRoom: number;
+  rentPerStudent: number;
 }
+
+type RentStructure = ExistingRentStructure | NewRentStructure;
 
 interface Feedback {
   rating: number;
@@ -42,17 +42,28 @@ interface Feedback {
 }
 
 interface Complaint {
-  complaintType: string;
+  student: string;
   description: string;
+  isAnonymous: boolean;
+  images: {
+    data: string;
+    contentType: string;
+  }[];
+  date: Date;
   status: string;
-  date: string;
+  complaintType: string;
 }
-
 interface HostelImage {
   data: { type: string; data: number[] };
   contentType: string;
   _id: string;
 }
+type NewFileWithPreview = {
+  file: File;
+  preview: string;
+};
+
+type HostelImageOrNew = HostelImage | NewFileWithPreview;
 
 type HostelType = "boys" | "girls";
 type PaymentStatus = "pending" | "paid";
@@ -61,32 +72,38 @@ interface Hostel {
   _id: string;
   name: string;
   owner: string;
-  number: string;
   address: string;
-  hostelType: HostelType;
-  fetchedImages: { contentType: string; data: string }[];
+  hostelType: "boys" | "girls";
   beds: number;
   studentsPerRoom: number;
+  paymentStatus: "pending" | "paid";
+  number: string;
   food: boolean;
-  foodType?: string;
-  mealOptions?: string[];
+  verified: boolean;
+  feedback?: Feedback[];
+  fetchedImages?: { contentType: string; data: string }[];
+  rentStructure: RentStructure[];
   images: HostelImage[];
   wifi: boolean;
   ac: boolean;
-  kitchenType: string;
-  registerDate: string;
   mess: boolean;
   solar: boolean;
   studyRoom: boolean;
   tuition: boolean;
-  verified: boolean;
-  paymentStatus: PaymentStatus;
+  kitchenType: string;
+  registerDate: string;
   pendingVisits: PendingVisit[];
-  rentStructure: RentStructure[];
-  feedback: Feedback[];
   complaints: Complaint[];
   latitude: number;
   longitude: number;
+  foodType?: string;
+  mealOptions?: string[];
+}
+
+interface PendingVisit {
+  student: string;
+  visitDate: Date;
+  visitTime: string;
 }
 
 interface UpdateHostelFormProps {
@@ -95,14 +112,11 @@ interface UpdateHostelFormProps {
   onUpdate: (updatedHostel: Hostel) => void;
 }
 
-type NewFileWithPreview = {
-  file: File;
-  preview: string;
+type UpdateData = Omit<Hostel, "images"> & {
+  images: HostelImageOrNew[];
 };
 
-type HostelImageOrNew = HostelImage | NewFileWithPreview;
-
-type UpdateData = Omit<Hostel, "images"> & {
+type UpdateHostelData = Omit<Hostel, "feedback" | "complaints" | "images"> & {
   images: HostelImageOrNew[];
 };
 
@@ -111,26 +125,40 @@ const UpdateHostelForm: React.FC<UpdateHostelFormProps> = ({
   onClose,
   onUpdate,
 }) => {
-  const [updateData, setUpdateData] = useState<UpdateData>({
+  const [updateData, setUpdateData] = useState<UpdateHostelData>({
     ...hostel,
     images: hostel.images || [],
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleUpdateHostel = useCallback(async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       const formData = new FormData();
+
+      // Append all updateData fields to formData
       Object.entries(updateData).forEach(([key, value]) => {
         if (key === "images") {
-          (value as (File | { contentType: string; data: string })[]).forEach(
-            (file, index) => {
-              if (file instanceof File) {
-                formData.append(`images`, file);
-              }
+          // Handle existing images
+          const existingImageIds = updateData.images
+            .filter((img): img is HostelImage => !("file" in img))
+            .map((img) => img._id);
+          formData.append("existingImages", JSON.stringify(existingImageIds));
+
+          // Handle new images
+          updateData.images.forEach((image) => {
+            if ("file" in image && image.file instanceof File) {
+              formData.append(`images`, image.file);
             }
-          );
-        } else if (Array.isArray(value)) {
+          });
+        } else if (key === "rentStructure" || key === "mealOptions") {
           formData.append(key, JSON.stringify(value));
-        } else {
+        } else if (typeof value === "boolean") {
+          formData.append(key, value.toString());
+        } else if (value !== null && value !== undefined) {
           formData.append(key, value.toString());
         }
       });
@@ -156,9 +184,37 @@ const UpdateHostelForm: React.FC<UpdateHostelFormProps> = ({
       toast.success("Hostel updated successfully!");
     } catch (error) {
       console.error("Error updating hostel:", error);
-      toast.error("Failed to update hostel. Please try again later.");
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(`Failed to update hostel: ${error.response.data.error}`);
+      } else {
+        toast.error("Failed to update hostel. Please try again later.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [updateData, hostel._id, onUpdate, onClose]);
+  }, [updateData, hostel._id, onUpdate, onClose, isSubmitting]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles: NewFileWithPreview[] = Array.from(e.target.files).map(
+        (file) => ({
+          file,
+          preview: URL.createObjectURL(file),
+        })
+      );
+      setUpdateData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...newFiles],
+      }));
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUpdateData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
 
   const handleInputChange = (
     field: keyof UpdateData,
@@ -429,7 +485,7 @@ const UpdateHostelForm: React.FC<UpdateHostelFormProps> = ({
           </Typography>
           {updateData.rentStructure.map((rent, index) => (
             <Box
-              key={rent._id}
+              key={index}
               display="flex"
               alignItems="center"
               marginBottom={2}
@@ -496,36 +552,58 @@ const UpdateHostelForm: React.FC<UpdateHostelFormProps> = ({
             Add Rent Structure
           </Button>
 
+          <Typography variant="h6" gutterBottom className="text-sky-700">
+            Images
+          </Typography>
+          <Box display="flex" flexWrap="wrap" gap={2}>
+            {updateData.images.map((image, index) => (
+              <Box key={index} position="relative">
+                <img
+                  src={
+                    "preview" in image
+                      ? image.preview
+                      : `data:${image.contentType};base64,${image.data}`
+                  }
+                  alt={`Hostel image ${index + 1}`}
+                  style={{ width: 100, height: 100, objectFit: "cover" }}
+                />
+                <IconButton
+                  size="small"
+                  onClick={() => handleRemoveImage(index)}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    backgroundColor: "white",
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
           <input
             type="file"
             multiple
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              if (e.target.files) {
-                const newFiles: NewFileWithPreview[] = Array.from(
-                  e.target.files
-                ).map((file) => ({
-                  file,
-                  preview: URL.createObjectURL(file),
-                }));
-                setUpdateData((prev) => ({
-                  ...prev,
-                  images: [...prev.images, ...newFiles],
-                }));
-              }
-            }}
+            onChange={handleImageUpload}
             className="mt-4"
           />
         </Box>
       </DialogContent>
       <DialogActions className="bg-gray-100">
-        <Button onClick={onClose} className="text-gray-600">
+        <Button
+          onClick={onClose}
+          className="text-gray-600"
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
         <Button
           onClick={handleUpdateHostel}
           className="bg-gradient-to-r from-sky-400 to-blue-500 text-white"
+          disabled={isSubmitting}
         >
-          Update
+          {isSubmitting ? "Updating..." : "Update"}
         </Button>
       </DialogActions>
     </Dialog>

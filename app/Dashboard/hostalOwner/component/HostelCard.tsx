@@ -16,10 +16,18 @@ import {
 import HostelDetailsModal from "./HostelDetailsModal";
 import UpdateHostelForm from "./UpdateHostelForm";
 
-interface RentStructure {
+interface ExistingRentStructure {
+  _id: string;
   studentsPerRoom: number;
   rentPerStudent: number;
 }
+
+interface NewRentStructure {
+  studentsPerRoom: number;
+  rentPerStudent: number;
+}
+
+type RentStructure = ExistingRentStructure | NewRentStructure;
 
 interface Owner {
   name: string;
@@ -38,46 +46,41 @@ interface Hostel {
   _id: string;
   name: string;
   owner: string;
-  number: string;
   address: string;
-  hostelType: HostelType;
-  fetchedImages: { contentType: string; data: string }[]; // Changed from optional to required
+  hostelType: "boys" | "girls";
   beds: number;
   studentsPerRoom: number;
+  paymentStatus: "pending" | "paid";
+  number: string;
   food: boolean;
-  foodType?: string;
-  mealOptions?: string[];
+  verified: boolean;
+  feedback?: Feedback[];
+  fetchedImages?: { contentType: string; data: string }[];
+  rentStructure: RentStructure[];
   images: HostelImage[];
   wifi: boolean;
   ac: boolean;
-  kitchenType: string;
-  registerDate: string;
   mess: boolean;
   solar: boolean;
   studyRoom: boolean;
   tuition: boolean;
-  verified: boolean;
-  paymentStatus: PaymentStatus;
+  kitchenType: string;
+  registerDate: string;
   pendingVisits: PendingVisit[];
-  rentStructure: RentStructure[];
-  feedback: Feedback[];
   complaints: Complaint[];
   latitude: number;
   longitude: number;
-}
-
-type PaymentStatus = "pending" | "paid";
-interface RentStructure {
-  studentsPerRoom: number;
-  rentPerStudent: number;
-  _id: string;
+  foodType?: string;
+  mealOptions?: string[];
 }
 
 interface PendingVisit {
-  visitDate: string;
+  student: string;
+  visitDate: Date;
   visitTime: string;
-  status: string;
 }
+
+type PaymentStatus = "pending" | "paid";
 
 interface Feedback {
   rating: number;
@@ -86,17 +89,18 @@ interface Feedback {
 }
 
 interface Complaint {
-  complaintType: string;
+  student: string;
   description: string;
+  isAnonymous: boolean;
+  images: {
+    data: string;
+    contentType: string;
+  }[];
+  date: Date;
   status: string;
-  date: string;
+  complaintType: string;
 }
 
-interface HostelImage {
-  data: { type: string; data: number[] };
-  contentType: string;
-  _id: string;
-}
 interface HostelCardProps {
   hostel: Hostel;
   onUpdate: (hostel: Hostel) => void;
