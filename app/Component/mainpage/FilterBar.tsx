@@ -227,11 +227,13 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
+               aria-label="Search"
                 onClick={() => {
                   handleSearch();
                   setIsSearchExpanded(false);
                 }}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
+               
               >
                 <Search size={20} />
               </button>

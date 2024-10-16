@@ -20,10 +20,44 @@ import dynamic from "next/dynamic";
 const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
   ssr: false,
 });
+const MemoizedMenuIcon = React.memo(MenuIcon);
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface CustomButtonProps {
+  onClick: () => void;
+  isMobile: boolean;
+  className?: string;
+  ariaLabel: string;
+}
+
+const CustomButton: React.FC<CustomButtonProps> = ({
+  onClick,
+  isMobile,
+  className = "",
+  ariaLabel,
+}) => {
+  return (
+    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyPress={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onClick();
+          }
+        }}
+        className={`inline-flex items-center justify-center p-1 rounded-full cursor-pointer ${className}`}
+        aria-label={ariaLabel}
+      >
+        <MemoizedMenuIcon />
+      </div>
+    </motion.div>
+  );
+};
 
 const Navbar: React.FC = React.memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +65,7 @@ const Navbar: React.FC = React.memo(() => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
-  const MemoizedMenuIcon = React.memo(MenuIcon);
+
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -63,6 +97,8 @@ const Navbar: React.FC = React.memo(() => {
     { text: "Amenities", path: "/amenities" },
     { text: "About Us", path: "/about" },
     { text: "Gallery", path: "/gallery" },
+    { text: "Sign In", path: "/login" },
+    { text: "Sign Up", path: "/register" },
   ];
 
   return (
@@ -116,19 +152,18 @@ const Navbar: React.FC = React.memo(() => {
               ))}
             </motion.div>
           )}
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="ml-4"
-          >
-            <IconButton
-              color="primary"
+          {isMobile ? (
+            <CustomButton
               onClick={isMobile ? handleMobileMenuToggle : handleAuthModalOpen}
-              className="bg-sky-100 hover:bg-sky-200 transition-colors duration-300"
-            >
-              {isMobile ? <MemoizedMenuIcon /> : <AccountCircleIcon />}
-            </IconButton>
-          </motion.div>
+              isMobile={isMobile}
+              className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300 "
+              ariaLabel={
+                isMobile ? "Toggle mobile menu" : "Open authentication modal"
+              }
+            />
+          ) : (
+            ""
+          )}
         </Box>
       </Toolbar>
 

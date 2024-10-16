@@ -506,17 +506,19 @@ const MobileApp: React.FC = () => {
             </AnimatePresence>
 
             <button
-              onClick={handlePrevScreen}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={handleNextScreen}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
-            >
-              <ChevronRight size={18} />
-            </button>
+  onClick={handlePrevScreen}
+  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
+  aria-label="Previous screen"
+>
+  <ChevronLeft size={18} />
+</button>
+<button
+  onClick={handleNextScreen}
+  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
+  aria-label="Next screen"
+>
+  <ChevronRight size={18} />
+</button>
           </div>
         </div>
 
