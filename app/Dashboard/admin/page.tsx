@@ -44,6 +44,7 @@ import {
 } from "@mui/icons-material";
 import Page from "./uac/Page";
 import { API_BASE_URL } from "@/config/api";
+import { useAuth } from "@/app/utils/auth";
 
 const drawerWidth = 280;
 
@@ -101,9 +102,17 @@ const AdminDashboard: React.FC = () => {
   const [approvedHostelsCount, setApprovedHostelsCount] = useState<number>(0);
   const [approvedWishlistCount, setApprovedWishlistCount] = useState<number>(0);
   const [pendingWishlistCount, setPendingWishlistCount] = useState<number>(0);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Checking authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <div>You need to login to access this page.</div>;
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -112,8 +121,6 @@ const AdminDashboard: React.FC = () => {
       window.location.href = "/login";
       return;
     }
-
-    setIsAuthenticated(true);
 
     const fetchData = async () => {
       try {
@@ -200,10 +207,6 @@ const AdminDashboard: React.FC = () => {
       window.location.href = "/";
     }
   };
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   const cardData = [
     {

@@ -56,6 +56,7 @@ import FeedbackComponent from "./component/Complaints";
 import VisitingStudents from "./component/Visitingstudent";
 import { styled, keyframes } from "@mui/material/styles";
 import { API_BASE_URL } from "@/config/api";
+import { useAuth } from "@/app/utils/auth";
 const drawerWidth = 260;
 const glowAnimation = keyframes`
   0% { filter: drop-shadow(0 0 2px gold); }
@@ -156,6 +157,14 @@ const HostelOwnerDashboard: React.FC = () => {
   const [otpError, setOtpError] = useState<string | null>(null);
   const [token, setToken] = useState<string>("");
   const [openHMS, setOpenHMS] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Checking authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <div>You need to login to access this page.</div>;
+  }
   const handleRequestOTP = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -247,7 +256,7 @@ const HostelOwnerDashboard: React.FC = () => {
 
       fetchOwnerHostels();
     } else {
-      window.location.href = "/dashboard/hostels/login";
+      window.location.href = "/login";
     }
     if (profileId) {
       fetchOwnerData(profileId).then((ownerData) => {

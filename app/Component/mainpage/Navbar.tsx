@@ -1,485 +1,211 @@
 "use client";
-import React, { useState, useEffect, useCallback, MouseEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   AppBar,
   Toolbar,
   Typography,
   IconButton,
   Box,
-  Badge,
-  Avatar,
-  Menu,
-  MenuItem,
-  Modal,
   useMediaQuery,
   Drawer,
   List,
   ListItem,
   ListItemText,
+  Modal,
+  Button,
+  Fade,
 } from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion";
-import HomeIcon from "@mui/icons-material/Home";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Hand } from "lucide-react";
-import ExploreIcon from "@mui/icons-material/Explore";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useRouter } from "next/navigation";
-import { API_BASE_URL } from "@/config/api";
-import axios from "axios";
-
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Image from "next/image";
+import { useTheme } from "@mui/material/styles";
+import dynamic from "next/dynamic";
+const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
+  ssr: false,
+});
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useTheme } from "@mui/material";
-import { Divider } from "@mui/material";
-//import { Slide } from "@mui/material";
-import { Grow } from "@mui/material";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface HostelOwnerCTAProps {
-  router: ReturnType<typeof useRouter>;
-}
-
-interface UserProfileProps {
-  open: boolean;
-  onClose: () => void;
-  userEmail: string;
-  userRole: string;
-  userPassword?: string;
-}
-
-const Navbar: React.FC = () => {
-  const [wishlistCount, setWishlistCount] = useState<number>(0);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [profileId, setProfileId] = useState<string | null>(null);
-  const [profileOpen, setProfileOpen] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false);
-  const router = useRouter();
-
-  const [isClient, setIsClient] = useState(false);
-
-  //const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+const Navbar: React.FC = React.memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const router = useRouter();
+  const MemoizedMenuIcon = React.memo(MenuIcon);
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const updateUserInfo = useCallback(() => {
-    if (isClient) {
-      const email = localStorage.getItem("email");
-      const role = localStorage.getItem("role");
-      const id = localStorage.getItem("profileId");
-      const token = localStorage.getItem("token");
-
-      if (role && id && token) {
-        if (role === "student") {
-          setUserEmail(email);
-        }
-        setUserRole(role);
-        setProfileId(id);
-        setIsLoggedIn(true);
-      } else {
-        setUserEmail(null);
-        setUserRole(null);
-        setProfileId(null);
-        setIsLoggedIn(false);
-      }
-    }
-  }, [isClient]);
-
-  const handleLoginClick = () => {
-    setLoginModalOpen(true);
-    document.body.classList.add("blur-background");
-  };
-
-  const handleCloseLoginModal = () => {
-    setLoginModalOpen(false);
-    document.body.classList.remove("blur-background");
-  };
-
-  const fetchWishlistCount = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    const id = localStorage.getItem("profileId");
-    if (token && id && userRole === "student") {
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/students/wishlist/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setWishlistCount(data.length);
-        } else {
-          console.error("Failed to fetch wishlist");
-        }
-      } catch (error) {
-        console.error("Error fetching wishlist:", error);
-      }
-    }
-  }, [userRole]);
-
-  useEffect(() => {
-    updateUserInfo();
-    fetchWishlistCount();
-
-    const handleStorageChange = () => {
-      updateUserInfo();
-      fetchWishlistCount();
+    const link = document.createElement("link");
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap";
+    link.rel = "stylesheet";
+    link.setAttribute("media", "print");
+    link.onload = () => {
+      link.media = "all";
     };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    const interval = setInterval(() => {
-      updateUserInfo();
-      fetchWishlistCount();
-    }, 500);
-
+    document.head.appendChild(link);
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
+      document.head.removeChild(link);
     };
-  }, [updateUserInfo, fetchWishlistCount]);
+  }, []);
+  const handleMobileMenuToggle = useCallback(() => {
+    setMobileMenuOpen((prevState) => !prevState);
+  }, []);
+  const handleMobileMenuClose = () => setMobileMenuOpen(false);
+  const handleAuthModalOpen = () => setAuthModalOpen(true);
+  const handleAuthModalClose = () => setAuthModalOpen(false);
 
-  const handleWishlistClick = () => {
-    router.push("/wishlist");
+  const handleAuthAction = (action: "signin" | "signup") => {
+    handleAuthModalClose();
+    router.push(action === "signin" ? "/login" : "/register");
   };
 
-  const handleMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleMenuItemClick = (action: string) => {
-    handleClose();
-    if (action === "signIn") {
-      router.push("/login");
-    } else if (action === "signUp") {
-      router.push("/register");
-    }
-  };
-
-  const logoutUser = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-      await axios.post(`${API_BASE_URL}/api/auth/logout`, {}, config);
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      setUserEmail(null);
-      setUserRole(null);
-      setProfileId(null);
-      setIsLoggedIn(false);
-      setProfileOpen(false);
-      setAnchorEl(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("profileId");
-      localStorage.removeItem("email");
-      localStorage.removeItem("wishlist");
-      await logoutUser();
-      window.dispatchEvent(new Event("storage"));
-      router.push("/");
-    } catch (error) {
-      console.error("Error during logout:", error);
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("profileId");
-      localStorage.removeItem("email");
-      window.dispatchEvent(new Event("storage"));
-      window.location.href = "/";
-    }
-  };
-
-  const handleExploreClick = () => {
-    router.push("/explore");
-  };
-
-  const iconStyle =
-    "text-sky-500 hover:text-sky-600 transition-all duration-200 shadow-md hover:shadow-lg";
-
-  const handleMobileMenuToggle = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMenuOpen(false);
-  };
-
-  const mobileMenuItems = [
-    { text: "Home", onClick: () => router.push("/") },
-    { text: "Amenities", onClick: () => {} },
-    { text: "About Us", onClick: () => {} },
-    { text: "Gallery", onClick: () => {} },
+  const navItems = [
+    { text: "Home", path: "/" },
+    { text: "Amenities", path: "/amenities" },
+    { text: "About Us", path: "/about" },
+    { text: "Gallery", path: "/gallery" },
   ];
 
   return (
-    <AppBar
-      position="static"
-      sx={{ bgcolor: "background.paper" }}
-      elevation={0}
-    >
-      <Toolbar
-        className="flex justify-between items-center px-4 sm:px-8 py-2 sm:py-4"
-        style={{ minHeight: "60px" }}
-      >
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="primary"
-            aria-label="menu"
-            onClick={handleMobileMenuToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
-
+    <AppBar position="sticky" className="bg-white">
+      <Toolbar className="justify-between items-center px-4 py-2">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="flex items-center"
         >
+          <Image
+            src="/Images/NewLogo1.png"
+            alt="Hostel Logo"
+            width={isMobile ? 50 : 60}
+            height={isMobile ? 50 : 60}
+            className="mr-2"
+          />
           <Typography
             variant="h6"
             component="div"
-            className="flex items-center text-sky-500 font-bold cursor-pointer"
-            onClick={() => router.push("/")}
-            sx={{ fontFamily: "'Montserrat', sans-serif" }}
+            className="text-sky-600 font-semibold hidden sm:block"
+            sx={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            <Image
-              src="/Images/NewLogo1.png"
-              alt="Hostel Logo"
-              width={isMobile ? 80 : 100}
-              height={isMobile ? 80 : 100}
-            />
-            <span className="text-sky-500 text-sm sm:text-base">
-              Latur hostel
-            </span>
+            Latur Hostel
           </Typography>
         </motion.div>
 
-        <Box className="flex items-center space-x-2 sm:space-x-6">
+        <Box className="flex items-center">
           {!isMobile && (
-            <>
-              <Typography
-                color="primary"
-                onClick={() => router.push("/")}
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                Home
-              </Typography>
-              <Typography
-                color="primary"
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                Amenities
-              </Typography>
-              <Typography
-                color="primary"
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                About Us
-              </Typography>
-              <Typography
-                color="primary"
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                Gallery
-              </Typography>
-              <Typography
-                color="primary"
-                onClick={() => router.push("/login")}
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                Sign In
-              </Typography>
-              <Typography
-                color="primary"
-                onClick={() => router.push("/register")}
-                className="text-sky-500 hover:text-sky-600 cursor-pointer font-semibold"
-                sx={{
-                  fontSize: "0.9rem",
-                  fontFamily: "'Roboto', sans-serif",
-                }}
-              >
-                Sign Up
-              </Typography>
-            </>
-          )}
-
-          {isMobile && (
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="primary"
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex items-center space-x-4"
             >
-              <AccountCircleIcon />
-            </IconButton>
+              {navItems.map((item, index) => (
+                <motion.div
+                  key={item.text}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Typography
+                    onClick={() => router.push(item.path)}
+                    className="text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300"
+                    sx={{ fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    {item.text}
+                  </Typography>
+                </motion.div>
+              ))}
+            </motion.div>
           )}
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="ml-4"
+          >
+            <IconButton
+              color="primary"
+              onClick={isMobile ? handleMobileMenuToggle : handleAuthModalOpen}
+              className="bg-sky-100 hover:bg-sky-200 transition-colors duration-300"
+            >
+              {isMobile ? <MemoizedMenuIcon /> : <AccountCircleIcon />}
+            </IconButton>
+          </motion.div>
         </Box>
       </Toolbar>
 
       <Drawer
-        anchor="left"
+        anchor="right"
         open={mobileMenuOpen}
         onClose={handleMobileMenuClose}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        SlideProps={{
-          direction: "right",
-          mountOnEnter: true,
-          unmountOnExit: true,
-        }}
         sx={{
-          "& .MuiDrawer-paper": {
-            width: "250px",
-            transition: "transform 0.3s ease-in-out",
-          },
+          "& .MuiDrawer-paper": { width: "250px", bgcolor: "rgb(240 249 255)" },
         }}
       >
         <List>
-          {mobileMenuItems.map((item, index) => (
+          {[
+            ...navItems,
+            { text: "Sign In", path: "/login" },
+            { text: "Sign Up", path: "/register" },
+          ].map((item, index) => (
             <ListItem
               button
               key={index}
               onClick={() => {
-                item.onClick();
+                router.push(item.path);
                 handleMobileMenuClose();
               }}
+              className="hover:bg-sky-200 transition-colors duration-300"
             >
-              <ListItemText primary={item.text} />
+              <ListItemText
+                primary={item.text}
+                className="text-sky-700"
+                primaryTypographyProps={{
+                  sx: { fontFamily: "'Poppins', sans-serif" },
+                }}
+              />
             </ListItem>
           ))}
         </List>
       </Drawer>
 
-      {isMobile && (
-        <Menu
-          id="menu-appbar"
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          TransitionComponent={Grow}
-          TransitionProps={{
-            timeout: 200,
-          }}
-          sx={{
-            "& .MuiPaper-root": {
-              opacity: 0,
-              transition: "opacity 0.2s ease-in-out",
-              "&.MuiMenu-paper": {
-                opacity: 1,
-              },
-            },
-          }}
-        >
-          <MenuItem onClick={() => handleMenuItemClick("signIn")}>
-            Sign In
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick("signUp")}>
-            Sign Up
-          </MenuItem>
-        </Menu>
-      )}
-
-      <AnimatePresence>
-        {loginModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Modal
-              open={loginModalOpen}
-              onClose={handleCloseLoginModal}
-              aria-labelledby="login-modal"
-              aria-describedby="login-modal-description"
-              className="flex items-center justify-center"
+      <Modal
+        open={authModalOpen}
+        onClose={handleAuthModalClose}
+        closeAfterTransition
+      >
+        <Fade in={authModalOpen}>
+          <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 bg-white shadow-lg rounded-lg p-6">
+            <Typography
+              variant="h6"
+              component="h2"
+              gutterBottom
+              className="text-sky-700 mb-4"
+              sx={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              <Box>{/* <LoginPopUp onClose={handleCloseLoginModal} /> */}</Box>
-            </Modal>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <style jsx global>{`
-        body.blur-background::before {
-          content: "";
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(5px);
-          z-index: 1000;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-        body.blur-background::before {
-          opacity: 1;
-        }
-      `}</style>
+              Sign In or Sign Up
+            </Typography>
+            <Box className="flex flex-col space-y-3">
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleAuthAction("signin")}
+                className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
+              >
+                Sign In
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => handleAuthAction("signup")}
+                className="border-sky-500 text-sky-500 hover:bg-sky-50 transition-colors duration-300"
+              >
+                Sign Up
+              </Button>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
     </AppBar>
   );
-};
+});
 
 export default Navbar;

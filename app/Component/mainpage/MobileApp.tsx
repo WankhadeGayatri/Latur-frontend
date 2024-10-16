@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Player, PlayerEvent } from "@lottiefiles/react-lottie-player";
 import {
   Search,
@@ -40,6 +40,11 @@ interface ExamBubble {
   name: string;
   color: string;
 }
+interface Slide {
+  title: string;
+  description: string;
+  image?: string;
+}
 
 const MobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenName>("welcome");
@@ -50,6 +55,27 @@ const MobileApp: React.FC = () => {
   const welcomeRef = useRef<HTMLDivElement>(null);
   const supportRef = useRef<HTMLDivElement>(null);
   const homeRef = useRef<HTMLDivElement>(null);
+  const screens: ScreenName[] = ["welcome", "home", "support"];
+
+  const handleNextScreen = useCallback((): void => {
+    setCurrentScreen((prevScreen) => {
+      const currentIndex = screens.indexOf(prevScreen);
+      return screens[(currentIndex + 1) % screens.length];
+    });
+  }, []);
+
+  const handlePrevScreen = useCallback((): void => {
+    setCurrentScreen((prevScreen) => {
+      const currentIndex = screens.indexOf(prevScreen);
+      return screens[(currentIndex - 1 + screens.length) % screens.length];
+    });
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(handleNextScreen, 10000); // Change screen every 10 seconds
+    return () => clearInterval(timer);
+  }, [handleNextScreen]);
+
   const slideColors = ["bg-blue-100", "bg-green-100", "bg-yellow-100"];
   const homeSlides: Slide[] = [
     {
@@ -437,20 +463,6 @@ const MobileApp: React.FC = () => {
     );
   };
 
-  const handleNextScreen = (): void => {
-    const screens: ScreenName[] = ["welcome", "home", "support"];
-    const currentIndex = screens.indexOf(currentScreen);
-    const nextIndex = (currentIndex + 1) % screens.length;
-    setCurrentScreen(screens[nextIndex]);
-  };
-
-  const handlePrevScreen = (): void => {
-    const screens: ScreenName[] = ["welcome", "home", "support"];
-    const currentIndex = screens.indexOf(currentScreen);
-    const prevIndex = (currentIndex - 1 + screens.length) % screens.length;
-    setCurrentScreen(screens[prevIndex]);
-  };
-
   return (
     <div className="relative mt-10 flex items-center justify-center h-screen overflow-hidden">
       {/* Background bubbles */}
@@ -477,19 +489,31 @@ const MobileApp: React.FC = () => {
           </div>
 
           <div className="w-full h-full bg-white rounded-[35px] overflow-hidden relative">
-            {currentScreen === "welcome" && <WelcomeScreen />}
-            {currentScreen === "support" && <SupportScreen />}
-            {currentScreen === "home" && <HomeScreen />}
+            <AnimatePresence initial={false} custom={currentScreen}>
+              <motion.div
+                key={currentScreen}
+                custom={currentScreen}
+                initial={{ opacity: 0, x: 300 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -300 }}
+                transition={{ type: "tween", duration: 0.5 }}
+                className="absolute inset-0"
+              >
+                {currentScreen === "welcome" && <WelcomeScreen />}
+                {currentScreen === "support" && <SupportScreen />}
+                {currentScreen === "home" && <HomeScreen />}
+              </motion.div>
+            </AnimatePresence>
 
             <button
               onClick={handlePrevScreen}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={handleNextScreen}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 rounded-full p-2 z-10"
             >
               <ChevronRight size={18} />
             </button>

@@ -1,13 +1,19 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  Suspense,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import HostelCard from "./HostelCard";
-// import HexagonalFrame from "./HexagonalFrame";
+
 import { useSearchParams } from "next/navigation";
-import MapComponent from "./MapComponent";
-import HousingLandingPage from "./HousingLandingPage";
+
 import { API_BASE_URL } from "../../../config/api";
 import FilterBar from "./FilterBar";
+import Head from "next/head";
 import {
   Typography,
   Container,
@@ -22,6 +28,11 @@ import {
   Sparkles,
   Linkedin,
   Youtube,
+  Wifi,
+  Coffee,
+  Book,
+  Sun,
+  Utensils,
 } from "lucide-react";
 import Lottie from "lottie-react";
 import wait from "../../../public/wait.json";
@@ -29,15 +40,18 @@ import { Facebook, Instagram } from "@mui/icons-material";
 import Image from "next/image";
 import ContactPage from "./ContactPage";
 import ImageGallery from "./ImageGallary";
-import CenteredFeatureSlider from "./CenterFeatureSlider";
+
 import MobileApp from "./MobileApp";
-import HostelworldLanding from "./HostelworldLanding";
-import HostelSearch from "./HostelSearch";
+
 import Footer from "./Footer";
 import WavePromoBanner from "./WavePromoBanner";
 import CanvaGifEmbed from "./CanvaGifEmbed";
 import MobileHostelworldLanding from "./MobileHostelworldLanding";
 import HostelGallery from "./HostelGallery";
+import dynamic from "next/dynamic";
+const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
+  ssr: false,
+});
 
 // Updated Hostel interface
 interface Hostel {
@@ -275,6 +289,13 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     fetchHostels();
   }, [fetchHostels]);
+  const criticalCSS = `
+  .MuiToolbar-root {
+    height: 60px;
+    min-height: 60px;
+  }
+  /* Add other critical styles here */
+`;
 
   useEffect(() => {
     const query = searchParams.get("search");
@@ -496,12 +517,72 @@ const HomePage: React.FC = () => {
     };
   }, [currentHostels]);
 
+  const amenities = [
+    { icon: Wifi, label: "Free Wi-Fi" },
+    { icon: Coffee, label: "Study Room" },
+    { icon: Book, label: "Library" },
+    { icon: Sun, label: "Solar Powered" },
+    { icon: Utensils, label: "Mess Facility" },
+    // { icon: AirConditioning, label: 'AC Rooms' },
+  ];
+
+  const AmenitiesSliderLoader = () => {
+    return (
+      <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg shadow-sm">
+        <div className="flex space-x-6 overflow-x-auto pb-2">
+          {amenities.map((amenity, index) => (
+            <motion.div
+              key={amenity.label}
+              className="flex flex-col items-center"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <motion.div
+                className="bg-white p-2 rounded-full shadow-md"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  borderColor: ["#4F46E5", "#818CF8", "#4F46E5"],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2,
+                  delay: index * 0.2,
+                }}
+                style={{ border: "2px solid #4F46E5" }}
+              >
+                <amenity.icon className="w-6 h-6 text-indigo-600" />
+              </motion.div>
+              <p className="mt-1 text-xs font-medium text-indigo-800">
+                {amenity.label}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
+      <Head>
+        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+        <link rel="preload" href="/css/4ebd156d80596fe3.css" as="style" />
+        <link rel="preload" href="/css/6940938c9d0594bd.css" as="style" />
+        <link rel="preload" href="/css/4a5f3d9e576ed0f5.css" as="style" />
+        <link
+          rel="preload"
+          href="/fonts/your-main-font.woff2"
+          as="font"
+          type="font/woff2"
+        />
+      </Head>
       <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
       <div className="sticky mt-1 top-0 z-10 bg-white">
         <MobileHostelworldLanding onSearch={handleSearch} />
-        <CenteredFeatureSlider />
+        <Suspense fallback={<AmenitiesSliderLoader />}>
+          <CenteredFeatureSlider />
+        </Suspense>
         <FilterBar
           onFilterChange={handleFilterChange}
           onSearch={handleSearch}

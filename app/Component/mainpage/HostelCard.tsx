@@ -55,6 +55,7 @@ import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config/api";
+import ImageWithPlaceholder from "./ImageWithPlaceholder";
 interface RentStructure {
   studentsPerRoom: number;
   rentPerStudent: number;
@@ -283,6 +284,8 @@ const HostelCard: React.FC<HostelCardProps> = ({
     setDetailsOpen(false);
   };
 
+  const iconStyle = { width: "24px", height: "24px" };
+
   const calculateAverageRating = () => {
     if (!feedback || feedback.length === 0) return 0;
     const sum = feedback.reduce((acc, curr) => acc + curr.rating, 0);
@@ -294,7 +297,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
   const StarRating: React.FC<{ value: number }> = ({ value }) => (
     <Box display="flex" alignItems="center">
       <Rating value={value} precision={0.5} readOnly size="small" />
-      <Typography variant="body2" className="ml-1">
+      <Typography variant="body2" component="span" className="ml-1">
         ({value.toFixed(1)})
       </Typography>
     </Box>
@@ -348,6 +351,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
       />
     </Tooltip>
   );
+
   return (
     <>
       <Card className="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
@@ -357,13 +361,16 @@ const HostelCard: React.FC<HostelCardProps> = ({
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             className="w-full h-54 md:h-70 rounded-lg shadow-md"
+            style={{ aspectRatio: "4/3" }}
           >
             {images && images.length > 0 ? (
               images.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img
+                  <ImageWithPlaceholder
                     src={`data:${image.contentType};base64,${image.data}`}
                     alt={`${name} - ${index + 1}`}
+                    width={400}
+                    height={300}
                     className="w-full h-full object-cover object-center rounded-lg"
                   />
                 </SwiperSlide>
@@ -388,7 +395,10 @@ const HostelCard: React.FC<HostelCardProps> = ({
             </IconButton>
           </Tooltip>
         </Box>
-        <CardContent className="w-full md:w-2/3 pl-0 md:pl-6 flex flex-col justify-between">
+        <CardContent
+          className="w-full md:w-2/3 pl-0 md:pl-6 flex flex-col justify-between"
+          style={{ minHeight: "300px" }}
+        >
           <div>
             <div className="flex justify-between items-center mb-4">
               <Typography
@@ -457,17 +467,33 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 Amenities:
               </Typography>
               <div className="flex flex-wrap justify-start">
-                <Amenity icon={<WifiIcon />} label="Wi-Fi" value={wifi} />
-                <Amenity icon={<AcIcon />} label="AC" value={ac} />
-                <Amenity icon={<MessIcon />} label="Mess" value={mess} />
-                <Amenity icon={<SolarIcon />} label="Solar" value={solar} />
                 <Amenity
-                  icon={<StudyRoomIcon />}
+                  icon={<WifiIcon style={iconStyle} />}
+                  label="Wi-Fi"
+                  value={wifi}
+                />
+                <Amenity
+                  icon={<AcIcon style={iconStyle} />}
+                  label="AC"
+                  value={ac}
+                />
+                <Amenity
+                  icon={<MessIcon style={iconStyle} />}
+                  label="Mess"
+                  value={mess}
+                />
+                <Amenity
+                  icon={<SolarIcon style={iconStyle} />}
+                  label="Solar"
+                  value={solar}
+                />
+                <Amenity
+                  icon={<StudyRoomIcon style={iconStyle} />}
                   label="Study Room"
                   value={studyRoom}
                 />
                 <Amenity
-                  icon={<TuitionIcon />}
+                  icon={<TuitionIcon style={iconStyle} />}
                   label="Tuition"
                   value={tuition}
                 />
@@ -516,14 +542,17 @@ const HostelCard: React.FC<HostelCardProps> = ({
               pagination={{ clickable: true }}
               navigation
               autoplay={{ delay: 3000, disableOnInteraction: false }}
-              className="w-full h-80 rounded-lg shadow-md my-4"
+              className="w-full rounded-lg shadow-md my-4"
+              style={{ height: "400px" }}
             >
               {images && images.length > 0 ? (
                 images.map((image, index) => (
                   <SwiperSlide key={index}>
-                    <img
+                    <ImageWithPlaceholder
                       src={`data:${image.contentType};base64,${image.data}`}
                       alt={`${name} - ${index + 1}`}
+                      width={800}
+                      height={600}
                       className="w-full h-full object-cover object-center rounded-lg"
                     />
                   </SwiperSlide>
