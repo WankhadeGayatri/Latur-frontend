@@ -49,6 +49,7 @@ import CanvaGifEmbed from "./CanvaGifEmbed";
 import MobileHostelworldLanding from "./MobileHostelworldLanding";
 import HostelGallery from "./HostelGallery";
 import dynamic from "next/dynamic";
+import CoverflowSlider from "./CoverflowSlider";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -237,7 +238,79 @@ const HomePage: React.FC = () => {
         "Enjoy spacious rooms that provide comfort and privacy for your studies and relaxation.",
     },
   ];
-
+  const sliderItems = [
+    {
+      src: "/Images/HomePage/Hostel.webp",
+      alt: "Hostel 1",
+      name: "Unicorn",
+      price: 3000,
+      rating: 4.5,
+    },
+    {
+      src: "/Images/HomePage/Hostel2.webp",
+      alt: "Hostel 2",
+      name: "Prime 13",
+      price: 4999,
+      rating: 4.2,
+    },
+    {
+      src: "/Images/HomePage/Hostel2.webp",
+      alt: "Hostel 3",
+      name: "Heros Room",
+      price: 9999,
+      rating: 4.1,
+    },
+    {
+      src: "/Images/HomePage/Hostel3.webp",
+      alt: "Hostel 4",
+      name: "Kaveri Nest",
+      price: 8999,
+      rating: 4.4,
+    },
+    {
+      src: "/Images/HomePage/Hostel4.webp",
+      alt: "Hostel 5",
+      name: "Aspiration",
+      price: 7999,
+      rating: 4.3,
+    },
+    {
+      src: "/Images/HomePage/Hostel5.webp",
+      alt: "Hostel 6",
+      name: "Inspiration",
+      price: 4999,
+      rating: 4.2,
+    },
+    {
+      src: "/Images/HomePage/Hostel6.webp",
+      alt: "Hostel 7",
+      name: "Ram Ratan",
+      price: 8999,
+      rating: 4.0,
+    },
+    {
+      src: "/Images/HomePage/Hostel7.webp",
+      alt: "Hostel 8",
+      name: "Geeta Hostel",
+      price: 1999,
+      rating: 3.5,
+    },
+    {
+      src: "/Images/HomePage/Hostel8.webp",
+      alt: "Hostel 8",
+      name: "Left Wing",
+      price: 3999,
+      rating: 3.8,
+    },
+    {
+      src: "/Images/HomePage/Hostel3.webp",
+      alt: "Hostel 9",
+      name: "Stay Stree",
+      price: 4999,
+      rating: 4.0,
+    },
+    // Add more items as needed
+  ];
   const fetchHostels = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -316,13 +389,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const LoaderComponent: React.FC = () => {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-80 flex justify-center items-center z-50">
-        <div className="w-90 h-90 justify-center">
-          <Lottie animationData={wait} loop={true} autoplay={true} />
-        </div>
-      </div>
-    );
+    return <div>Searching Hostels</div>;
   };
 
   const NoHostelsFound: React.FC = () => (
@@ -710,7 +777,7 @@ const HomePage: React.FC = () => {
       <main className="container  mt-10 mx-auto p-4" ref={galleryRef}>
         <h1 className="text-2xl font-bold mb-4">Our Hostel Gallery</h1>
         <div className="image-gallery">
-          <HostelGallery />
+          <CoverflowSlider items={sliderItems} />
         </div>
       </main>
 

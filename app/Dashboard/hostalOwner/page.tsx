@@ -133,15 +133,16 @@ const fetchOwnerData = async (profileId: string) => {
 };
 
 const HostelOwnerDashboard: React.FC = () => {
+  const { isAuthenticated, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [activePage, setActivePage] = useState("home");
-
-  const [profileId, setprofileId] = useState<string>("");
+  const [profileId, setProfileId] = useState<string>("");
   const [ownerName, setOwnerName] = useState<string>("");
   const [hostels, setHostels] = useState<Hostel[]>([]);
   const [selectedHostelId, setSelectedHostelId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [openHMS, setOpenHMS] = useState(false);
   const [profileData, setProfileData] = useState({
     name: "",
     number: "",
@@ -155,26 +156,82 @@ const HostelOwnerDashboard: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
-  const [token, setToken] = useState<string>("");
-  const [openHMS, setOpenHMS] = useState(false);
-  const { isAuthenticated, loading } = useAuth();
-  if (loading) {
-    return <div>Checking authentication...</div>;
-  }
 
-  if (!isAuthenticated) {
-    return <div>You need to login to access this page.</div>;
-  }
-  const handleRequestOTP = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const initializeData = async () => {
+      const token = localStorage.getItem("token");
+      const storedProfileId = localStorage.getItem("profileId");
+      const email = localStorage.getItem("email");
+
+      if (!token || !storedProfileId) {
+        window.location.href = "/login";
+        return;
+      }
+
+      setProfileId(storedProfileId);
+      setIsLoading(true);
+
+      try {
+        // Fetch owner data
+        const ownerData = await fetchOwnerData(storedProfileId);
+        if (ownerData) {
+          setOwnerName(ownerData.name || "");
+          setProfileData({
+            name: ownerData.name || "",
+            number: ownerData.number || "",
+            email: email || "",
+            address: ownerData.address || "",
+          });
+        }
+
+        // Fetch hostels
+        const response = await fetch(
+          `${API_BASE_URL}/api/hostels/${storedProfileId}/hostels`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch owner's hostels");
+        }
+
+        const data = await response.json();
+        setHostels(data.hostels);
+        if (data.hostels.length > 0) {
+          setSelectedHostelId(data.hostels[0]._id);
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeData();
+  }, [isAuthenticated, loading]);
+
+  const handleRequestOTP = async () => {
     setIsLoading(true);
     setOtpError(null);
     try {
       await axios.post(
         `${API_BASE_URL}/api/auth/forgot-password`,
         { email: profileData.email },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
       setShowOTPForm(true);
     } catch (error) {
@@ -185,7 +242,7 @@ const HostelOwnerDashboard: React.FC = () => {
     }
   };
 
-  const handleVerifyOTPAndChangePassword = async (token: string) => {
+  const handleVerifyOTPAndChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       setOtpError("Passwords do not match");
       return;
@@ -193,6 +250,7 @@ const HostelOwnerDashboard: React.FC = () => {
 
     setIsLoading(true);
     setOtpError(null);
+
     try {
       await axios.post(
         `${API_BASE_URL}/api/auth/reset-password`,
@@ -201,8 +259,13 @@ const HostelOwnerDashboard: React.FC = () => {
           otp,
           newPassword,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
+
       setShowOTPForm(false);
       setOtp("");
       setNewPassword("");
@@ -210,7 +273,7 @@ const HostelOwnerDashboard: React.FC = () => {
       setSnackbarMessage("Password changed successfully");
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error verifying OTP and changing password:", error);
+      console.error("Error verifying OTP:", error);
       setOtpError(
         "Failed to change password. Please check your OTP and try again."
       );
@@ -219,61 +282,6 @@ const HostelOwnerDashboard: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const profileId = localStorage.getItem("profileId");
-    if (token && profileId) {
-      setprofileId(profileId);
-      fetchOwnerData(profileId).then((ownerData) => {
-        if (ownerData) {
-          setOwnerName(ownerData.name);
-        }
-        setIsLoading(false);
-      });
-
-      const fetchOwnerHostels = async () => {
-        try {
-          const response = await fetch(
-            `${API_BASE_URL}/api/hostels/${profileId}/hostels`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch owner's hostels");
-          }
-          const data = await response.json();
-          setHostels(data.hostels);
-          if (data.hostels.length > 0) {
-            setSelectedHostelId(data.hostels[0]._id);
-          }
-        } catch (error) {
-          console.error("Error fetching owner's hostels:", error);
-        }
-      };
-
-      fetchOwnerHostels();
-    } else {
-      window.location.href = "/login";
-    }
-    if (profileId) {
-      fetchOwnerData(profileId).then((ownerData) => {
-        const email = localStorage.getItem("email");
-        if (ownerData) {
-          setOwnerName(ownerData.name || "");
-          setProfileData({
-            name: ownerData.name || "",
-            number: ownerData.number || "",
-            email: email || "",
-            address: ownerData.address || "",
-          });
-        }
-        setIsLoading(false);
-      });
-    }
-  }, []);
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -794,7 +802,7 @@ const HostelOwnerDashboard: React.FC = () => {
             {!showOTPForm ? (
               <Button
                 variant="outlined"
-                onClick={(event) => handleRequestOTP(event)}
+                onClick={(event) => handleRequestOTP()}
                 disabled={isLoading}
                 sx={{
                   color: "red",

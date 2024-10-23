@@ -47,7 +47,7 @@ const Login: React.FC = () => {
     try {
       let response;
       if (loginMethod === "email") {
-        response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+        response = await axios.post(`${API_BASE_URL}/api/auth/student/login`, {
           email: email.toLowerCase(),
           password,
         });
@@ -58,15 +58,16 @@ const Login: React.FC = () => {
       }
 
       const user = response.data;
+
       localStorage.setItem("email", email.toLowerCase());
-      localStorage.setItem("role", user.role);
+      localStorage.setItem("role", user.userData.role);
       localStorage.setItem("token", user.token);
-      localStorage.setItem("profileId", user.profileId);
+      localStorage.setItem("profileId", user.userData.profileId);
 
       toast.success("Login successful! Redirecting...");
 
       setTimeout(() => {
-        switch (user.role) {
+        switch (user.userData.role) {
           case "student":
             router.push("/Dashboard/student");
             break;
@@ -106,7 +107,7 @@ const Login: React.FC = () => {
     setResetMessage("");
 
     try {
-      await axios.post(`${API_BASE_URL}/api/auth/reset-password`, {
+      await axios.post(`${API_BASE_URL}/api/auth/student/reset-password`, {
         email: resetEmail.toLowerCase(),
       });
       setResetMessage(
@@ -123,12 +124,13 @@ const Login: React.FC = () => {
 
   const handleContinueWith = (method: string) => {
     if (method === "google") {
-      window.location.href = `${API_BASE_URL}/api/auth/google`;
+      window.location.href = `${API_BASE_URL}/api/auth/student/google`;
     } else {
       console.log(`Continuing with ${method}`);
       // Implement other social login logic here
     }
   };
+
   return (
     <>
       <Navbar />

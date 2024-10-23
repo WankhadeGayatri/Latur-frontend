@@ -45,7 +45,7 @@ const RoleSpecificTermsAndBenefits: React.FC<
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-2xl font-bold text-center text-indigo-700">
-        Benefits for User
+        Benefits for Student
       </h2>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 bg-white rounded-lg shadow-md overflow-hidden">
@@ -54,7 +54,7 @@ const RoleSpecificTermsAndBenefits: React.FC<
               {roleContent[currentRole] && (
                 <>
                   <h4 className="font-medium text-indigo-600">
-                    Exclusive benefits for users:
+                    Exclusive benefits for students:
                   </h4>
                   <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600">
                     {roleContent[currentRole].benefits.map(
@@ -70,7 +70,7 @@ const RoleSpecificTermsAndBenefits: React.FC<
                   <p className="text-sm font-medium text-indigo-600">
                     You are registering as a:
                   </p>
-                  <p className="text-lg font-bold text-indigo-700">user</p>
+                  <p className="text-lg font-bold text-indigo-700">student</p>
                 </div>
               </div>
             </div>

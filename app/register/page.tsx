@@ -31,6 +31,13 @@ interface FormData {
   passportPhoto?: File | null;
   idProof?: File | null;
 }
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true, // Important for cookies
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -49,6 +56,7 @@ const RegisterPage: React.FC = () => {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [showOtpInput, setShowOtpInput] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
+  const [email, setemail] = useState<string>("");
   const [userId, setUserId] = useState<string | null>(null);
   //const [showOAuthRoleModal, setShowOAuthRoleModal] = useState<boolean>(false);
   const [oauthSelectedRole, setOauthSelectedRole] = useState<string>("");
@@ -118,6 +126,7 @@ const RegisterPage: React.FC = () => {
     const newErrors: Partial<FormData> = {};
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
+    setemail(formData.email);
     if (!formData.password) newErrors.password = "Password is required";
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
@@ -133,6 +142,8 @@ const RegisterPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [registeredEmail, setRegisteredEmail] = useState<string>(""); // Add this state
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (showOtpInput) {
@@ -141,8 +152,6 @@ const RegisterPage: React.FC = () => {
       if (!validateForm()) return;
 
       const formDataToSend = new FormData();
-      formDataToSend.set("role", studentRoleId);
-      formDataToSend.set("roleName", "student");
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formDataToSend.append(key, value);
@@ -150,8 +159,8 @@ const RegisterPage: React.FC = () => {
       });
 
       try {
-        const response = await axios.post(
-          `${API_BASE_URL}/api/auth/register`,
+        const response = await api.post(
+          "/api/auth/student/register",
           formDataToSend,
           {
             headers: {
@@ -159,6 +168,9 @@ const RegisterPage: React.FC = () => {
             },
           }
         );
+
+        // Store email in localStorage or state
+        localStorage.setItem("registrationEmail", formData.email);
         setUserId(response.data.userId);
         setShowOtpInput(true);
       } catch (error: any) {
@@ -174,10 +186,20 @@ const RegisterPage: React.FC = () => {
 
   const handleOtpSubmit = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/api/auth/verify-registration-otp`, {
-        userId,
-        otp,
-      });
+      // Get email from localStorage
+      const registrationEmail = localStorage.getItem("registrationEmail");
+
+      const response = await api.post(
+        "/api/auth/student/verify-registration-otp",
+        {
+          email: registrationEmail,
+          otp,
+        }
+      );
+
+      // Clear stored email after successful verification
+      localStorage.removeItem("registrationEmail");
+
       alert("Registration completed successfully!");
       router.push("/login");
     } catch (error: any) {
@@ -187,19 +209,17 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleOAuthRoleSelect = () => {
-    // console.log("Selected role for OAuth:", selectedRole);
-    // setOauthSelectedRole(selectedRole);
-    // setShowOAuthRoleModal(false);
     handleOAuthLogin("google");
   };
 
   const handleOAuthLogin = (provider: string) => {
     const baseUrl = `${API_BASE_URL}`;
-    console.log("Redirecting with roleId:", studentRoleId);
-    window.location.href = `${baseUrl}/api/auth/${provider}?roleId=${studentRoleId}`;
+
+    window.location.href = `${baseUrl}/api/auth/student/${provider}`;
   };
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = ["/Images/studentai.png", "/Images/professionalai.png"];
+  const images = ["/Images/HomePage/AI.jpg", "/Images/HomePage/AI2.jpg"];
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -618,33 +638,8 @@ const RegisterPage: React.FC = () => {
                         </div>
                       </div>
                     )}
-                    {/* {showOAuthRoleModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-white p-6 rounded-lg shadow-xl">
-                        <h2 className="text-xl font-bold mb-4">
-                          Select Your Role for Google Sign In
-                        </h2>
-                        <div className="space-y-2">
-                          {roles.map((role) => (
-                            <button
-                              key={role._id}
-                              onClick={() => handleOAuthRoleSelect()}
-                              className="w-full p-2 text-left hover:bg-gray-100 rounded-md"
-                            >
-                              {role.name}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                     )}  */}
 
                     <div className="flex items-center space-x-2">
-                      {/* <Checkbox
-                        id="terms"
-                        checked={termsAccepted}
-                        onChange={() => setTermsAccepted(!termsAccepted)}
-                      /> */}
                       <label
                         htmlFor="terms"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

@@ -193,7 +193,7 @@ export default function WishlistPage() {
     }
     try {
       await axios.post(
-        "${API_BASE_URL}/api/students/wishlist/remove",
+        `${API_BASE_URL}/api/students/wishlist/remove`,
         { hostelId },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -295,7 +295,7 @@ export default function WishlistPage() {
 
     try {
       const response = await axios.post(
-        "${API_BASE_URL}/api/students/request-visit",
+        `${API_BASE_URL}/api/students/request-visit`,
         {
           hostelId: selectedHostel._id,
           visitDate,
@@ -733,7 +733,7 @@ export default function WishlistPage() {
           ))}
         </Box>
       )}
-      {!student?.wishlistSubmitted && (
+      {/* {!student?.wishlistSubmitted && (
         <>
           <Button
             variant="contained"
@@ -749,7 +749,7 @@ export default function WishlistPage() {
             Submit Wishlist
           </Button>
         </>
-      )}
+      )} */}
 
       <Dialog
         open={openAdmissionDialog}

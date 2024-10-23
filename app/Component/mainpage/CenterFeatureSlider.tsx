@@ -49,8 +49,8 @@ const FeatureCard: React.FC<Feature> = ({ icon: Icon, title, color }) => (
 );
 
 const FeatureSlider: React.FC = () => {
-  const totalWidth = features.length * 240; // Adjusted for the new card width plus margin
-  const animationDuration = features.length * 5; // 5 seconds per card
+  const totalWidth = features.length * 240;
+  const animationDuration = features.length * 5;
 
   return (
     <div className="w-full overflow-hidden py-4 sm:py-6 md:py-8">
@@ -76,7 +76,7 @@ const FeatureSlider: React.FC = () => {
 };
 
 const CenteredFeatureSlider: React.FC = () => (
-  <div className="flex items-center justify-center w-full overflow-hidden">
+  <div className="flex items-center  justify-center w-full overflow-hidden">
     <style jsx global>{`
       @keyframes slide {
         0% {

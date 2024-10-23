@@ -94,7 +94,7 @@ const HostelCard: React.FC<{ hostel: Hostel }> = ({ hostel }) => {
         setError("No token found. Please log in.");
         return;
       }
-      await axios.put(
+      await axios.post(
         `${API_BASE_URL}/api/admin/hostels/verify`,
         { hostelId: hostel._id },
         {
@@ -120,14 +120,11 @@ const HostelCard: React.FC<{ hostel: Hostel }> = ({ hostel }) => {
         setError("No token found. Please log in.");
         return;
       }
-      await axios.delete(
-        `${API_BASE_URL}/api/admin/hostels/${hostel._id}`,
-        {
-          headers: {
-            Authorization: ` Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_BASE_URL}/api/admin/hostels/${hostel._id}`, {
+        headers: {
+          Authorization: ` Bearer ${token}`,
+        },
+      });
     } catch (error: any) {
       setError(error.message);
     } finally {

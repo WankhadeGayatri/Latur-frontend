@@ -102,17 +102,9 @@ const AdminDashboard: React.FC = () => {
   const [approvedHostelsCount, setApprovedHostelsCount] = useState<number>(0);
   const [approvedWishlistCount, setApprovedWishlistCount] = useState<number>(0);
   const [pendingWishlistCount, setPendingWishlistCount] = useState<number>(0);
-  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { isAuthenticated, loading } = useAuth();
-  if (loading) {
-    return <div>Checking authentication...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return <div>You need to login to access this page.</div>;
-  }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -162,7 +154,6 @@ const AdminDashboard: React.FC = () => {
         );
 
         setApprovedHostelsCount(verifiedHostels.length);
-
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -170,8 +161,10 @@ const AdminDashboard: React.FC = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    if (isAuthenticated && !loading) {
+      fetchData();
+    }
+  }, [isAuthenticated, loading]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -198,15 +191,15 @@ const AdminDashboard: React.FC = () => {
       window.location.href = "/";
     } catch (error) {
       console.error("Error during logout:", error);
-
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("profileId");
       localStorage.removeItem("email");
-
       window.location.href = "/";
     }
   };
+
+  // Early return for loading state
 
   const cardData = [
     {

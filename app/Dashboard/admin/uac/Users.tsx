@@ -3,16 +3,15 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { API_BASE_URL } from "@/config/api";
 
 interface User {
-  _id: string;
+  id: string;
   email: string;
   roleName: string;
-  lastLogin?: Date;
-  roleId: string;
-  lastLogout?: Date;
-  role?: {
-    _id: string;
-    name: string;
-  };
+  lastLogin?: string;
+  roleId: string | null;
+  lastLogout?: string;
+  userType: "student" | "owner";
+  name: string;
+  isApproved: boolean;
   password?: string;
 }
 
@@ -23,9 +22,18 @@ interface NewUser {
 }
 
 interface Role {
-  _id: string;
+  id: string;
   name: string;
   description: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  total: number;
+  students: number;
+  owners: number;
+  roles: Role[];
+  users: User[];
 }
 
 interface UpdateUserData {
@@ -36,6 +44,7 @@ interface UpdateUserData {
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  console.log("userss", users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newUser, setNewUser] = useState<NewUser>({
@@ -65,7 +74,6 @@ const Users: React.FC = () => {
         `${API_BASE_URL}/api/admin/getroles`,
         config
       );
-      console.log("Fetched roles:", response.data);
       setRoles(response.data);
     } catch (error) {
       console.error("Error fetching roles:", error);
@@ -82,16 +90,21 @@ const Users: React.FC = () => {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
-      const response: AxiosResponse<User[]> = await axios.get(
+      const response: AxiosResponse<ApiResponse> = await axios.get(
         `${API_BASE_URL}/api/admin/users`,
         config
       );
-      setUsers(
-        response.data.map((user: User) => ({
+
+      if (response.data.success) {
+        const formattedUsers = response.data.users.map((user) => ({
           ...user,
+          _id: user.id, // Maintain compatibility with existing code
           roleName: user.roleName || "No Role Assigned",
-        }))
-      );
+        }));
+        setUsers(formattedUsers);
+      } else {
+        throw new Error("Failed to fetch users");
+      }
     } catch (error) {
       setError("Error fetching users. Please try again.");
       console.error("Error fetching users:", error);
@@ -114,9 +127,8 @@ const Users: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      await axios.delete(`${API_BASE_URL}/api/admin/users/${user._id}`, config);
-
-      setUsers(users.filter((u) => u._id !== user._id));
+      await axios.delete(`${API_BASE_URL}/api/admin/users/${user.id}`, config);
+      setUsers(users.filter((u) => u.id !== user.id));
     } catch (error) {
       setError("Error deleting user. Please try again.");
       console.error("Error deleting user:", error);
@@ -128,7 +140,6 @@ const Users: React.FC = () => {
     setSelectedUser({
       ...user,
       roleName: user.roleName || "No Role Assigned",
-      roleId: user.role?._id || "",
     });
     setIsEditing(true);
     setShowModal(true);
@@ -160,23 +171,20 @@ const Users: React.FC = () => {
           updateData.password = selectedUser.password;
         }
 
-        console.log("Sending update data:", updateData);
-
         if (!updateData.roleName) {
           throw new Error("Role name is required");
         }
 
         const response: AxiosResponse<User> = await axios.put(
-          `${API_BASE_URL}/api/admin/users/${selectedUser._id}/role`,
+          `${API_BASE_URL}/api/admin/users/${selectedUser.id}/role`,
           updateData,
           config
         );
-        console.log("Update response:", response.data);
       } else {
         if (!newUser.email || !newUser.password || !newUser.roleName) {
           throw new Error("Please fill in all fields");
         }
-        await axios.post("${API_BASE_URL}/api/admin/users", newUser, config);
+        await axios.post(`${API_BASE_URL}/api/admin/users`, newUser, config);
       }
 
       setShowModal(false);
@@ -229,8 +237,8 @@ const Users: React.FC = () => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user._id} className="border-b border-sky-100">
-                <td className="px-4 py-2 truncate text-gray-800">{user._id}</td>
+              <tr key={user.id} className="border-b border-sky-100">
+                <td className="px-4 py-2 truncate text-gray-800">{user.id}</td>
                 <td className="px-4 py-2 text-gray-800">{user.roleName}</td>
                 <td className="px-4 py-2 truncate text-gray-800">
                   {user.email}
@@ -269,12 +277,12 @@ const Users: React.FC = () => {
       <div className="sm:hidden space-y-4">
         {users.map((user) => (
           <div
-            key={user._id}
+            key={user.id}
             className="bg-white rounded-lg p-4 shadow-md border border-sky-100"
           >
             <div className="mb-2">
               <span className="font-semibold text-sky-600">ID:</span>
-              <span className="ml-2 text-gray-800 truncate">{user._id}</span>
+              <span className="ml-2 text-gray-800 truncate">{user.id}</span>
             </div>
             <div className="mb-2">
               <span className="font-semibold text-sky-600">Role:</span>
@@ -318,6 +326,7 @@ const Users: React.FC = () => {
         ))}
       </div>
 
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -378,7 +387,7 @@ const Users: React.FC = () => {
                 >
                   <option value="">Select Role</option>
                   {roles.map((role) => (
-                    <option key={role._id} value={role.name}>
+                    <option key={role.id} value={role.name}>
                       {role.name}
                     </option>
                   ))}

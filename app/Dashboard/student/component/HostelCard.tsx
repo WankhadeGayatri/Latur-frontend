@@ -240,7 +240,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
         updateWishlistCount();
       } else {
         await axios.post(
-          "${API_BASE_URL}/api/students/wishlist/remove",
+          `${API_BASE_URL}/api/students/wishlist/remove`,
           { hostelId: id, profileId },
           {
             headers: {

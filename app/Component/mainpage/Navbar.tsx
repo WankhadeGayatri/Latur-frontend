@@ -25,6 +25,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Hand } from "lucide-react";
 
 interface CustomButtonProps {
   onClick: () => void;
@@ -63,6 +64,7 @@ const Navbar: React.FC = React.memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const theme = useTheme();
+  const [isBlinking, setIsBlinking] = useState(true);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
 
@@ -76,8 +78,14 @@ const Navbar: React.FC = React.memo(() => {
       link.media = "all";
     };
     document.head.appendChild(link);
+
+    const blinkInterval = setInterval(() => {
+      setIsBlinking((prev) => !prev);
+    }, 1000);
+
     return () => {
       document.head.removeChild(link);
+      clearInterval(blinkInterval);
     };
   }, []);
   const handleMobileMenuToggle = useCallback(() => {
@@ -91,32 +99,36 @@ const Navbar: React.FC = React.memo(() => {
     handleAuthModalClose();
     router.push(action === "signin" ? "/login" : "/register");
   };
+  const handleLogoClick = useCallback(() => {
+    router.push("/");
+  }, [router]);
 
   const navItems = [
     { text: "Home", path: "/" },
-    { text: "Amenities", path: "/amenities" },
-    { text: "About Us", path: "/about" },
-    { text: "Gallery", path: "/gallery" },
+    { text: "Amenities", path: "/" },
+    { text: "About Us", path: "/" },
+    { text: "Gallery", path: "/" },
     { text: "Sign In", path: "/login" },
     { text: "Sign Up", path: "/register" },
   ];
 
   return (
-    <AppBar position="sticky" className="bg-white">
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "white",
+        boxShadow: "none",
+      }}
+      className="bg-white"
+    >
       <Toolbar className="justify-between items-center px-4 py-2">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center"
+          className="flex items-center cursor-pointer"
+          onClick={handleLogoClick}
         >
-          <Image
-            src="/Images/NewLogo1.png"
-            alt="Hostel Logo"
-            width={isMobile ? 50 : 60}
-            height={isMobile ? 50 : 60}
-            className="mr-2"
-          />
           <Typography
             variant="h6"
             component="div"
@@ -126,7 +138,6 @@ const Navbar: React.FC = React.memo(() => {
             Latur Hostel
           </Typography>
         </motion.div>
-
         <Box className="flex items-center">
           {!isMobile && (
             <motion.div
@@ -135,6 +146,54 @@ const Navbar: React.FC = React.memo(() => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-center space-x-4"
             >
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "#ffe5e5",
+                    padding: "10px 16px",
+                    borderRadius: "24px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer",
+                    marginRight: "16px",
+                    "&:hover": {
+                      backgroundColor: "#ffd6d6",
+                      transform: "scale(1.05)",
+                      transition: "all 0.3s ease-in-out",
+                    },
+                  }}
+                  onClick={() => router.push("/hostelownerlogin")}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "#d32f2f",
+                      fontWeight: "bold",
+                      marginRight: "12px",
+                      fontSize: "0.700rem",
+                      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+                    }}
+                  >
+                    Are you hostel owner?
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <motion.div
+                      animate={{
+                        opacity: isBlinking ? 1 : 0.5,
+                        scale: isBlinking ? 1.1 : 1,
+                      }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Hand size={20} color="#d32f2f" />
+                    </motion.div>
+                  </Box>
+                </Box>
+              </motion.div>
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.text}
@@ -152,11 +211,12 @@ const Navbar: React.FC = React.memo(() => {
               ))}
             </motion.div>
           )}
+
           {isMobile ? (
             <CustomButton
               onClick={isMobile ? handleMobileMenuToggle : handleAuthModalOpen}
               isMobile={isMobile}
-              className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300 "
+              className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
               ariaLabel={
                 isMobile ? "Toggle mobile menu" : "Open authentication modal"
               }
@@ -166,7 +226,6 @@ const Navbar: React.FC = React.memo(() => {
           )}
         </Box>
       </Toolbar>
-
       <Drawer
         anchor="right"
         open={mobileMenuOpen}
@@ -176,11 +235,7 @@ const Navbar: React.FC = React.memo(() => {
         }}
       >
         <List>
-          {[
-            ...navItems,
-            { text: "Sign In", path: "/login" },
-            { text: "Sign Up", path: "/register" },
-          ].map((item, index) => (
+          {navItems.map((item, index) => (
             <ListItem
               button
               key={index}
