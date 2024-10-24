@@ -588,21 +588,8 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
-        <link rel="preload" href="/css/4ebd156d80596fe3.css" as="style" />
-        <link rel="preload" href="/css/6940938c9d0594bd.css" as="style" />
-        <link rel="preload" href="/css/4a5f3d9e576ed0f5.css" as="style" />
-        <link
-          rel="preload"
-          href="/fonts/your-main-font.woff2"
-          as="font"
-          type="font/woff2"
-        />
-      </Head>
-
+      <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
       <div className="sticky mt-1 top-0 z-10 bg-white">
-        <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
         <MobileHostelworldLanding onSearch={handleSearch} />
         <Suspense fallback={<AmenitiesSliderLoader />}>
           <CenteredFeatureSlider />
