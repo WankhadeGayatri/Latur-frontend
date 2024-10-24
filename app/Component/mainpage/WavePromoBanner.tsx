@@ -1,11 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-interface WavePromoBannerProps {
-  text: string;
-}
+// interface WavePromoBannerProps {
+//   text: string;
+// }
 
-const WavePromoBanner: React.FC<WavePromoBannerProps> = ({ text }) => {
+const WavePromoBanner: React.FC = () => {
+  const text =
+    "Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!";
   return (
     <div
       className="relative w-full overflow-hidden bg-gradient-to-r from-sky-400 to-sky-500 rounded-3xl"
