@@ -600,8 +600,9 @@ const HomePage: React.FC = () => {
           type="font/woff2"
         />
       </Head>
-      <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
+
       <div className="sticky mt-1 top-0 z-10 bg-white">
+        <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
         <MobileHostelworldLanding onSearch={handleSearch} />
         <Suspense fallback={<AmenitiesSliderLoader />}>
           <CenteredFeatureSlider />
