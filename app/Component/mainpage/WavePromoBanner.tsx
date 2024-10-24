@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-// interface WavePromoBannerProps {
-//   text: string;
-// }
+interface WavePromoBannerProps {
+  text: string;
+}
 
-const WavePromoBanner: React.FC = () => {
+const WavePromoBanner: React.FC<WavePromoBannerProps> = () => {
   const text =
     "Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!";
   return (
