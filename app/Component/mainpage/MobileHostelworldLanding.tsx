@@ -57,7 +57,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
     <div className="flex flex-col w-full">
       <div className="w-full relative overflow-hidden rounded-[20px] sm:rounded-[30px] md:rounded-[40px] lg:rounded-[50px]">
         <Image
-          src="/Images/HomePage/pgImage.jpeg"
+          src="/Images/HomePage/pgImage.jpg"
           alt="Hostel"
           width={1500}
           height={1000}

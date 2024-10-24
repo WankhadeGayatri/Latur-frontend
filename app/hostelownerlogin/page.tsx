@@ -303,8 +303,8 @@ const HostelOwnerAuth = () => {
 
   const handleOAuthLogin = (provider: string) => {
     const baseUrl = `${API_BASE_URL}`;
-    console.log("Redirecting with roleId:", hostelOwnerRoleId);
-    window.location.href = `${baseUrl}/api/auth/${provider}?roleId=${hostelOwnerRoleId}`;
+
+    window.location.href = `${baseUrl}/api/auth/owner/${provider}`;
   };
 
   const toggleForm = () => {
@@ -882,9 +882,12 @@ const EnhancedLoginForm: React.FC<{
     setResetMessage("");
 
     try {
-      await axios.post("http://localhost:5000/api/auth/reset-password", {
-        email: resetEmail.toLowerCase(),
-      });
+      await axios.post(
+        "http://localhost:5000/api/auth/student/reset-password",
+        {
+          email: resetEmail.toLowerCase(),
+        }
+      );
       setResetMessage(
         "If an account with that email exists, a password reset link has been sent."
       );

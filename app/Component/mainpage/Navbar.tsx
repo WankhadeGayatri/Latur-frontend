@@ -20,6 +20,9 @@ import dynamic from "next/dynamic";
 const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
   ssr: false,
 });
+const CloseIcon = dynamic(() => import("@mui/icons-material/Close"), {
+  ssr: false,
+});
 const MemoizedMenuIcon = React.memo(MenuIcon);
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
@@ -88,9 +91,11 @@ const Navbar: React.FC = React.memo(() => {
       clearInterval(blinkInterval);
     };
   }, []);
+
   const handleMobileMenuToggle = useCallback(() => {
     setMobileMenuOpen((prevState) => !prevState);
   }, []);
+
   const handleMobileMenuClose = () => setMobileMenuOpen(false);
   const handleAuthModalOpen = () => setAuthModalOpen(true);
   const handleAuthModalClose = () => setAuthModalOpen(false);
@@ -99,6 +104,7 @@ const Navbar: React.FC = React.memo(() => {
     handleAuthModalClose();
     router.push(action === "signin" ? "/login" : "/register");
   };
+
   const handleLogoClick = useCallback(() => {
     router.push("/");
   }, [router]);
@@ -138,6 +144,7 @@ const Navbar: React.FC = React.memo(() => {
             Latur Hostel
           </Typography>
         </motion.div>
+
         <Box className="flex items-center">
           {!isMobile && (
             <motion.div
@@ -194,7 +201,7 @@ const Navbar: React.FC = React.memo(() => {
                   </Box>
                 </Box>
               </motion.div>
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <motion.div
                   key={item.text}
                   whileHover={{ scale: 1.1 }}
@@ -214,18 +221,15 @@ const Navbar: React.FC = React.memo(() => {
 
           {isMobile ? (
             <CustomButton
-              onClick={isMobile ? handleMobileMenuToggle : handleAuthModalOpen}
+              onClick={handleMobileMenuToggle}
               isMobile={isMobile}
               className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
-              ariaLabel={
-                isMobile ? "Toggle mobile menu" : "Open authentication modal"
-              }
+              ariaLabel="Toggle mobile menu"
             />
-          ) : (
-            ""
-          )}
+          ) : null}
         </Box>
       </Toolbar>
+
       <Drawer
         anchor="right"
         open={mobileMenuOpen}
@@ -234,66 +238,70 @@ const Navbar: React.FC = React.memo(() => {
           "& .MuiDrawer-paper": { width: "250px", bgcolor: "rgb(240 249 255)" },
         }}
       >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
+          <IconButton onClick={handleMobileMenuClose}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <List>
-          {navItems.map((item, index) => (
+          <ListItem>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#ffe5e5",
+                padding: "10px 16px",
+                borderRadius: "24px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                cursor: "pointer",
+                marginBottom: "16px",
+                "&:hover": {
+                  backgroundColor: "#ffd6d6",
+                  transform: "scale(1.05)",
+                  transition: "all 0.3s ease-in-out",
+                },
+              }}
+              onClick={() => router.push("/hostelownerlogin")}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#d32f2f",
+                  fontWeight: "bold",
+                  marginRight: "12px",
+                  fontSize: "0.700rem",
+                  fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+                }}
+              >
+                Are you hostel owner?
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <motion.div
+                  animate={{
+                    opacity: isBlinking ? 1 : 0.5,
+                    scale: isBlinking ? 1.1 : 1,
+                  }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Hand size={20} color="#d32f2f" />
+                </motion.div>
+              </Box>
+            </Box>
+          </ListItem>
+          {navItems.map((item) => (
             <ListItem
               button
-              key={index}
+              key={item.text}
               onClick={() => {
                 router.push(item.path);
                 handleMobileMenuClose();
               }}
-              className="hover:bg-sky-200 transition-colors duration-300"
             >
-              <ListItemText
-                primary={item.text}
-                className="text-sky-700"
-                primaryTypographyProps={{
-                  sx: { fontFamily: "'Poppins', sans-serif" },
-                }}
-              />
+              <ListItemText primary={item.text} />
             </ListItem>
           ))}
         </List>
       </Drawer>
-
-      <Modal
-        open={authModalOpen}
-        onClose={handleAuthModalClose}
-        closeAfterTransition
-      >
-        <Fade in={authModalOpen}>
-          <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 bg-white shadow-lg rounded-lg p-6">
-            <Typography
-              variant="h6"
-              component="h2"
-              gutterBottom
-              className="text-sky-700 mb-4"
-              sx={{ fontFamily: "'Poppins', sans-serif" }}
-            >
-              Sign In or Sign Up
-            </Typography>
-            <Box className="flex flex-col space-y-3">
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => handleAuthAction("signin")}
-                className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
-              >
-                Sign In
-              </Button>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => handleAuthAction("signup")}
-                className="border-sky-500 text-sky-500 hover:bg-sky-50 transition-colors duration-300"
-              >
-                Sign Up
-              </Button>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
     </AppBar>
   );
 });

@@ -194,50 +194,6 @@ const HomePage: React.FC = () => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
-  const images: GalleryImage[] = [
-    {
-      src: "/Images/Safe&Comfort.jpg",
-      alt: "Hostel Exterior",
-      title: "Modern Hostel Building",
-      description:
-        "Our state-of-the-art hostel facility with comfortable accommodations for students.",
-    },
-    {
-      src: "/Images/MainRoom.jpg",
-      alt: "Clean Room",
-      title: "Spotless Living Spaces",
-      description:
-        "We maintain the highest standards of cleanliness and hygiene in all our rooms.",
-    },
-    {
-      src: "/Images/Liabrary.jpg",
-      alt: "Cleaning Supplies",
-      title: "Well-Equipped for Cleanliness",
-      description:
-        "All necessary cleaning supplies are provided to maintain a healthy living environment.",
-    },
-    {
-      src: "/Images/spacious.jpg",
-      alt: "Common Area",
-      title: "Vibrant Common Spaces",
-      description:
-        "Our common areas are designed to foster community and collaboration among residents.",
-    },
-    {
-      src: "/Images/Successful.jpg",
-      alt: "Student Group",
-      title: "Diverse Student Community",
-      description:
-        "Join a diverse and friendly community of students from various backgrounds.",
-    },
-    {
-      src: "/Images/Bedroom.jpg",
-      alt: "Spacious Room",
-      title: "Roomy Accommodations",
-      description:
-        "Enjoy spacious rooms that provide comfort and privacy for your studies and relaxation.",
-    },
-  ];
   const sliderItems = [
     {
       src: "/Images/HomePage/Hostel.webp",
@@ -247,63 +203,63 @@ const HomePage: React.FC = () => {
       rating: 4.5,
     },
     {
-      src: "/Images/HomePage/Hostel2.webp",
+      src: "/Images/HomePage/Hostel2.jpg",
       alt: "Hostel 2",
       name: "Prime 13",
       price: 4999,
       rating: 4.2,
     },
     {
-      src: "/Images/HomePage/Hostel2.webp",
+      src: "/Images/HomePage/Hostel2.jpg",
       alt: "Hostel 3",
       name: "Heros Room",
       price: 9999,
       rating: 4.1,
     },
     {
-      src: "/Images/HomePage/Hostel3.webp",
+      src: "/Images/HomePage/Hostel3.jpg",
       alt: "Hostel 4",
       name: "Kaveri Nest",
       price: 8999,
       rating: 4.4,
     },
     {
-      src: "/Images/HomePage/Hostel4.webp",
+      src: "/Images/HomePage/Hostel4.jpg",
       alt: "Hostel 5",
       name: "Aspiration",
       price: 7999,
       rating: 4.3,
     },
     {
-      src: "/Images/HomePage/Hostel5.webp",
+      src: "/Images/HomePage/Hostel5.jpg",
       alt: "Hostel 6",
       name: "Inspiration",
       price: 4999,
       rating: 4.2,
     },
     {
-      src: "/Images/HomePage/Hostel6.webp",
+      src: "/Images/HomePage/Hostel6.jpg",
       alt: "Hostel 7",
       name: "Ram Ratan",
       price: 8999,
       rating: 4.0,
     },
     {
-      src: "/Images/HomePage/Hostel7.webp",
+      src: "/Images/HomePage/Hostel7.jpg",
       alt: "Hostel 8",
       name: "Geeta Hostel",
       price: 1999,
       rating: 3.5,
     },
     {
-      src: "/Images/HomePage/Hostel8.webp",
+      src: "/Images/HomePage/Hostel8.jpg",
       alt: "Hostel 8",
       name: "Left Wing",
       price: 3999,
       rating: 3.8,
     },
     {
-      src: "/Images/HomePage/Hostel3.webp",
+      src: "/Images/HomePage/Hostel3.jpg",
       alt: "Hostel 9",
       name: "Stay Stree",
       price: 4999,
@@ -768,9 +724,9 @@ const HomePage: React.FC = () => {
           </div>
 
           {/* Right side with ContactPage */}
-          <div className="w-full lg:w-2/5 lg:pl-8">
+          {/* <div className="w-full lg:w-2/5 lg:pl-8">
             <ContactPage />
-          </div>
+          </div> */}
         </div>
       </div>
 

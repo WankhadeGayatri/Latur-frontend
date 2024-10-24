@@ -253,7 +253,7 @@ const HostelOwnerDashboard: React.FC = () => {
 
     try {
       await axios.post(
-        `${API_BASE_URL}/api/auth/reset-password`,
+        `${API_BASE_URL}/api/auth/owner/reset-password`,
         {
           email: profileData.email,
           otp,
@@ -345,7 +345,7 @@ const HostelOwnerDashboard: React.FC = () => {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
-      await axios.post(`${API_BASE_URL}/api/auth/logout`, {}, config);
+      await axios.post(`${API_BASE_URL}/api/auth/owner/logout`, {}, config);
     } catch (error) {
       console.error("Error logging out:", error);
     }
