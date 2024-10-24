@@ -705,7 +705,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       )}
-      <div
+      {/* <div
         className="container mx-auto px-4 py-8 sm:px-6 lg:px-8"
         style={{
           background: "linear-gradient(to right, #48cae4, #0077b6)",
@@ -713,7 +713,6 @@ const HomePage: React.FC = () => {
         }}
       >
         <div className="flex flex-col lg:flex-row lg:gap-0">
-          {/* Left side with CanvaGifEmbed */}
           <div className="w-full lg:w-3/5 mb-8 lg:mb-0">
             <div className="aspect-w-16 aspect-h-9 h-full max-h-[500px]">
               <CanvaGifEmbed
@@ -723,12 +722,11 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side with ContactPage */}
-          {/* <div className="w-full lg:w-2/5 lg:pl-8">
+          <div className="w-full lg:w-2/5 lg:pl-8">
             <ContactPage />
-          </div> */}
+          </div>
         </div>
-      </div>
+      </div> */}
 
       <main className="container  mt-10 mx-auto p-4" ref={galleryRef}>
         <h1 className="text-2xl font-bold mb-4">Our Hostel Gallery</h1>

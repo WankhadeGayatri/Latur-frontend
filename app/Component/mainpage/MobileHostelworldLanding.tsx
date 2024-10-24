@@ -20,36 +20,31 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
       text: "No Hidden Charges, No brokrage",
       top: "2%",
       right: "76%",
-      image:
-        "https://th.bing.com/th/id/OIP.iIbP2rsIbLyfl_5eWsmujAHaHZ?w=189&h=188&c=7&r=0&o=5&dpr=1.8&pid=1.7",
+      image: "/Images/HomePage/BubbleNoCharges.webp",
     },
     {
       text: "Boys or Girls? we have space for both",
       top: "70%",
       right: "42%",
-      image:
-        "https://th.bing.com/th/id/OIP.3r5uDK83AGZ2ryeS5NRfUgHaGZ?w=217&h=188&c=7&r=0&o=5&dpr=1.8&pid=1.7",
+      image: "/Images/HomePage/BubbleStudent.webp",
     },
     {
       text: "Hygienic Place & Healthy Food",
       top: "60%",
       right: "70%",
-      image:
-        "https://th.bing.com/th/id/OIP.W0PJ0zn_BW6kcVKJOr00bQHaFj?w=225&h=180&c=7&r=0&o=5&dpr=1.8&pid=1.7",
+      image: "/Images/HomePage/BubbleHygine.webp",
     },
     {
       text: "No Middleman Involved",
       top: "2%",
       right: "40%",
-      image:
-        "https://th.bing.com/th/id/OIP.LQeXpyd11crsmssNtX-FOgHaGH?pid=ImgDet&w=174&h=143&c=7&dpr=1.8",
+      image: "/Images/HomePage/BubbleCommunity.webp",
     },
     {
       text: "24*7 Security",
       top: "40%",
       right: "40%",
-      image:
-        "https://img.freepik.com/free-photo/cctv-security-camera-ceiling_53876-121710.jpg?ga=GA1.1.1137778448.1728285770&semt=ais_hybrid",
+      image: "/Images/HomePage/BubbleCamera.webp",
     },
   ];
 
