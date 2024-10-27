@@ -22,9 +22,26 @@ interface NewUser {
 }
 
 interface Role {
-  id: string;
+  _id: string;
   name: string;
   description: string;
+  __v: number;
+  users: {
+    students: number;
+    owners: number;
+    total: number;
+  };
+  permissions: number;
+  isSystemRole: boolean;
+  canDelete: boolean;
+}
+interface RoleResponse {
+  roles: Role[];
+  summary: {
+    totalRoles: number;
+    systemRoles: number;
+    customRoles: number;
+  };
 }
 
 interface ApiResponse {
@@ -70,11 +87,11 @@ const Users: React.FC = () => {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
-      const response: AxiosResponse<Role[]> = await axios.get(
+      const response: AxiosResponse<RoleResponse> = await axios.get(
         `${API_BASE_URL}/api/admin/getroles`,
         config
       );
-      setRoles(response.data);
+      setRoles(response.data.roles);
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
@@ -387,7 +404,7 @@ const Users: React.FC = () => {
                 >
                   <option value="">Select Role</option>
                   {roles.map((role) => (
-                    <option key={role.id} value={role.name}>
+                    <option key={role._id} value={role.name}>
                       {role.name}
                     </option>
                   ))}

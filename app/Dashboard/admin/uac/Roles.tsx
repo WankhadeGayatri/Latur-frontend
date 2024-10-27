@@ -4,23 +4,7 @@ import { CheckSquare, Square, Edit, Trash2, Plus, Minus } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "@/config/api";
 
-interface Group {
-  _id: string;
-  moduleId: string;
-  moduleName: string;
-  name: string;
-  dateModified: string;
-  roles: string[];
-}
-
-interface Role {
-  name: string;
-  groups: Group[];
-  permissions: {
-    [key: string]: Permission[];
-  };
-}
-
+// Enhanced TypeScript interfaces
 interface Permission {
   _id: string;
   moduleId: string;
@@ -30,27 +14,103 @@ interface Permission {
   write: boolean;
   edit: boolean;
   delete: boolean;
+  role?: string;
 }
 
+interface Group {
+  _id: string;
+  moduleId: string;
+  moduleName: string;
+  name: string;
+  dateModified: string;
+  roles: string[];
+}
+
+interface RoleData {
+  name: string;
+  groups: Group[];
+  permissions: {
+    [key: string]: Permission[];
+  };
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+}
+
+interface PermissionResponse {
+  success: boolean;
+  data: {
+    role: string;
+    roleId: string;
+    permissions: {
+      [moduleName: string]: Permission[];
+    };
+    summary: {
+      totalModules: number;
+      totalPermissions: number;
+    };
+  };
+}
+
+// API service
+const api = {
+  getAuthConfig: () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  }),
+
+  async get<T>(url: string): Promise<T> {
+    try {
+      const response = await axios.get<T>(url, this.getAuthConfig());
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  async post<T>(url: string, data: any): Promise<T> {
+    try {
+      const response = await axios.post<T>(url, data, this.getAuthConfig());
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  async put<T>(url: string, data: any): Promise<T> {
+    try {
+      const response = await axios.put<T>(url, data, this.getAuthConfig());
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  handleError(error: any): Error {
+    const message = error.response?.data?.message || "An error occurred";
+    console.error("API Error:", error);
+    return new Error(message);
+  },
+};
+
 const Roles: React.FC = () => {
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // State with proper typing
+  const [roles, setRoles] = useState<RoleData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [selectedGroups, setSelectedGroups] = useState<{
-    [key: string]: string[];
-  }>({});
-  const [showAddGroupModal, setShowAddGroupModal] = useState<boolean>(false);
-  const [showRemoveGroupModal, setShowRemoveGroupModal] =
-    useState<boolean>(false);
   const [currentRole, setCurrentRole] = useState<string | null>(null);
-  const [showAddRoleModal, setShowAddRoleModal] = useState<boolean>(false);
-  const [newRoleName, setNewRoleName] = useState<string>("");
-  const [newRoleDescription, setNewRoleDescription] = useState<string>("");
-  const [showDeleteRoleModal, setShowDeleteRoleModal] =
-    useState<boolean>(false);
-  const [roleToDelete, setRoleToDelete] = useState<string>("");
+  const [showAddGroupModal, setShowAddGroupModal] = useState(false);
+  const [showRemoveGroupModal, setShowRemoveGroupModal] = useState(false);
+  const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [showDeleteRoleModal, setShowDeleteRoleModal] = useState(false);
+  const [newRoleName, setNewRoleName] = useState("");
+  const [newRoleDescription, setNewRoleDescription] = useState("");
+  const [roleToDelete, setRoleToDelete] = useState("");
 
+  // Fetch data on component mount
   useEffect(() => {
     fetchRolesAndGroups();
   }, []);
@@ -59,57 +119,151 @@ const Roles: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get<Group[]>(
-        `${API_BASE_URL}/api/admin/groups`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      // Fetch groups
+      const groups = await api.get<Group[]>(`${API_BASE_URL}/api/admin/groups`);
 
-      // Group the groups by role
-      const groupedRoles = response.data.reduce((acc: Role[], group) => {
+      // Group by role
+      const groupedRoles = groups.reduce((acc: RoleData[], group) => {
         group.roles.forEach((roleName) => {
-          const roleIndex = acc.findIndex((r) => r.name === roleName);
-          if (roleIndex === -1) {
+          const existingRole = acc.find((r) => r.name === roleName);
+          if (existingRole) {
+            existingRole.groups.push(group);
+          } else {
             acc.push({
               name: roleName,
               groups: [group],
               permissions: {},
             });
-          } else {
-            acc[roleIndex].groups.push(group);
           }
         });
         return acc;
       }, []);
 
       // Fetch permissions for each role
-      const promises = groupedRoles.map(async (role) => {
-        try {
-          const permissionsResponse = await axios.get(
-            `${API_BASE_URL}/api/admin/permissions/${role.name}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          role.permissions = permissionsResponse.data.permissions;
-        } catch (error) {
-          console.error(
-            `Error fetching permissions for role ${role.name}:`,
-            error
-          );
-        }
-        return role;
-      });
+      const rolesWithPermissions = await Promise.all(
+        groupedRoles.map(async (role) => {
+          try {
+            const response = await api.get<PermissionResponse>(
+              `${API_BASE_URL}/api/admin/permissions/${role.name}`
+            );
+            return {
+              ...role,
+              permissions: response.data.permissions,
+            };
+          } catch (error) {
+            console.error(
+              `Error fetching permissions for ${role.name}:`,
+              error
+            );
+            return role;
+          }
+        })
+      );
 
-      const updatedRoles = await Promise.all(promises);
-      setRoles(updatedRoles);
+      setRoles(rolesWithPermissions);
     } catch (error) {
-      console.error("Error fetching roles and groups:", error);
-      setError("Failed to fetch roles and groups. Please try again.");
+      const err = error as Error;
+      setError(err.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updatePermission = async (
+    roleName: string,
+    permissionId: string,
+    field: keyof Permission,
+    value: boolean
+  ) => {
+    try {
+      if (roleName === "admin") {
+        throw new Error("Cannot update permissions for admin role");
+      }
+
+      // Optimistic update
+      setRoles((prevRoles) =>
+        prevRoles.map((role) => {
+          if (role.name === roleName) {
+            const updatedPermissions = { ...role.permissions };
+            for (const [moduleName, perms] of Object.entries(
+              updatedPermissions
+            )) {
+              const permIndex = perms.findIndex((p) => p._id === permissionId);
+              if (permIndex !== -1) {
+                updatedPermissions[moduleName][permIndex] = {
+                  ...updatedPermissions[moduleName][permIndex],
+                  [field]: value,
+                };
+                break;
+              }
+            }
+            return { ...role, permissions: updatedPermissions };
+          }
+          return role;
+        })
+      );
+
+      // Server update
+      await api.put(`${API_BASE_URL}/api/admin/update-role-permissions`, {
+        role: roleName,
+        permissionId,
+        update: { [field]: value },
+      });
+    } catch (error) {
+      const err = error as Error;
+      console.error("Error updating permission:", err);
+      alert(err.message);
+      // Revert changes on error
+      await fetchRolesAndGroups();
+    }
+  };
+
+  const removeGroupFromRole = async (
+    roleName: string,
+    permissionId: string
+  ) => {
+    try {
+      await api.post(`${API_BASE_URL}/api/admin/remove-permission-from-role`, {
+        role: roleName,
+        permissionId,
+      });
+
+      // Optimistic update
+      setRoles((prevRoles) =>
+        prevRoles.map((role) => {
+          if (role.name === roleName) {
+            const updatedPermissions = Object.fromEntries(
+              Object.entries(role.permissions).map(([moduleName, perms]) => [
+                moduleName,
+                perms.filter((p) => p._id !== permissionId),
+              ])
+            );
+            return { ...role, permissions: updatedPermissions };
+          }
+          return role;
+        })
+      );
+    } catch (error) {
+      const err = error as Error;
+      console.error("Error removing group from role:", err);
+      alert(err.message);
+      await fetchRolesAndGroups();
+    }
+  };
+
+  const assignGroupToRole = async (roleName: string, groupId: string) => {
+    try {
+      await api.post(`${API_BASE_URL}/api/admin/assign-group-to-role`, {
+        role: roleName,
+        groupIds: [groupId],
+      });
+
+      await fetchRolesAndGroups();
+      setShowAddGroupModal(false);
+    } catch (error) {
+      const err = error as Error;
+      console.error("Error assigning group to role:", err);
+      alert(err.message);
     }
   };
 
@@ -123,27 +277,6 @@ const Roles: React.FC = () => {
     setShowRemoveGroupModal(true);
   };
 
-  const assignGroupToRole = async (role: string, groupId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `${API_BASE_URL}/api/admin/assign-group-to-role`,
-        {
-          role: role,
-          groupIds: [groupId],
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      await fetchRolesAndGroups();
-      setShowAddGroupModal(false);
-    } catch (error) {
-      console.error("Error assigning group to role:", error);
-      alert("Failed to assign group to role. Please try again.");
-    }
-  };
   const handleAddRole = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -189,127 +322,6 @@ const Roles: React.FC = () => {
       }
       setShowDeleteRoleModal(false);
       setRoleToDelete("");
-    }
-  };
-
-  const removeGroupFromRole = async (role: string, groupId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      // Send the delete request to the server
-      await axios.post(
-        `${API_BASE_URL}/api/admin/remove-permission-from-role`,
-        {
-          role: role, // This is already a string, so no change needed here
-          permissionId: groupId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // Optimistically update the UI (keep this part as it is)
-      setRoles((prevRoles) =>
-        prevRoles.map((r) => {
-          if (r.name === role) {
-            const updatedPermissions = Object.fromEntries(
-              Object.entries(r.permissions).map(([moduleName, perms]) => [
-                moduleName,
-                perms.filter((p) => p._id !== groupId),
-              ])
-            );
-            return { ...r, permissions: updatedPermissions };
-          }
-          return r;
-        })
-      );
-
-      // You might want to call fetchRolesAndGroups() here to refresh the data
-    } catch (error) {
-      console.error("Error removing group from role:", error);
-      alert("Failed to remove group from role. Please try again.");
-      fetchRolesAndGroups();
-    }
-  };
-
-  const updatePermission = async (
-    role: string,
-    permissionId: string,
-    field: keyof Permission,
-    value: boolean
-  ) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      // Find the role
-      const roleObj = roles.find((r) => r.name === role);
-      if (!roleObj) {
-        throw new Error("Role not found");
-      }
-
-      // Find the permission
-      let permission: Permission | undefined;
-      let moduleName: string | undefined;
-
-      for (const [module, perms] of Object.entries(roleObj.permissions)) {
-        permission = perms.find((p) => p._id === permissionId);
-        if (permission) {
-          moduleName = module;
-          break;
-        }
-      }
-
-      if (!permission || !moduleName) {
-        throw new Error("Permission not found");
-      }
-
-      // Create an updated permission object
-      const updatedPermission = { ...permission, [field]: value };
-
-      // Optimistically update the UI
-      setRoles((prevRoles) =>
-        prevRoles.map((r) => {
-          if (r.name === role) {
-            const updatedPermissions = {
-              ...r.permissions,
-              [moduleName!]: r.permissions[moduleName!].map((p) =>
-                p._id === permissionId ? updatedPermission : p
-              ),
-            };
-            return { ...r, permissions: updatedPermissions };
-          }
-          return r;
-        })
-      );
-
-      // Send the update to the server
-      const response = await axios.put(
-        `${API_BASE_URL}/api/admin/update-role-permissions`,
-        {
-          role: role,
-          permissionId: permissionId,
-          update: { [field]: value },
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data.updatedPermission) {
-        // Update was successful, no need to do anything as we've already updated the UI optimistically
-        console.log(
-          "Permission updated successfully:",
-          response.data.updatedPermission
-        );
-      } else {
-        throw new Error("Updated permission not returned from server");
-      }
-    } catch (error) {
-      console.error("Error updating permissions:", error);
-
-      fetchRolesAndGroups();
-
-      alert("Failed to update permission. Please try again.");
     }
   };
 

@@ -10,6 +10,30 @@ import IconButton from "@mui/material/IconButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { API_BASE_URL } from "@/config/api";
 
+interface Role {
+  _id: string;
+  name: string;
+  description: string;
+  __v: number;
+  users: {
+    students: number;
+    owners: number;
+    total: number;
+  };
+  permissions: number;
+  isSystemRole: boolean;
+  canDelete: boolean;
+}
+
+interface RoleResponse {
+  roles: Role[];
+  summary: {
+    totalRoles: number;
+    systemRoles: number;
+    customRoles: number;
+  };
+}
+
 interface Group {
   _id: string;
   name: string;
@@ -25,20 +49,16 @@ interface NewGroup {
   roleIds: string[];
 }
 
-interface Role {
-  _id: string;
-  name: string;
-  description: string;
+interface ApiResponse<T> {
+  message: string;
+  data?: T;
+  error?: string;
 }
 
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#87CEEB", // Sky blue
-    },
-    background: {
-      default: "#FFFFFF", // White
-    },
+    primary: { main: "#87CEEB" },
+    background: { default: "#FFFFFF" },
   },
 });
 
@@ -56,21 +76,16 @@ const style = {
 };
 
 const Groups: React.FC = () => {
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [newGroup, setNewGroup] = useState<NewGroup>({
     moduleId: "",
     moduleName: "",
     roleIds: [],
   });
-
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
-  const [editingGroup, setEditingGroup] = useState<Group | null>(null);
-
-  useEffect(() => {
-    fetchGroups();
-    fetchRoles();
-  }, []);
 
   const fetchGroups = async (): Promise<void> => {
     try {
@@ -83,7 +98,10 @@ const Groups: React.FC = () => {
         config
       );
       setGroups(response.data);
-    } catch (error) {
+      setError(null);
+    } catch (err) {
+      const error = err as AxiosError;
+      setError(error.response?.data?.message || "Error fetching groups");
       console.error("Error fetching groups:", error);
     }
   };
@@ -94,34 +112,41 @@ const Groups: React.FC = () => {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
-      const response = await axios.get<Role[]>(
+      const response = await axios.get<RoleResponse>(
         `${API_BASE_URL}/api/admin/getroles`,
         config
       );
-      console.log("Fetched roles:", response.data);
-      setRoles(response.data);
-    } catch (error) {
+      setRoles(response.data.roles);
+      setError(null);
+    } catch (err) {
+      const error = err as AxiosError;
+      setError(error.response?.data?.message || "Error fetching roles");
       console.error("Error fetching roles:", error);
     }
   };
 
+  useEffect(() => {
+    fetchGroups();
+    fetchRoles();
+  }, []);
+
   const handleOpen = (): void => setOpen(true);
+
   const handleClose = (): void => {
     setOpen(false);
     setEditingGroup(null);
     setNewGroup({ moduleId: "", moduleName: "", roleIds: [] });
+    setError(null);
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = (
+    e: ChangeEvent<{ name?: string; value: unknown }>
+  ): void => {
     const { name, value } = e.target;
     if (name === "roleIds") {
-      const selectedRoles = Array.isArray(value) ? value : [value];
-      const validRoles = selectedRoles.filter(
-        (role) => role && role.trim() !== ""
-      );
-      setNewGroup({ ...newGroup, [name]: validRoles });
+      setNewGroup((prev) => ({ ...prev, roleIds: value as string[] }));
     } else {
-      setNewGroup({ ...newGroup, [name]: value });
+      setNewGroup((prev) => ({ ...prev, [name as string]: value as string }));
     }
   };
 
@@ -133,35 +158,24 @@ const Groups: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const validRoleIds = newGroup.roleIds.filter(
-        (id) => id && id.trim() !== ""
-      );
-
-      const dataToSend = {
-        ...newGroup,
-        roleIds: validRoleIds,
-      };
-
       if (editingGroup) {
         await axios.put(
-          `${API_BASE_URL}/api/admin/groups/${editingGroup._id}`,
-          dataToSend,
+          `${API_BASE_URL}/api/admin/groups`,
+          {
+            id: editingGroup._id,
+            ...newGroup,
+          },
           config
         );
       } else {
-        await axios.post(
-          "${API_BASE_URL}/api/admin/groups",
-          dataToSend,
-          config
-        );
+        await axios.post(`${API_BASE_URL}/api/admin/groups`, newGroup, config);
       }
       fetchGroups();
       handleClose();
-    } catch (error) {
-      console.error("Error adding/updating group:", error);
-      if (axios.isAxiosError(error) && error.response) {
-        console.log("Server response:", error.response.data);
-      }
+    } catch (err) {
+      const error = err as AxiosError;
+      setError(error.response?.data?.message || "Error saving group");
+      console.error("Error saving group:", error);
     }
   };
 
@@ -176,26 +190,23 @@ const Groups: React.FC = () => {
   };
 
   const handleDelete = async (id: string): Promise<void> => {
-    if (window.confirm("Are you sure you want to delete this group?")) {
-      try {
-        const token = localStorage.getItem("token");
-        const config = {
-          headers: { Authorization: `Bearer ${token}` },
-        };
-        await axios.delete(
-          `${API_BASE_URL}/api/admin/groups/${id}`,
-          config
-        );
-        fetchGroups();
-      } catch (error) {
-        console.error("Error deleting group:", error);
-      }
+    if (!window.confirm("Are you sure you want to delete this group?")) return;
+
+    try {
+      await api.deleteGroup(id);
+      await fetchGroups();
+      setError(null);
+    } catch (err) {
+      const error = err as AxiosError;
+      setError(error.response?.data?.message || "Error deleting group");
+      console.error("Error deleting group:", error);
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <div className="bg-white text-gray-800 p-4 sm:p-6 rounded-lg shadow-md">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0 text-sky-500">
             Groups
@@ -209,6 +220,13 @@ const Groups: React.FC = () => {
             Create
           </Button>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {error}
+          </div>
+        )}
 
         {/* Table view for larger screens */}
         <div className="hidden sm:block overflow-x-auto">
@@ -224,7 +242,7 @@ const Groups: React.FC = () => {
                 <th className="border border-sky-200 p-4 text-left">
                   Module Name
                 </th>
-                <th className="border border-sky-200 p-4 text-left">Role</th>
+                <th className="border border-sky-200 p-4 text-left">Roles</th>
                 <th className="border border-sky-200 p-4 text-left">
                   Date Modified
                 </th>
@@ -246,15 +264,9 @@ const Groups: React.FC = () => {
                   <td className="border border-sky-100 p-4">
                     {group.moduleName}
                   </td>
-                  <div className="mb-2">
-                    <td>
-                      {Array.isArray(group.roles)
-                        ? group.roles.join(", ")
-                        : typeof group.roles === "string"
-                        ? group.roles
-                        : "No roles specified"}
-                    </td>
-                  </div>
+                  <td className="border border-sky-100 p-4">
+                    {group.roles.map((role) => role).join(", ")}
+                  </td>
                   <td className="border border-sky-100 p-4">
                     {new Date(group.dateModified).toLocaleDateString()}
                   </td>
@@ -294,11 +306,8 @@ const Groups: React.FC = () => {
                 {group.moduleName}
               </div>
               <div className="mb-2">
-                {Array.isArray(group.roles)
-                  ? group.roles.join(", ")
-                  : typeof group.roles === "string"
-                  ? group.roles
-                  : "No roles specified"}
+                <span className="font-semibold">Roles:</span>{" "}
+                {group.roles.map((role) => role).join(", ")}
               </div>
               <div className="mb-2">
                 <span className="font-semibold">Date Modified:</span>{" "}
@@ -319,6 +328,7 @@ const Groups: React.FC = () => {
           ))}
         </div>
 
+        {/* Modal */}
         <Modal
           open={open}
           onClose={handleClose}
@@ -364,14 +374,13 @@ const Groups: React.FC = () => {
                 }}
                 required
               >
-                {roles
-                  .filter((role) => role && role._id)
-                  .map((role) => (
-                    <MenuItem key={role._id} value={role._id}>
-                      {role.name}
-                    </MenuItem>
-                  ))}
+                {roles.map((role) => (
+                  <MenuItem key={role._id} value={role._id}>
+                    {role.name}
+                  </MenuItem>
+                ))}
               </TextField>
+
               <div className="flex flex-col sm:flex-row justify-end mt-4">
                 <Button
                   type="submit"
