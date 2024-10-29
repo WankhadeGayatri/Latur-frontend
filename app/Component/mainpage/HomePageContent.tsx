@@ -34,22 +34,19 @@ import {
   Sun,
   Utensils,
 } from "lucide-react";
-import Lottie from "lottie-react";
-import wait from "../../../public/wait.json";
-import { Facebook, Instagram } from "@mui/icons-material";
+
 import Image from "next/image";
-import ContactPage from "./ContactPage";
-import ImageGallery from "./ImageGallary";
 
 import MobileApp from "./MobileApp";
 
 import Footer from "./Footer";
 import WavePromoBanner from "./WavePromoBanner";
-import CanvaGifEmbed from "./CanvaGifEmbed";
+
 import MobileHostelworldLanding from "./MobileHostelworldLanding";
-import HostelGallery from "./HostelGallery";
+
 import dynamic from "next/dynamic";
 import CoverflowSlider from "./CoverflowSlider";
+import InfiniteCardCarousel from "./InfiniteCardCarousel";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -730,17 +727,17 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div> */}
-      <main className="container mx-auto px-4 mt-10">
-        <div className="flex flex-col items-center space-y-8">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
-            Our Hostel Gallery
-            <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
-          </h1>
-          <div className="w-full">
-            <CoverflowSlider items={sliderItems} />
-          </div>
+
+      <div className="flex flex-col items-center space-y-8">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
+          Our Hostel Gallery
+          <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
+        </h1>
+        <div className="w-full">
+          <InfiniteCardCarousel items={sliderItems} />
         </div>
-      </main>
+      </div>
+
       <Footer />
     </>
   );
