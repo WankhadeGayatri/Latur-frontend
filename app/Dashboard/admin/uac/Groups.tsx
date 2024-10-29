@@ -101,7 +101,7 @@ const Groups: React.FC = () => {
       setError(null);
     } catch (err) {
       const error = err as AxiosError;
-      setError(error.response?.data?.message || "Error fetching groups");
+
       console.error("Error fetching groups:", error);
     }
   };
@@ -120,7 +120,7 @@ const Groups: React.FC = () => {
       setError(null);
     } catch (err) {
       const error = err as AxiosError;
-      setError(error.response?.data?.message || "Error fetching roles");
+
       console.error("Error fetching roles:", error);
     }
   };
@@ -174,7 +174,7 @@ const Groups: React.FC = () => {
       handleClose();
     } catch (err) {
       const error = err as AxiosError;
-      setError(error.response?.data?.message || "Error saving group");
+
       console.error("Error saving group:", error);
     }
   };
@@ -193,12 +193,19 @@ const Groups: React.FC = () => {
     if (!window.confirm("Are you sure you want to delete this group?")) return;
 
     try {
-      await api.deleteGroup(id);
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/api/admin/groups/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       await fetchGroups();
       setError(null);
     } catch (err) {
       const error = err as AxiosError;
-      setError(error.response?.data?.message || "Error deleting group");
+
       console.error("Error deleting group:", error);
     }
   };

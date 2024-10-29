@@ -281,7 +281,7 @@ const PrimeFeatures = () => {
 };
 
 const HostelOwnerAuth = () => {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [hostelOwnerRoleId, setHostelOwnerRoleId] = useState<string>("");
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 

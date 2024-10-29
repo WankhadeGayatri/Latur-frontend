@@ -196,74 +196,75 @@ const HomePage: React.FC = () => {
 
   const sliderItems = [
     {
-      src: "/Images/HomePage/Hostel.webp",
+      src: "/Images/HomePage/Hostel9.avif",
       alt: "Hostel 1",
       name: "Unicorn",
       price: 3000,
       rating: 4.5,
     },
     {
-      src: "/Images/HomePage/Hostel2.jpg",
+      src: "/Images/HomePage/Hostel2.avif",
       alt: "Hostel 2",
       name: "Prime 13",
       price: 4999,
       rating: 4.2,
     },
     {
-      src: "/Images/HomePage/Hostel2.jpg",
+      src: "/Images/HomePage/Hostel2.avif",
       alt: "Hostel 3",
       name: "Heros Room",
       price: 9999,
       rating: 4.1,
     },
     {
-      src: "/Images/HomePage/Hostel3.jpg",
+      src: "/Images/HomePage/Hostel3.avif",
       alt: "Hostel 4",
       name: "Kaveri Nest",
       price: 8999,
       rating: 4.4,
     },
     {
-      src: "/Images/HomePage/Hostel4.jpg",
+      src: "/Images/HomePage/Hostel4.avif",
       alt: "Hostel 5",
       name: "Aspiration",
       price: 7999,
       rating: 4.3,
     },
     {
-      src: "/Images/HomePage/Hostel5.jpg",
+      src: "/Images/HomePage/Hostel5.avif",
       alt: "Hostel 6",
       name: "Inspiration",
       price: 4999,
       rating: 4.2,
     },
     {
-      src: "/Images/HomePage/Hostel6.jpg",
+      src: "/Images/HomePage/Hostel8.avif",
       alt: "Hostel 7",
       name: "Ram Ratan",
       price: 8999,
       rating: 4.0,
     },
     {
-      src: "/Images/HomePage/Hostel7.jpg",
+      src: "/Images/HomePage/Hostel7.avif",
       alt: "Hostel 8",
       name: "Geeta Hostel",
       price: 1999,
       rating: 3.5,
     },
+
     {
-      src: "/Images/HomePage/Hostel8.jpg",
-      alt: "Hostel 8",
-      name: "Left Wing",
-      price: 3999,
-      rating: 3.8,
-    },
-    {
-      src: "/Images/HomePage/Hostel3.jpg",
+      src: "/Images/HomePage/Hostel3.avif",
       alt: "Hostel 9",
       name: "Stay Stree",
       price: 4999,
       rating: 4.0,
+    },
+    {
+      src: "/Images/HomePage/Hostel8.avif",
+      alt: "Hostel 8",
+      name: "Left Wing",
+      price: 3999,
+      rating: 3.8,
     },
     // Add more items as needed
   ];
@@ -730,8 +731,8 @@ const HomePage: React.FC = () => {
         </div>
       </div> */}
 
-      <main className="container  mt-10 mx-auto p-4" ref={galleryRef}>
-        <h1 className="text-2xl font-bold mb-4">Our Hostel Gallery</h1>
+      <main className="container  mt-10 mx-auto" ref={galleryRef}>
+        <h1 className="text-2xl font-bold ">Our Hostel Gallery</h1>
         <div className="image-gallery">
           <CoverflowSlider items={sliderItems} />
         </div>
