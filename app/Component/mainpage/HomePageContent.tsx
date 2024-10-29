@@ -202,13 +202,7 @@ const HomePage: React.FC = () => {
       price: 3000,
       rating: 4.5,
     },
-    {
-      src: "/Images/HomePage/Hostel2.avif",
-      alt: "Hostel 2",
-      name: "Prime 13",
-      price: 4999,
-      rating: 4.2,
-    },
+
     {
       src: "/Images/HomePage/Hostel2.avif",
       alt: "Hostel 3",
@@ -229,6 +223,13 @@ const HomePage: React.FC = () => {
       name: "Aspiration",
       price: 7999,
       rating: 4.3,
+    },
+    {
+      src: "/Images/HomePage/Hostel2.avif",
+      alt: "Hostel 2",
+      name: "Prime 13",
+      price: 4999,
+      rating: 4.2,
     },
     {
       src: "/Images/HomePage/Hostel5.avif",
@@ -612,7 +613,6 @@ const HomePage: React.FC = () => {
           onSearch={handleSearch}
         />
       </div>
-
       {isLoading ? (
         <LoaderComponent />
       ) : error ? (
@@ -730,14 +730,17 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div> */}
-
-      <main className="container  mt-10 mx-auto" ref={galleryRef}>
-        <h1 className="text-2xl font-bold ">Our Hostel Gallery</h1>
-        <div className="image-gallery">
-          <CoverflowSlider items={sliderItems} />
+      <main className="container mx-auto px-4 mt-10">
+        <div className="flex flex-col items-center space-y-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
+            Our Hostel Gallery
+            <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
+          </h1>
+          <div className="w-full">
+            <CoverflowSlider items={sliderItems} />
+          </div>
         </div>
       </main>
-
       <Footer />
     </>
   );
