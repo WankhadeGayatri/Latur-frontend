@@ -193,19 +193,11 @@ const HomePage: React.FC = () => {
 
   const sliderItems = [
     {
-      src: "/Images/HomePage/Hostel9.avif",
-      alt: "Hostel 1",
-      name: "Unicorn",
-      price: 3000,
-      rating: 4.5,
-    },
-
-    {
-      src: "/Images/HomePage/Hostel2.avif",
-      alt: "Hostel 3",
-      name: "Heros Room",
-      price: 9999,
-      rating: 4.1,
+      src: "/Images/HomePage/Hostel7.avif",
+      alt: "Hostel 8",
+      name: "Geeta Hostel",
+      price: 1999,
+      rating: 3.5,
     },
     {
       src: "/Images/HomePage/Hostel3.avif",
@@ -728,14 +720,13 @@ const HomePage: React.FC = () => {
         </div>
       </div> */}
 
-      <div className="flex flex-col items-center space-y-8">
+      <div>
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
           Our Hostel Gallery
           <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
         </h1>
-        <div className="w-full">
-          <InfiniteCardCarousel items={sliderItems} />
-        </div>
+
+        <InfiniteCardCarousel items={sliderItems} />
       </div>
 
       <Footer />
