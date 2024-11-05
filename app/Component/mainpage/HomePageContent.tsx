@@ -192,33 +192,33 @@ const HomePage: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
 
   const sliderItems = [
+    // {
+    //   src: "/Images/HomePage/Hostel7.avif",
+    //   alt: "Hostel 8",
+    //   name: "Geeta Hostel",
+    //   price: 1999,
+    //   rating: 3.5,
+    // },
     {
-      src: "/Images/HomePage/Hostel7.avif",
+      src: "/Images/HomePage/Hostel6.avif",
       alt: "Hostel 8",
       name: "Geeta Hostel",
       price: 1999,
       rating: 3.5,
     },
     {
-      src: "/Images/HomePage/Hostel3.avif",
-      alt: "Hostel 4",
-      name: "Kaveri Nest",
-      price: 8999,
-      rating: 4.4,
-    },
-    {
-      src: "/Images/HomePage/Hostel4.avif",
+      src: "/Images/HomePage/Hostel9.avif",
       alt: "Hostel 5",
       name: "Aspiration",
       price: 7999,
       rating: 4.3,
     },
     {
-      src: "/Images/HomePage/Hostel2.avif",
-      alt: "Hostel 2",
-      name: "Prime 13",
-      price: 4999,
-      rating: 4.2,
+      src: "/Images/HomePage/Hostel8.avif",
+      alt: "Hostel 8",
+      name: "Geeta Hostel",
+      price: 1999,
+      rating: 3.5,
     },
     {
       src: "/Images/HomePage/Hostel5.avif",
