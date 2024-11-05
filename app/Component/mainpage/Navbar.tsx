@@ -11,24 +11,44 @@ import {
   List,
   ListItem,
   ListItemText,
-  Modal,
-  Button,
-  Fade,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
-const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
-  ssr: false,
-});
 const CloseIcon = dynamic(() => import("@mui/icons-material/Close"), {
   ssr: false,
 });
-const MemoizedMenuIcon = React.memo(MenuIcon);
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Hand } from "lucide-react";
+
+// Make MenuIconSvg client-only to prevent hydration mismatch
+const MenuIconSvg = dynamic(
+  () =>
+    Promise.resolve(() => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        width="24"
+        height="24"
+        className="w-6 h-6"
+      >
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    )),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-6 h-6" /> // Placeholder while loading
+    ),
+  }
+);
 
 interface CustomButtonProps {
   onClick: () => void;
@@ -57,37 +77,30 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         className={`inline-flex items-center justify-center p-1 rounded-full cursor-pointer ${className}`}
         aria-label={ariaLabel}
       >
-        <MemoizedMenuIcon />
+        <MenuIconSvg />
       </div>
     </motion.div>
   );
 };
 
 const Navbar: React.FC = React.memo(() => {
+  const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const theme = useTheme();
   const [isBlinking, setIsBlinking] = useState(true);
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery("(max-width: 640px)", {
+    noSsr: true,
+    defaultMatches: false,
+  });
   const router = useRouter();
 
   useEffect(() => {
-    const link = document.createElement("link");
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap";
-    link.rel = "stylesheet";
-    link.setAttribute("media", "print");
-    link.onload = () => {
-      link.media = "all";
-    };
-    document.head.appendChild(link);
-
+    setMounted(true);
     const blinkInterval = setInterval(() => {
       setIsBlinking((prev) => !prev);
     }, 1000);
 
     return () => {
-      document.head.removeChild(link);
       clearInterval(blinkInterval);
     };
   }, []);
@@ -97,13 +110,6 @@ const Navbar: React.FC = React.memo(() => {
   }, []);
 
   const handleMobileMenuClose = () => setMobileMenuOpen(false);
-  const handleAuthModalOpen = () => setAuthModalOpen(true);
-  const handleAuthModalClose = () => setAuthModalOpen(false);
-
-  const handleAuthAction = (action: "signin" | "signup") => {
-    handleAuthModalClose();
-    router.push(action === "signin" ? "/login" : "/register");
-  };
 
   const handleLogoClick = useCallback(() => {
     router.push("/");
@@ -117,6 +123,11 @@ const Navbar: React.FC = React.memo(() => {
     { text: "Sign In", path: "/login" },
     { text: "Sign Up", path: "/register" },
   ];
+
+  // Don't render until after mounting to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AppBar
