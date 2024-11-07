@@ -17,13 +17,14 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
-const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
-  ssr: false,
-});
+import { usePathname, useSearchParams } from "next/navigation";
+// const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
+//   ssr: false,
+// });
 const CloseIcon = dynamic(() => import("@mui/icons-material/Close"), {
   ssr: false,
 });
-const MemoizedMenuIcon = React.memo(MenuIcon);
+//const MemoizedMenuIcon = React.memo(MenuIcon);
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -57,7 +58,21 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         className={`inline-flex items-center justify-center p-1 rounded-full cursor-pointer ${className}`}
         aria-label={ariaLabel}
       >
-        <MemoizedMenuIcon />
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-white"
+        >
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
       </div>
     </motion.div>
   );
@@ -70,6 +85,8 @@ const Navbar: React.FC = React.memo(() => {
   const [isBlinking, setIsBlinking] = useState(true);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -109,14 +126,70 @@ const Navbar: React.FC = React.memo(() => {
     router.push("/");
   }, [router]);
 
+  const handleNavigation = (path: string, section?: string) => {
+    if (path === "/" && section === "gallery") {
+      // If we're already on homepage, just scroll to gallery
+      if (pathname === "/") {
+        const galleryElement = document.getElementById("gallery");
+        if (galleryElement) {
+          galleryElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      } else {
+        // If on another page, navigate to homepage with gallery parameter
+        router.push("/?section=gallery");
+      }
+    } else {
+      router.push(path);
+    }
+  };
+
   const navItems = [
-    { text: "Home", path: "/" },
-    { text: "Amenities", path: "/" },
-    { text: "About Us", path: "/" },
-    { text: "Gallery", path: "/" },
+    { text: "Home", path: "/", section: "home" },
+    { text: "About Us", path: "/aboutus" },
+    { text: "Amenities", path: "/amenities" },
+    { text: "Gallery", path: "/", section: "gallery" },
     { text: "Sign In", path: "/login" },
     { text: "Sign Up", path: "/register" },
   ];
+
+  const isActive = (path: string, section?: string) => {
+    if (path === "/") {
+      const currentSection = searchParams.get("section");
+      if (section === "gallery") {
+        return pathname === "/" && currentSection === "gallery";
+      } else if (section === "home") {
+        return pathname === "/" && !currentSection;
+      }
+    }
+    return path !== "/" && pathname.startsWith(path);
+  };
+
+  const isHostelOwnerPage = pathname === "/hostelownerlogin";
+
+  const getHostelOwnerButtonStyles = () => {
+    if (isHostelOwnerPage) {
+      return {
+        backgroundColor: "#831843",
+        "&:hover": {
+          backgroundColor: "#9d174d",
+          transform: "scale(1.05)",
+          transition: "all 0.3s ease-in-out",
+        },
+      };
+    }
+    return {
+      backgroundColor: "#ffe5e5",
+      "&:hover": {
+        backgroundColor: "#ffd6d6",
+        transform: "scale(1.05)",
+        transition: "all 0.3s ease-in-out",
+      },
+    };
+  };
+
+  const getHostelOwnerTextColor = () => {
+    return isHostelOwnerPage ? "#ffffff" : "#d32f2f";
+  };
 
   return (
     <AppBar
@@ -162,24 +235,19 @@ const Navbar: React.FC = React.memo(() => {
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    backgroundColor: "#ffe5e5",
                     padding: "10px 16px",
                     borderRadius: "24px",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                     cursor: "pointer",
                     marginRight: "16px",
-                    "&:hover": {
-                      backgroundColor: "#ffd6d6",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease-in-out",
-                    },
+                    ...getHostelOwnerButtonStyles(),
                   }}
                   onClick={() => router.push("/hostelownerlogin")}
                 >
                   <Typography
                     variant="body1"
                     sx={{
-                      color: "#d32f2f",
+                      color: getHostelOwnerTextColor(),
                       fontWeight: "bold",
                       marginRight: "12px",
                       fontSize: "0.700rem",
@@ -196,24 +264,50 @@ const Navbar: React.FC = React.memo(() => {
                       }}
                       transition={{ duration: 0.5 }}
                     >
-                      <Hand size={20} color="#d32f2f" />
+                      <Hand size={20} color={getHostelOwnerTextColor()} />
                     </motion.div>
                   </Box>
+                  {isHostelOwnerPage && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 w-full h-full rounded-3xl"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 0.15 }}
+                      transition={{ duration: 0.3 }}
+                      style={{
+                        background:
+                          "linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%)",
+                        filter: "blur(4px)",
+                        zIndex: -1,
+                      }}
+                    />
+                  )}
                 </Box>
               </motion.div>
               {navItems.map((item) => (
                 <motion.div
                   key={item.text}
+                  className="relative"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Typography
-                    onClick={() => router.push(item.path)}
-                    className="text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300"
+                    onClick={() => handleNavigation(item.path, item.section)}
+                    className={`text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300 ${
+                      isActive(item.path, item.section) ? "font-semibold" : ""
+                    }`}
                     sx={{ fontFamily: "'Poppins', sans-serif" }}
                   >
                     {item.text}
                   </Typography>
+                  {isActive(item.path, item.section) && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: 0.3 }}
+                      layoutId="activeIndicator"
+                    />
+                  )}
                 </motion.div>
               ))}
             </motion.div>
@@ -249,24 +343,21 @@ const Navbar: React.FC = React.memo(() => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                backgroundColor: "#ffe5e5",
                 padding: "10px 16px",
                 borderRadius: "24px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 cursor: "pointer",
                 marginBottom: "16px",
-                "&:hover": {
-                  backgroundColor: "#ffd6d6",
-                  transform: "scale(1.05)",
-                  transition: "all 0.3s ease-in-out",
-                },
+                position: "relative",
+                overflow: "hidden",
+                ...getHostelOwnerButtonStyles(),
               }}
               onClick={() => router.push("/hostelownerlogin")}
             >
               <Typography
                 variant="body1"
                 sx={{
-                  color: "#d32f2f",
+                  color: getHostelOwnerTextColor(),
                   fontWeight: "bold",
                   marginRight: "12px",
                   fontSize: "0.700rem",
@@ -283,7 +374,7 @@ const Navbar: React.FC = React.memo(() => {
                   }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Hand size={20} color="#d32f2f" />
+                  <Hand size={20} color={getHostelOwnerTextColor()} />
                 </motion.div>
               </Box>
             </Box>
@@ -293,11 +384,41 @@ const Navbar: React.FC = React.memo(() => {
               button
               key={item.text}
               onClick={() => {
-                router.push(item.path);
+                handleNavigation(item.path, item.section);
                 handleMobileMenuClose();
               }}
+              sx={{
+                position: "relative",
+                backgroundColor: isActive(item.path, item.section)
+                  ? "rgba(14, 165, 233, 0.1)"
+                  : "transparent",
+                borderRadius: "8px",
+                margin: "4px 8px",
+                "&:hover": {
+                  backgroundColor: "rgba(14, 165, 233, 0.05)",
+                },
+              }}
             >
-              <ListItemText primary={item.text} />
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  "& .MuiTypography-root": {
+                    color: isActive(item.path, item.section)
+                      ? "rgb(14, 165, 233)"
+                      : "inherit",
+                    fontWeight: isActive(item.path, item.section) ? 600 : 400,
+                  },
+                }}
+              />
+              {isActive(item.path, item.section) && (
+                <motion.div
+                  className="absolute left-0 top-0 h-full w-1 bg-sky-500 rounded-l"
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ duration: 0.3 }}
+                  layoutId="mobileActiveIndicator"
+                />
+              )}
             </ListItem>
           ))}
         </List>

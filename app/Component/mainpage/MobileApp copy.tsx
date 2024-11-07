@@ -95,9 +95,9 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   ];
 
   return (
-    <div className="relative h-full  pb-20 px-4 flex flex-col items-center justify-center bg-white">
+    <div className="relative h-full pt-12 pb-20 px-4 flex flex-col items-center justify-center bg-white">
       <NavigationButtons onNext={onNext} onPrev={onPrev} />
-      <h1 className="text-xl mt-2 font-bold mb-2 text-blue-800">
+      <h1 className="text-xl mt-6 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
       </h1>
       <div className="relative w-64 h-64">
@@ -120,11 +120,6 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
             {bubble.name}
           </div>
         ))}
-        <p className="mt-6 text-center text-gray-700 max-w-xs">
-          Welcome to Latur hostel, located near top tuition centers, where a
-          friendly environment fosters your academic success. Join our vibrant
-          community and enjoy the comfort
-        </p>
       </div>
     </div>
   );
@@ -304,9 +299,7 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const stepsRef = useRef<HTMLDivElement>(null);
-  const [currentSupportSlide, setCurrentSupportSlide] = useState(0);
-
-  const supportSlides = [
+  const supportSlides: Slide[] = [
     { title: "24/7 Support", description: "We're here to help anytime" },
     {
       title: "Quick Resolutions",
@@ -314,6 +307,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     },
     { title: "Take Admission", description: "Follow These Steps" },
   ];
+
   const steps: Step[] = [
     { icon: <Home size={20} />, text: "1. Registration Process" },
     { icon: <Home size={20} />, text: "1. Registration Process" },
@@ -352,7 +346,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
       {/* Autoplay Slider for Support Screen */}
       <div className="mb-6 relative h-20 rounded-lg overflow-hidden bg-white shadow-lg">
-        <AnimatePresence initial={false}>
+        {/* <AnimatePresence initial={false}>
           <motion.div
             key={currentSupportSlide}
             className="absolute inset-0 flex flex-col justify-center items-center p-4"
@@ -368,7 +362,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
               {supportSlides[currentSupportSlide].description}
             </p>
           </motion.div>
-        </AnimatePresence>
+        </AnimatePresence> */}
       </div>
 
       <h2 className="font-bold text-lg mb-4 text-blue-800">

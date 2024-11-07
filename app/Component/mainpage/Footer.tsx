@@ -76,11 +76,14 @@ function Footer() {
             </a>
           </div>
         </div>
-        <div className="border-t border-gray-700 pt-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+        <div
+          className="bor
+        der-t border-gray-700 pt-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400"
+        >
           <p>
-            Copyright © 2024 | All Rights Reserved by Dossifoyer Pvt Ltd. |{" "}
+            Copyright © 2024 | All Rights Reserved by Dossiefoyer Pvt Ltd. |{" "}
             <a href="#" className="hover:text-white">
-              Developed and Maintained by dossifoyer
+              Developed and Maintained by dossiefoyer
             </a>
           </p>
           <p className="mt-2 md:mt-0">

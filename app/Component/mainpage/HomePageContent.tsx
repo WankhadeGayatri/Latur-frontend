@@ -190,6 +190,17 @@ const HomePage: React.FC = () => {
   const hostelListRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const searchParams1 = useSearchParams();
+  useEffect(() => {
+    // Check if the URL has a section parameter
+    const section = searchParams.get("section");
+    if (section === "gallery" && galleryRef.current) {
+      galleryRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [searchParams1]);
 
   const sliderItems = [
     // {
@@ -720,14 +731,26 @@ const HomePage: React.FC = () => {
         </div>
       </div> */}
 
-      <div>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
-          Our Hostel Gallery
-          <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
-        </h1>
+      <motion.section
+        ref={galleryRef}
+        id="gallery"
+        className="py-16 px-4"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
+            Our Hostel Gallery
+            <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
+          </h1>
 
-        <InfiniteCardCarousel items={sliderItems} />
-      </div>
+          <div className="mt-12">
+            <InfiniteCardCarousel items={sliderItems} />
+          </div>
+        </div>
+      </motion.section>
 
       <Footer />
     </>
