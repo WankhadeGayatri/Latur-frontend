@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import {
   AppBar,
   Toolbar,
@@ -18,19 +18,16 @@ import {
 import { useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
 import { usePathname, useSearchParams } from "next/navigation";
-// const MenuIcon = dynamic(() => import("@mui/icons-material/Menu"), {
-//   ssr: false,
-// });
 const CloseIcon = dynamic(() => import("@mui/icons-material/Close"), {
   ssr: false,
 });
-//const MemoizedMenuIcon = React.memo(MenuIcon);
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hand } from "lucide-react";
 
+// Separate CustomButton component remains the same
 interface CustomButtonProps {
   onClick: () => void;
   isMobile: boolean;
@@ -78,6 +75,68 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   );
 };
 
+// Navigation content component that uses useSearchParams
+const NavigationContent: React.FC<{
+  pathname: string;
+  onNavigate: (path: string, section?: string) => void;
+}> = ({ pathname, onNavigate }) => {
+  const searchParams = useSearchParams();
+
+  const isActive = (path: string, section?: string) => {
+    if (path === "/") {
+      const currentSection = searchParams.get("section");
+      if (section === "gallery") {
+        return pathname === "/" && currentSection === "gallery";
+      } else if (section === "home") {
+        return pathname === "/" && !currentSection;
+      }
+    }
+    return path !== "/" && pathname.startsWith(path);
+  };
+
+  const navItems = [
+    { text: "Home", path: "/", section: "home" },
+    { text: "About Us", path: "/aboutus" },
+    { text: "Amenities", path: "/amenities" },
+    { text: "Gallery", path: "/", section: "gallery" },
+    { text: "Sign In", path: "/login" },
+    { text: "Sign Up", path: "/register" },
+  ];
+
+  return (
+    <>
+      {navItems.map((item) => (
+        <motion.div
+          key={item.text}
+          className="relative"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Typography
+            onClick={() => onNavigate(item.path, item.section)}
+            className={`text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300 ${
+              isActive(item.path, item.section) ? "font-semibold" : ""
+            }`}
+            sx={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            {item.text}
+          </Typography>
+          {isActive(item.path, item.section) && (
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.3 }}
+              layoutId="activeIndicator"
+            />
+          )}
+        </motion.div>
+      ))}
+    </>
+  );
+};
+
+// Main Navbar component
 const Navbar: React.FC = React.memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -86,7 +145,6 @@ const Navbar: React.FC = React.memo(() => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -128,40 +186,17 @@ const Navbar: React.FC = React.memo(() => {
 
   const handleNavigation = (path: string, section?: string) => {
     if (path === "/" && section === "gallery") {
-      // If we're already on homepage, just scroll to gallery
       if (pathname === "/") {
         const galleryElement = document.getElementById("gallery");
         if (galleryElement) {
           galleryElement.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       } else {
-        // If on another page, navigate to homepage with gallery parameter
         router.push("/?section=gallery");
       }
     } else {
       router.push(path);
     }
-  };
-
-  const navItems = [
-    { text: "Home", path: "/", section: "home" },
-    { text: "About Us", path: "/aboutus" },
-    { text: "Amenities", path: "/amenities" },
-    { text: "Gallery", path: "/", section: "gallery" },
-    { text: "Sign In", path: "/login" },
-    { text: "Sign Up", path: "/register" },
-  ];
-
-  const isActive = (path: string, section?: string) => {
-    if (path === "/") {
-      const currentSection = searchParams.get("section");
-      if (section === "gallery") {
-        return pathname === "/" && currentSection === "gallery";
-      } else if (section === "home") {
-        return pathname === "/" && !currentSection;
-      }
-    }
-    return path !== "/" && pathname.startsWith(path);
   };
 
   const isHostelOwnerPage = pathname === "/hostelownerlogin";
@@ -283,44 +318,23 @@ const Navbar: React.FC = React.memo(() => {
                   )}
                 </Box>
               </motion.div>
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.text}
-                  className="relative"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Typography
-                    onClick={() => handleNavigation(item.path, item.section)}
-                    className={`text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300 ${
-                      isActive(item.path, item.section) ? "font-semibold" : ""
-                    }`}
-                    sx={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
-                    {item.text}
-                  </Typography>
-                  {isActive(item.path, item.section) && (
-                    <motion.div
-                      className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.3 }}
-                      layoutId="activeIndicator"
-                    />
-                  )}
-                </motion.div>
-              ))}
+              <Suspense fallback={<div>Loading...</div>}>
+                <NavigationContent
+                  pathname={pathname}
+                  onNavigate={handleNavigation}
+                />
+              </Suspense>
             </motion.div>
           )}
 
-          {isMobile ? (
+          {isMobile && (
             <CustomButton
               onClick={handleMobileMenuToggle}
               isMobile={isMobile}
               className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
               ariaLabel="Toggle mobile menu"
             />
-          ) : null}
+          )}
         </Box>
       </Toolbar>
 
@@ -379,48 +393,15 @@ const Navbar: React.FC = React.memo(() => {
               </Box>
             </Box>
           </ListItem>
-          {navItems.map((item) => (
-            <ListItem
-              button
-              key={item.text}
-              onClick={() => {
-                handleNavigation(item.path, item.section);
+          <Suspense fallback={<div>Loading...</div>}>
+            <NavigationContent
+              pathname={pathname}
+              onNavigate={(path, section) => {
+                handleNavigation(path, section);
                 handleMobileMenuClose();
               }}
-              sx={{
-                position: "relative",
-                backgroundColor: isActive(item.path, item.section)
-                  ? "rgba(14, 165, 233, 0.1)"
-                  : "transparent",
-                borderRadius: "8px",
-                margin: "4px 8px",
-                "&:hover": {
-                  backgroundColor: "rgba(14, 165, 233, 0.05)",
-                },
-              }}
-            >
-              <ListItemText
-                primary={item.text}
-                sx={{
-                  "& .MuiTypography-root": {
-                    color: isActive(item.path, item.section)
-                      ? "rgb(14, 165, 233)"
-                      : "inherit",
-                    fontWeight: isActive(item.path, item.section) ? 600 : 400,
-                  },
-                }}
-              />
-              {isActive(item.path, item.section) && (
-                <motion.div
-                  className="absolute left-0 top-0 h-full w-1 bg-sky-500 rounded-l"
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ duration: 0.3 }}
-                  layoutId="mobileActiveIndicator"
-                />
-              )}
-            </ListItem>
-          ))}
+            />
+          </Suspense>
         </List>
       </Drawer>
     </AppBar>
