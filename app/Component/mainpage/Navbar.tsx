@@ -15,7 +15,7 @@ import {
   Button,
   Fade,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Theme, useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
 import { usePathname, useSearchParams } from "next/navigation";
 const CloseIcon = dynamic(() => import("@mui/icons-material/Close"), {
@@ -79,7 +79,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 const NavigationContent: React.FC<{
   pathname: string;
   onNavigate: (path: string, section?: string) => void;
-}> = ({ pathname, onNavigate }) => {
+  isMobile: boolean; // Add isMobile as a prop instead of using useMediaQuery
+}> = ({ pathname, onNavigate, isMobile }) => {
   const searchParams = useSearchParams();
 
   const isActive = (path: string, section?: string) => {
@@ -108,20 +109,38 @@ const NavigationContent: React.FC<{
       {navItems.map((item) => (
         <motion.div
           key={item.text}
-          className="relative"
-          whileHover={{ scale: 1.1 }}
+          className={`relative ${isMobile ? "w-full" : ""}`}
+          whileHover={{ scale: isMobile ? 1.02 : 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Typography
+          <Box
             onClick={() => onNavigate(item.path, item.section)}
-            className={`text-sky-700 hover:text-sky-500 cursor-pointer transition-colors duration-300 ${
-              isActive(item.path, item.section) ? "font-semibold" : ""
-            }`}
-            sx={{ fontFamily: "'Poppins', sans-serif" }}
+            className={`
+              ${isMobile ? "px-4 py-3 my-1 rounded-lg w-full" : ""}
+              ${
+                isActive(item.path, item.section)
+                  ? "bg-sky-50 shadow-sm"
+                  : "hover:bg-sky-50/50"
+              }
+              transition-all duration-300 ease-in-out cursor-pointer
+            `}
           >
-            {item.text}
-          </Typography>
-          {isActive(item.path, item.section) && (
+            <Typography
+              className={`
+                ${isMobile ? "text-base" : ""}
+                ${
+                  isActive(item.path, item.section)
+                    ? "text-sky-700 font-semibold"
+                    : "text-gray-600 hover:text-sky-600"
+                }
+                transition-colors duration-300
+              `}
+              sx={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              {item.text}
+            </Typography>
+          </Box>
+          {isActive(item.path, item.section) && !isMobile && (
             <motion.div
               className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500"
               initial={{ scaleX: 0 }}
@@ -322,6 +341,7 @@ const Navbar: React.FC = React.memo(() => {
                 <NavigationContent
                   pathname={pathname}
                   onNavigate={handleNavigation}
+                  isMobile={isMobile} // Pass isMobile as prop
                 />
               </Suspense>
             </motion.div>
@@ -400,6 +420,7 @@ const Navbar: React.FC = React.memo(() => {
                 handleNavigation(path, section);
                 handleMobileMenuClose();
               }}
+              isMobile={true} // Force mobile view in drawer
             />
           </Suspense>
         </List>
