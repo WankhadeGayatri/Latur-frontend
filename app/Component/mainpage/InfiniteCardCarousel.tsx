@@ -176,8 +176,21 @@ const InfiniteCardCarousel = ({
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const visibleCards = Math.floor(containerWidth / itemWidth);
-  const totalWidth = extendedItems.length * itemWidth;
+  // Responsive card width calculation
+  const getResponsiveCardWidth = () => {
+    if (containerWidth < 640) {
+      // mobile
+      return containerWidth - 32; // Full width minus padding
+    }
+    return cardWidth;
+  };
+
+  const responsiveItemWidth = getResponsiveCardWidth() + cardGap;
+  const visibleCards = Math.max(
+    1,
+    Math.floor(containerWidth / responsiveItemWidth)
+  );
+  const totalWidth = extendedItems.length * responsiveItemWidth;
 
   const handleScroll = useCallback(
     (direction: "prev" | "next") => {
@@ -186,12 +199,12 @@ const InfiniteCardCarousel = ({
         const delta = direction === "next" ? 1 : -1;
         const newPage =
           (prev + delta + extendedItems.length) % extendedItems.length;
-        setScrollPosition(-newPage * itemWidth);
+        setScrollPosition(-newPage * responsiveItemWidth);
         return newPage;
       });
       setTimeout(() => setIsAutoScrolling(true), 5000);
     },
-    [extendedItems.length, itemWidth]
+    [extendedItems.length, responsiveItemWidth]
   );
 
   // Auto-scroll with RAF for smooth animation
@@ -214,38 +227,41 @@ const InfiniteCardCarousel = ({
   }, [isAutoScrolling, handleScroll]);
 
   return (
-    <div className="relative w-full bg-white py-8 overflow-hidden">
-      <div className="max-w-[90rem] mx-auto px-4">
-        {/* Navigation buttons */}
-        <button
-          onClick={() => handleScroll("prev")}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10
-                   bg-white/90 backdrop-blur-sm rounded-full p-2
-                   shadow-lg hover:bg-purple-600 hover:text-white
-                   transition-colors"
-          aria-label="Previous"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-
-        <button
-          onClick={() => handleScroll("next")}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10
-                   bg-white/90 backdrop-blur-sm rounded-full p-2
-                   shadow-lg hover:bg-purple-600 hover:text-white
-                   transition-colors"
-          aria-label="Next"
-        >
-          <ArrowRight className="w-5 h-5" />
-        </button>
-
-        {/* Cards container with fixed width and height */}
+    <div className="relative w-full bg-white py-8">
+      <div className="max-w-[90rem] mx-auto px-4 relative isolate">
+        {" "}
+        {/* Added isolate for stacking context */}
+        {/* Navigation buttons with adjusted z-index */}
+        <div className="absolute inset-0 pointer-events-none z-[5]">
+          {" "}
+          {/* Container for navigation */}
+          <button
+            onClick={() => handleScroll("prev")}
+            className="absolute left-4 top-1/2 -translate-y-1/2 
+                     bg-white/90 backdrop-blur-sm rounded-full p-2
+                     shadow-lg hover:bg-purple-600 hover:text-white
+                     transition-colors pointer-events-auto"
+            aria-label="Previous"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => handleScroll("next")}
+            className="absolute right-4 top-1/2 -translate-y-1/2 
+                     bg-white/90 backdrop-blur-sm rounded-full p-2
+                     shadow-lg hover:bg-purple-600 hover:text-white
+                     transition-colors pointer-events-auto"
+            aria-label="Next"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+        {/* Cards container with responsive width */}
         <div
-          className="overflow-hidden"
+          className="overflow-hidden mx-auto"
           style={{
-            height: cardWidth,
-            margin: "0 auto",
-            maxWidth: `${visibleCards * itemWidth}px`,
+            height: getResponsiveCardWidth(),
+            maxWidth: `${visibleCards * responsiveItemWidth}px`,
           }}
         >
           <div
@@ -256,12 +272,19 @@ const InfiniteCardCarousel = ({
             }}
           >
             {extendedItems.map((item, index) => (
-              <OptimizedCard
+              <div
                 key={`${item.name}-${index}`}
-                {...item}
-                index={index}
-                isVisible={Math.abs(index - currentPage) < visibleCards + 1}
-              />
+                style={{
+                  width: getResponsiveCardWidth(),
+                  flexShrink: 0,
+                }}
+              >
+                <OptimizedCard
+                  {...item}
+                  index={index}
+                  isVisible={Math.abs(index - currentPage) < visibleCards + 1}
+                />
+              </div>
             ))}
           </div>
         </div>
