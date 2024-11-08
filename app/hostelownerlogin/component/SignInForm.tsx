@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { MdEmail } from "react-icons/md";
 import { motion } from "framer-motion";
 import { API_BASE_URL } from "@/config/api";
+
 import {
   TextField,
   Button,
@@ -37,6 +38,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navbar from "@/app/Component/mainpage/Navbar";
 import { Building2 } from "lucide-react";
 
@@ -171,7 +173,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
   return (
     <>
       {" "}
-      {/* <ToastContainer autoClose={5000} hideProgressBar={true} /> */}
+      <ToastContainer autoClose={5000} hideProgressBar={true} />
       <div className="min-h-screen rounded-2xl shadow-2xl flex flex-col py-12 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="sm:mx-auto sm:w-full sm:max-w-7xl z-10">
           <div className="shadow-2xl  bg-white  overflow-hidden">
