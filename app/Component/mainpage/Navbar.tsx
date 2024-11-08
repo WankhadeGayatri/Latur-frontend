@@ -64,7 +64,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-white"
+          className="text-black"
         >
           <line x1="3" y1="12" x2="21" y2="12" />
           <line x1="3" y1="6" x2="21" y2="6" />
@@ -271,7 +271,6 @@ const Navbar: React.FC = React.memo(() => {
             Latur Hostel
           </Typography>
         </motion.div>
-
         <Box className="flex items-center">
           {!isMobile && (
             <motion.div
@@ -341,21 +340,20 @@ const Navbar: React.FC = React.memo(() => {
                 <NavigationContent
                   pathname={pathname}
                   onNavigate={handleNavigation}
-                  isMobile={isMobile} // Pass isMobile as prop
+                  isMobile={isMobile}
                 />
               </Suspense>
             </motion.div>
           )}
-
-          {isMobile && (
-            <CustomButton
-              onClick={handleMobileMenuToggle}
-              isMobile={isMobile}
-              className="bg-sky-500 hover:bg-sky-600 transition-colors duration-300"
-              ariaLabel="Toggle mobile menu"
-            />
-          )}
-        </Box>
+        </Box>{" "}
+        {isMobile && (
+          <CustomButton
+            onClick={handleMobileMenuToggle}
+            isMobile={isMobile}
+            className=" transition-colors duration-300"
+            ariaLabel="Toggle mobile menu"
+          />
+        )}
       </Toolbar>
 
       <Drawer
