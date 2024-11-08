@@ -66,21 +66,29 @@ interface Step {
   text: string;
 }
 const NavigationButtons: React.FC<NavigationProps> = ({ onNext, onPrev }) => (
-  <div className="mx-2">
-    <button
-      onClick={onPrev}
-      className="fixed left-4 top-[350px] bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors"
-      aria-label="Previous screen"
-    >
-      <ChevronLeft size={18} />
-    </button>
-    <button
-      onClick={onNext}
-      className="fixed right-4 top-[350px] bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors"
-      aria-label="Next screen"
-    >
-      <ChevronRight size={18} />
-    </button>
+  <div className="absolute inset-0 w-[320px] mx-auto z-20 pointer-events-none">
+    <div className="relative h-full flex items-center justify-between px-2">
+      <button
+        onClick={onPrev}
+        className="pointer-events-auto opacity-70 hover:opacity-100 bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-all duration-200 group"
+        aria-label="Previous screen"
+      >
+        <ChevronLeft
+          size={18}
+          className="text-gray-600 group-hover:text-gray-800"
+        />
+      </button>
+      <button
+        onClick={onNext}
+        className="pointer-events-auto opacity-70 hover:opacity-100 bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-all duration-200 group"
+        aria-label="Next screen"
+      >
+        <ChevronRight
+          size={18}
+          className="text-gray-600 group-hover:text-gray-800"
+        />
+      </button>
+    </div>
   </div>
 );
 
@@ -95,9 +103,9 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   ];
 
   return (
-    <div className="relative h-full pt-12 pb-20 px-4 flex flex-col items-center justify-center bg-white">
+    <div className="relative h-full  pb-20 px-4 flex flex-col items-center justify-center bg-white">
       <NavigationButtons onNext={onNext} onPrev={onPrev} />
-      <h1 className="text-xl mt-6 font-bold mb-2 text-blue-800">
+      <h1 className="text-xl mt-2 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
       </h1>
       <div className="relative w-64 h-64">
@@ -120,6 +128,11 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
             {bubble.name}
           </div>
         ))}
+        <p className="mt-6 text-center text-gray-700 max-w-xs">
+          Welcome to Latur hostel, located near top tuition centers, where a
+          friendly environment fosters your academic success. Join our vibrant
+          community and enjoy the comfort
+        </p>
       </div>
     </div>
   );
@@ -299,7 +312,9 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const stepsRef = useRef<HTMLDivElement>(null);
-  const supportSlides: Slide[] = [
+  const [currentSupportSlide, setCurrentSupportSlide] = useState(0);
+
+  const supportSlides = [
     { title: "24/7 Support", description: "We're here to help anytime" },
     {
       title: "Quick Resolutions",
@@ -307,7 +322,6 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     },
     { title: "Take Admission", description: "Follow These Steps" },
   ];
-
   const steps: Step[] = [
     { icon: <Home size={20} />, text: "1. Registration Process" },
     { icon: <Home size={20} />, text: "1. Registration Process" },
@@ -346,7 +360,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
       {/* Autoplay Slider for Support Screen */}
       <div className="mb-6 relative h-20 rounded-lg overflow-hidden bg-white shadow-lg">
-        {/* <AnimatePresence initial={false}>
+        <AnimatePresence initial={false}>
           <motion.div
             key={currentSupportSlide}
             className="absolute inset-0 flex flex-col justify-center items-center p-4"
@@ -362,7 +376,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
               {supportSlides[currentSupportSlide].description}
             </p>
           </motion.div>
-        </AnimatePresence> */}
+        </AnimatePresence>
       </div>
 
       <h2 className="font-bold text-lg mb-4 text-blue-800">
@@ -407,6 +421,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
 const MobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenName>("welcome");
+  const [showControls, setShowControls] = useState(true);
   const appRef = useRef<HTMLDivElement>(null);
   const screens: ScreenName[] = ["welcome", "home", "support"];
 
@@ -429,20 +444,44 @@ const MobileApp: React.FC = () => {
     return () => clearInterval(timer);
   }, [handleNextScreen]);
 
+  // Hide controls after 3 seconds of inactivity
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const handleMouseMove = () => {
+      setShowControls(true);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => setShowControls(false), 3000);
+    };
+
+    const container = appRef.current;
+    if (container) {
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("touchstart", handleMouseMove);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("touchstart", handleMouseMove);
+      }
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <div className="relative mt-10 flex items-center justify-center h-screen overflow-hidden">
-      {/* Content structure remains the same, now with type safety */}
       <div
         ref={appRef}
         className="relative w-[320px] h-[650px] bg-black rounded-[40px] p-2 shadow-xl"
       >
         <div className="w-full h-full bg-white rounded-[35px] overflow-hidden relative">
           {/* Status Bar */}
-          <div className=" top-0 left-0 right-0 h-[44px] bg-white flex items-center justify-between px-6 text-black z-30">
+          <div className="top-0 left-0 right-0 h-[44px] bg-white flex items-center justify-between px-6 text-black z-30">
             <span className="text-sm font-semibold">9:41 AM</span>
             <div className="flex items-center space-x-1">
               <div className="w-6 h-3 bg-black rounded-sm relative">
-                <div className=" right-[2px] top-[2px] bottom-[2px] left-[9px] bg-black rounded-sm"></div>
+                <div className="right-[2px] top-[2px] bottom-[2px] left-[9px] bg-black rounded-sm"></div>
               </div>
             </div>
           </div>
@@ -459,23 +498,27 @@ const MobileApp: React.FC = () => {
                 transition={{ type: "tween", duration: 0.5 }}
                 className="absolute inset-0"
               >
-                {currentScreen === "welcome" && (
-                  <WelcomeScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
-                )}
-                {currentScreen === "support" && (
-                  <SupportScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
-                )}
-                {currentScreen === "home" && (
-                  <HomeScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
+                {showControls && (
+                  <>
+                    {currentScreen === "welcome" && (
+                      <WelcomeScreen
+                        onNext={handleNextScreen}
+                        onPrev={handlePrevScreen}
+                      />
+                    )}
+                    {currentScreen === "support" && (
+                      <SupportScreen
+                        onNext={handleNextScreen}
+                        onPrev={handlePrevScreen}
+                      />
+                    )}
+                    {currentScreen === "home" && (
+                      <HomeScreen
+                        onNext={handleNextScreen}
+                        onPrev={handlePrevScreen}
+                      />
+                    )}
+                  </>
                 )}
               </motion.div>
             </AnimatePresence>
