@@ -66,24 +66,23 @@ interface Step {
   text: string;
 }
 const NavigationButtons: React.FC<NavigationProps> = ({ onNext, onPrev }) => (
-  <div className="mx-2">
+  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 px-4 flex justify-between pointer-events-none">
     <button
       onClick={onPrev}
-      className="fixed left-4 top-[350px] bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors"
+      className="pointer-events-auto bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors z-20"
       aria-label="Previous screen"
     >
       <ChevronLeft size={18} />
     </button>
     <button
       onClick={onNext}
-      className="fixed right-4 top-[350px] bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors"
+      className="pointer-events-auto bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors z-20"
       aria-label="Next screen"
     >
       <ChevronRight size={18} />
     </button>
   </div>
 );
-
 const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   const examBubbles: ExamBubble[] = [
     { name: "NEET", color: "bg-blue-400" },
