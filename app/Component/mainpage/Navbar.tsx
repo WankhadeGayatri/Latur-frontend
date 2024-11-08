@@ -271,7 +271,7 @@ const Navbar: React.FC = React.memo(() => {
             Latur Hostel
           </Typography>
         </motion.div>
-        <Box className="flex items-center">
+        <Box>
           {!isMobile && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
