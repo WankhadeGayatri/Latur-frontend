@@ -1,55 +1,49 @@
+"use client";
 import React from "react";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  ArrowUp,
-  Hotel,
-  Users,
-  UserCog,
-} from "lucide-react";
 import Navbar from "../Component/mainpage/Navbar";
 import Footer from "../Component/mainpage/Footer";
 
 const AboutPage = () => {
-  // Sample staff data
-  const staffMembers = [
+  const features = [
     {
-      name: "John Doe",
-      role: "General Manager",
+      title: "Our Mission",
+      description:
+        "To provide safe, comfortable, and affordable accommodation solutions for students while creating a supportive community environment with direct hostel owner connections.",
+      bulletPoints: [
+        "No middle man between students and hostel owners",
+        "Direct communication for faster problem resolution",
+      ],
+    },
+    {
+      title: "Our Vision",
+      description:
+        "To become the leading platform connecting students with quality hostel accommodations, making the hostel-finding process seamless and reliable.",
+      bulletPoints: [
+        "Quality assurance standards",
+        "Seamless booking experience",
+      ],
+    },
+  ];
+  const teamMembers = [
+    {
+      name: "",
+      role: "Founder & CEO",
       image: "/Images/about/team-1.jpg",
     },
     {
-      name: "Jane Smith",
-      role: "Front Desk Manager",
+      name: "",
+      role: "Operations Director",
       image: "/Images/about/team-2.jpg",
     },
     {
-      name: "Mike Johnson",
-      role: "Head Chef",
+      name: "",
+      role: "Customer Relations",
       image: "/Images/about/team-3.jpg",
     },
     {
-      name: "Sarah Williams",
-      role: "Housekeeping Manager",
+      name: "",
+      role: "Technology Head",
       image: "/Images/about/team-4.jpg",
-    },
-  ];
-  const stats = [
-    {
-      icon: <Hotel className="w-8 h-8 text-sky-500" />,
-      count: 1234,
-      label: "Hostel",
-    },
-    {
-      icon: <UserCog className="w-8 h-8 text-sky-500" />,
-      count: 1234,
-      label: "HostelOwners",
-    },
-    {
-      icon: <Users className="w-8 h-8 text-sky-500" />,
-      count: 1234,
-      label: "Students",
     },
   ];
 
@@ -57,196 +51,336 @@ const AboutPage = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-white">
-        {/* Page Header */}
-
-        {/* About Section */}
-        <div className="py-20 bg-white">
-          {" "}
-          {/* Container with vertical padding */}
+        {/* Hero Section */}
+        <div className="relative bg-sky-50 py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {" "}
-            {/* Responsive container */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {" "}
-              {/* Two-column layout */}
-              {/* Left Column - Text Content */}
-              <div className="space-y-6">
-                {/* Section Title with specific styling */}
-                <h6 className="text-sky-500 uppercase font-semibold tracking-wide">
-                  About Us
-                </h6>
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                About <span className="text-sky-600">Latur Hostel</span>
+              </h1>
+              <p className="max-w-2xl mx-auto text-lg text-gray-600">
+                Connecting students with their ideal accommodation since 2024.
+                We're committed to making the hostel search process simple,
+                transparent, and reliable.
+              </p>
+            </div>
+          </div>
+        </div>
 
-                {/* Main Heading with branded element */}
-                <h1 className="text-3xl lg:text-4xl font-bold">
-                  Welcome to{" "}
-                  <span className="text-sky-500 uppercase">latur hostel</span>
-                </h1>
+        {/* Main Content Section */}
+        <div className="py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              {/* Left Column - Grid Layout */}
 
-                {/* Description paragraph */}
-                <p className="text-gray-600 leading-relaxed">
-                  Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit.
-                  Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit,
-                  sed stet lorem sit clita duo justo magna dolore erat amet
-                </p>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-4 pb-6">
-                  {stats.map((stat, index) => (
-                    <div
-                      key={index}
-                      className="group animate-fadeIn"
-                      style={{ animationDelay: `${index * 0.2}s` }}
-                    >
-                      {/* Double border effect using nested divs */}
-                      <div className="border border-gray-200 rounded-lg p-1 transition-all duration-300 group-hover:border-sky-200">
-                        <div className="border border-gray-200 rounded-lg p-4 text-center transition-all duration-300 group-hover:border-sky-200">
-                          {/* Icon */}
-                          <div className="mb-2 flex justify-center">
-                            {stat.icon}
-                          </div>
-                          {/* Counter */}
-                          <h2 className="text-2xl font-bold mb-1 text-gray-800">
-                            {stat.count}
-                          </h2>
-                          {/* Label */}
-                          <p className="text-gray-600 text-sm">{stat.label}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <button className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-3 rounded-lg transition-colors duration-300">
-                  Explore More
-                </button>
-              </div>
-              {/* Right Column - Image Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* Image Grid with specific sizing and positioning */}
-                <div className="space-y-4 text-right">
+              {/* Main Container */}
+              <div className="w-full">
+                {/* Mobile Layout (Single Column) */}
+                <div className="block sm:hidden space-y-4">
                   <div
-                    className="relative inline-block w-3/4 mt-[25%] animate-zoomIn"
+                    className="animate-zoomIn"
                     style={{ animationDelay: "0.1s" }}
                   >
                     <img
                       src="/Images/about/about-1.jpg"
                       alt="Hotel view 1"
-                      className="rounded-lg shadow-lg"
+                      className="rounded-xl shadow-lg w-full h-[200px] object-cover"
                     />
                   </div>
                   <div
-                    className="relative inline-block w-1/2 animate-zoomIn"
-                    style={{ animationDelay: "0.5s" }}
-                  >
-                    <img
-                      src="/Images/about/about-2.jpg"
-                      alt="Hotel view 3"
-                      className="rounded-lg shadow-lg"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div
-                    className="relative inline-block w-full animate-zoomIn"
+                    className="animate-zoomIn"
                     style={{ animationDelay: "0.3s" }}
                   >
                     <img
                       src="/Images/about/about-3.jpg"
                       alt="Hotel view 2"
-                      className="rounded-lg shadow-lg"
+                      className="rounded-xl shadow-lg w-full h-[200px] object-cover"
                     />
                   </div>
-                  <div
-                    className="relative inline-block w-3/4 animate-zoomIn"
-                    style={{ animationDelay: "0.7s" }}
-                  >
-                    <img
-                      src="/Images/about/about-4.jpg"
-                      alt="Hotel view 4"
-                      className="rounded-lg shadow-lg"
-                    />
+                  <div className="flex gap-3">
+                    <div
+                      className="w-1/2 animate-zoomIn"
+                      style={{ animationDelay: "0.5s" }}
+                    >
+                      <img
+                        src="/Images/about/about-2.jpg"
+                        alt="Hotel view 3"
+                        className="rounded-xl shadow-lg w-full h-[150px] object-cover"
+                      />
+                    </div>
+                    <div
+                      className="w-1/2 animate-zoomIn"
+                      style={{ animationDelay: "0.7s" }}
+                    >
+                      <img
+                        src="/Images/about/about-4.jpg"
+                        alt="Hotel view 4"
+                        className="rounded-xl shadow-lg w-full h-[150px] object-cover"
+                      />
+                    </div>
                   </div>
+                </div>
+
+                {/* Desktop Layout (Two Columns) */}
+                <div className="hidden sm:grid grid-cols-2 gap-4">
+                  {/* Left Column */}
+                  <div className="space-y-4 text-right">
+                    <div
+                      className="relative inline-block w-[85%] mt-[25%] animate-zoomIn"
+                      style={{ animationDelay: "0.1s" }}
+                    >
+                      <img
+                        src="/Images/about/about-1.jpg"
+                        alt="Hotel view 1"
+                        className="rounded-xl shadow-xl h-[300px] w-full object-cover"
+                      />
+                    </div>
+                    <div
+                      className="relative inline-block w-[60%] animate-zoomIn"
+                      style={{ animationDelay: "0.5s" }}
+                    >
+                      <img
+                        src="/Images/about/about-2.jpg"
+                        alt="Hotel view 3"
+                        className="rounded-xl shadow-xl h-[200px] w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  {/* Right Column */}
+                  <div className="space-y-4">
+                    <div
+                      className="relative inline-block w-[100%] animate-zoomIn"
+                      style={{ animationDelay: "0.3s" }}
+                    >
+                      <img
+                        src="/Images/about/about-3.jpg"
+                        alt="Hotel view 2"
+                        className="rounded-xl shadow-xl h-[350px] w-full object-cover"
+                      />
+                    </div>
+                    <div
+                      className="relative inline-block w-[85%] animate-zoomIn"
+                      style={{ animationDelay: "0.7s" }}
+                    >
+                      <img
+                        src="/Images/about/about-4.jpg"
+                        alt="Hotel view 4"
+                        className="rounded-xl shadow-xl h-[200px] w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Animation Styles */}
+                <style jsx>{`
+                  @keyframes zoomIn {
+                    from {
+                      opacity: 0;
+                      transform: scale(0.95);
+                    }
+                    to {
+                      opacity: 1;
+                      transform: scale(1);
+                    }
+                  }
+                  .animate-zoomIn {
+                    animation: zoomIn 0.6s ease-out forwards;
+                  }
+                `}</style>
+              </div>
+
+              {/* Right Column - Content */}
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                    Creating Better Living Spaces for Students
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    At Latur Hostel, we understand the challenges students face
+                    when looking for accommodation. Our platform bridges the gap
+                    between students and quality hostel facilities, ensuring a
+                    smooth and trustworthy booking experience.
+                  </p>
+                </div>
+
+                <div className="grid gap-6">
+                  {features.map((feature, index) => (
+                    <div key={index} className="bg-sky-50 p-6 rounded-xl">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {feature.description}
+                      </p>
+                      {feature.bulletPoints && (
+                        <ul className="space-y-2">
+                          {feature.bulletPoints.map((point, pointIndex) => (
+                            <li
+                              key={pointIndex}
+                              className="flex items-start gap-3 text-gray-600"
+                            >
+                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-500 flex-shrink-0"></span>
+                              <span className="text-sm">{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Team Section */}
-        <div className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
+        {/* Why Choose Us Section */}
+        {/* Why Choose Us Section */}
+        <div className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <span className="text-blue-600 uppercase font-semibold">
-                Our Team
-              </span>
-              <h2 className="text-4xl font-bold mt-2">
-                Explore Our <span className="text-blue-600">Teams</span>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Why Choose Us?
               </h2>
+              <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+                We provide the best hostel experience with our comprehensive
+                services and dedication to student comfort
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {staffMembers.map((staff, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden"
-                >
-                  <div className="relative">
-                    <img
-                      src={staff.image}
-                      alt={staff.name}
-                      className="w-full h-64 object-cover"
+              {/* Safety & Security */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                  <svg
+                    className="w-6 h-6 text-sky-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                     />
-                    <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                      <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        <Facebook className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        <Twitter className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        <Instagram className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-center p-6 mt-4">
-                    <h3 className="font-bold text-lg">{staff.name}</h3>
-                    <p className="text-gray-600 text-sm">{staff.role}</p>
-                  </div>
+                  </svg>
                 </div>
-              ))}
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Safety & Security
+                </h3>
+                <p className="text-gray-600">
+                  24/7 security systems and strict access controls to ensure
+                  student safety at all times.
+                </p>
+              </div>
+
+              {/* Location Convenience */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                  <svg
+                    className="w-6 h-6 text-sky-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Prime Locations
+                </h3>
+                <p className="text-gray-600">
+                  Strategically located hostels near educational institutions
+                  and public transport.
+                </p>
+              </div>
+
+              {/* Affordable Pricing */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                  <svg
+                    className="w-6 h-6 text-sky-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Affordable Pricing
+                </h3>
+                <p className="text-gray-600">
+                  Competitive rates with flexible payment options to suit every
+                  student's budget.
+                </p>
+              </div>
+
+              {/* No Middle Man - New Feature */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                  <svg
+                    className="w-6 h-6 text-sky-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  No Middle Man
+                </h3>
+                <p className="text-gray-600">
+                  Direct connection between students and hostel owners, ensuring
+                  transparent communication and better rates.
+                </p>
+              </div>
             </div>
           </div>
         </div>
+        {/* Team Section */}
 
-        {/* Newsletter Section */}
-        <div className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto border rounded-lg p-8 bg-white shadow-lg">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-6">
-                  Subscribe Our{" "}
-                  <span className="text-blue-600">Newsletter</span>
-                </h3>
-                <div className="relative max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="w-full px-4 py-3 rounded border focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                  <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Submit
-                  </button>
+        {/* Get in Touch Section */}
+        <div className="py-8 sm:py-12 md:py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-sky-50 rounded-xl sm:rounded-2xl p-4 sm:p-8 md:p-12">
+              <div className="max-w-3xl mx-auto">
+                {/* Header Section */}
+                <div className="text-center mb-6 sm:mb-8 md:mb-10">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
+                    Get in Touch
+                  </h3>
+                  <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto px-2">
+                    Have questions about our hostels? Feel free to reach out to
+                    us. We're here to help!
+                  </p>
+                  Contact us at: support@laturhostel.com
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Back to Top Button */}
-        <button className="fixed bottom-8 right-8 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700">
-          <ArrowUp className="w-6 h-6" />
-        </button>
       </div>
       <Footer />
     </>

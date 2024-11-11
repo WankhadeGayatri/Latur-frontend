@@ -8,6 +8,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
+import Navbar from "./Navbar";
 
 interface FilterBarProps {
   onFilterChange: (filters: Filters) => void;
@@ -71,6 +72,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   const filterButtons = Object.keys(filterOptions) as (keyof FilterOptions)[];
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
+  const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">(
+    "desktop"
+  );
+
   useEffect(() => {
     const filterBar = filterBarRef.current;
     if (!filterBar) return;
@@ -88,12 +93,25 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
         filterBarTop =
           filterBar.getBoundingClientRect().top + window.pageYOffset;
       }
-      setIsMobile(window.innerWidth < 768);
+
+      // Enhanced responsive breakpoints
+      const width = window.innerWidth;
+      if (width < 768) {
+        setDeviceType("mobile");
+        setIsMobile(true);
+      } else if (width >= 768 && width <= 1024) {
+        setDeviceType("tablet");
+        setIsMobile(false); // Keep desktop layout for tablet but with adjustments
+      } else {
+        setDeviceType("desktop");
+        setIsMobile(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleResize);
 
+    // Initial device check
     handleResize();
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -144,6 +162,74 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
     setFilters(initialFilters);
     onFilterChange(initialFilters);
   };
+  const renderSearchBar = () => (
+    <div
+      className={`relative flex-shrink-0 ${
+        deviceType === "mobile"
+          ? "w-full"
+          : deviceType === "tablet"
+          ? "w-[250px]"
+          : "w-[300px]"
+      }`}
+    >
+      <input
+        type="text"
+        placeholder="Search your Hostel"
+        className="w-full bg-white border-2 border-sky-200 rounded-full py-3 px-5 pr-12 text-base focus:outline-none focus:border-sky-500"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      <button
+        onClick={handleSearch}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
+      >
+        <Search size={24} />
+      </button>
+    </div>
+  );
+
+  // Modified filter buttons with responsive sizes
+  const renderFilterButtons = () => (
+    <>
+      {filterButtons.map((filter) => (
+        <div key={filter} className="relative">
+          <button
+            onClick={() => toggleDropdown(filter)}
+            className={`flex items-center justify-between px-4 py-2 text-sm hover:bg-[#87CEEB] hover:text-white rounded-full border-2 border-gray-300 ${
+              deviceType === "tablet" ? "w-36" : "w-44"
+            } h-12`}
+          >
+            <span className="truncate">
+              {filter}:{" "}
+              {filter === "Type"
+                ? filters.type
+                : filter === "Students/Room"
+                ? filters.studentsPerRoom
+                : "Any"}
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 ml-1 transition-transform duration-200 ${
+                openDropdown === filter ? "transform rotate-180" : ""
+              }`}
+            />
+          </button>
+          {openDropdown === filter && (
+            <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+              {filterOptions[filter].map((option, index) => (
+                <div
+                  key={index}
+                  className="px-4 py-2 text-sm hover:bg-[#87CEEB] hover:text-white cursor-pointer"
+                  onClick={() => handleFilterSelect(filter, option)}
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </>
+  );
 
   const renderDesktopFilters = () => (
     <>
@@ -216,82 +302,92 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   const renderMobileFilters = () => {
     return (
       <div className="flex flex-col space-y-2">
-        <div className="flex items-center space-x-2">
-          {isSearchExpanded ? (
-            <div className="flex-grow relative">
-              <input
-                type="text"
-                placeholder="Search your Hostel"
-                className="w-full bg-white border-2 border-sky-200 rounded-full py-2 px-4 pr-10 text-sm focus:outline-none focus:border-sky-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+        <div className="flex items-center justify-between">
+          {/* Left side with search and filters */}
+          <div className="flex items-center space-x-2 flex-grow">
+            {isSearchExpanded ? (
+              <div className="flex-grow relative">
+                <input
+                  type="text"
+                  placeholder="Search your Hostel"
+                  className="w-full bg-white border-2 border-sky-200 rounded-full py-2 px-4 pr-10 text-sm focus:outline-none focus:border-sky-500"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button
+                  aria-label="Search"
+                  onClick={() => {
+                    handleSearch();
+                    setIsSearchExpanded(false);
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
+                >
+                  <Search size={20} />
+                </button>
+              </div>
+            ) : (
               <button
-                aria-label="Search"
-                onClick={() => {
-                  handleSearch();
-                  setIsSearchExpanded(false);
-                }}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
+                onClick={() => setIsSearchExpanded(true)}
+                className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500 hover:bg-gray-100"
               >
                 <Search size={20} />
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsSearchExpanded(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500 hover:bg-gray-100"
-            >
-              <Search size={20} />
-            </button>
-          )}
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 h-10"
-          >
-            <Filter className="w-4 h-4 mr-2" />
-            Filters
-          </button>
-          <div className="relative">
-            <button
-              onClick={() => setIsGenderOpen(!isGenderOpen)}
-              className="flex items-center justify-between px-4 py-2 text-sm rounded-full border-2 border-gray-300 h-10 min-w-[110px]"
-            >
-              <span className="truncate">
-                {filters.type === "All"
-                  ? "Gender"
-                  : filters.type === "boys"
-                  ? "Male"
-                  : "Female"}
-              </span>
-              <ChevronDown className="w-4 h-4 ml-2" />
-            </button>
-            {isGenderOpen && (
-              <div className="absolute z-10 mt-1 w-full bg-white border-2 border-gray-300 rounded-lg shadow-lg">
-                {["All", "boys", "girls"].map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => {
-                      handleFilterChange("type", option);
-                      setIsGenderOpen(false);
-                    }}
-                    className={`block w-full text-left px-4 py-2 text-sm ${
-                      filters.type === option
-                        ? "bg-[#87CEEB] text-white"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    {option === "All"
-                      ? "All"
-                      : option === "boys"
-                      ? "Male"
-                      : "Female"}
-                  </button>
-                ))}
-              </div>
             )}
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center justify-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 h-10"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Filters
+            </button>
+
+            <div className="relative">
+              <button
+                onClick={() => setIsGenderOpen(!isGenderOpen)}
+                className="flex items-center justify-between px-4 py-2 text-sm rounded-full border-2 border-gray-300 h-10 min-w-[110px]"
+              >
+                <span className="truncate">
+                  {filters.type === "All"
+                    ? "Gender"
+                    : filters.type === "boys"
+                    ? "Male"
+                    : "Female"}
+                </span>
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </button>
+              {isGenderOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border-2 border-gray-300 rounded-lg shadow-lg">
+                  {["All", "boys", "girls"].map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => {
+                        handleFilterChange("type", option);
+                        setIsGenderOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm ${
+                        filters.type === option
+                          ? "bg-[#87CEEB] text-white"
+                          : "hover:bg-gray-100"
+                      }`}
+                    >
+                      {option === "All"
+                        ? "All"
+                        : option === "boys"
+                        ? "Male"
+                        : "Female"}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
+          {isSticky && (
+            <div className="flex items-center ml-2">
+              <Navbar />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -300,7 +396,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   return (
     <div
       ref={filterBarRef}
-      className={`p-6 bg-white transition-all duration-300 ${
+      className={`p-4 md:p-6 bg-white transition-all duration-300 ${
         isSticky ? "fixed top-0 left-0 right-0 z-50 shadow-md" : ""
       }`}
       style={{
@@ -311,33 +407,58 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
       }}
     >
       <div
-        className={`flex items-center space-x-6 ${
-          isSticky ? "" : "justify-center"
-        } ${isMobile ? "flex-col items-stretch space-y-4" : ""}`}
+        className={`
+          flex items-center
+          ${
+            deviceType === "mobile"
+              ? "flex-col items-stretch space-y-4"
+              : deviceType === "tablet"
+              ? "flex-wrap gap-3 justify-center"
+              : "space-x-6 justify-center"
+          }
+        `}
       >
-        {!isMobile && (
-          <div
-            className={`relative flex-shrink-0 ${
-              isMobile ? "w-full" : "w-[300px]"
-            }`}
-          >
-            <input
-              type="text"
-              placeholder="Search your Hostel"
-              className="w-full bg-white border-2 border-sky-200 rounded-full py-3 px-5 pr-12 text-base focus:outline-none focus:border-sky-500"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+        {deviceType !== "mobile" && renderSearchBar()}
+        {deviceType === "mobile" ? (
+          renderMobileFilters()
+        ) : (
+          <>
+            {renderFilterButtons()}
             <button
-              onClick={handleSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
+              onClick={() => setIsModalOpen(true)}
+              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
+                deviceType === "tablet" ? "w-32" : "w-40"
+              } h-12`}
             >
-              <Search size={24} />
+              <Filter className="w-4 h-4 mr-2" />
+              More Filters
             </button>
-          </div>
+            <button
+              onClick={() =>
+                handleFilterChange("sortByRatings", !filters.sortByRatings)
+              }
+              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
+                deviceType === "tablet" ? "w-32" : "w-40"
+              } h-12`}
+            >
+              Sort By:{" "}
+              <span className="text-[#87CEEB] ml-1">
+                {filters.sortByRatings ? "Ratings" : "Popularity"}
+              </span>
+            </button>
+            <button
+              onClick={clearAllFilters}
+              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-red-300 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 ${
+                deviceType === "tablet" ? "w-32" : "w-40"
+              } h-12`}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Clear Filters
+            </button>
+          </>
         )}
-        {isMobile ? renderMobileFilters() : renderDesktopFilters()}
       </div>
+
       {isModalOpen && !isMobile && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div

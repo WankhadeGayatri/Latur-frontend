@@ -149,8 +149,8 @@ const Login: React.FC = () => {
             <div>
               <div className="mb-4 md:mb-8 flex justify-center">
                 <Image
-                  src="/Images/NewLogo1.png"
-                  alt="Hostel Logo"
+                  src="/logo/logo.png"
+                  alt="Latur Hostel Logo"
                   width={150}
                   height={150}
                   className="w-32 h-32 md:w-auto md:h-auto"

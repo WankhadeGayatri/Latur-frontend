@@ -8,6 +8,7 @@ import Navbar from "../Component/mainpage/Navbar";
 import Footer from "../Component/mainpage/Footer";
 import RoleSpecificTermsAndBenefits from "../Dashboard/student/component/RoleSpecificTermsAndBenefits";
 import { API_BASE_URL } from "@/config/api";
+import Image from "next/image";
 
 interface Role {
   _id: string;
@@ -219,7 +220,7 @@ const RegisterPage: React.FC = () => {
   };
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = ["/Images/HomePage/AI.jpg", "/Images/HomePage/AI2.jpg"];
+  const images = ["/Images/HomePage/AI.jpg", "/Images/HomePage/ai2.jpg"];
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -261,12 +262,14 @@ const RegisterPage: React.FC = () => {
 
               <div className="relative z-10 px-4 py-5 sm:px-6 min-h-[50vh]">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="flex-shrink-0 bg-white rounded-full p-3">
-                    <Home
-                      className="h-8 w-8 text-purple-600"
-                      aria-hidden="true"
-                    />
-                  </div>
+                  <Image
+                    src="/logo/logo.png"
+                    alt="Latur Hostel Logo"
+                    width={80}
+                    height={40}
+                    className="object-contain"
+                  />
+
                   <div>
                     <h1 className="text-3xl font-bold text-white">
                       Latur Hostel

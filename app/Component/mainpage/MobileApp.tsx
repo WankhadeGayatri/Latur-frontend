@@ -95,7 +95,7 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   ];
 
   return (
-    <div className="relative h-full  pb-20 px-4 flex flex-col items-center justify-center bg-white">
+    <div className="relative h-full  pb-20 px-2 flex flex-col items-center justify-center bg-white">
       <NavigationButtons onNext={onNext} onPrev={onPrev} />
       <h1 className="text-xl mt-2 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
@@ -436,7 +436,7 @@ const MobileApp: React.FC = () => {
   }, [handleNextScreen]);
 
   return (
-    <div className="relative mt-10 flex items-center justify-center h-screen overflow-hidden">
+    <div className="relative  flex items-center justify-center h-screen overflow-hidden">
       {/* Content structure remains the same, now with type safety */}
       <div
         ref={appRef}

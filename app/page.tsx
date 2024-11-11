@@ -28,7 +28,7 @@ const LoadingState = () => (
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-sky-50 to-white">
-      <div className="max-w-[2000px] mx-auto px-4">
+      <div className="max-w-[2000px] mx-auto ">
         <Suspense fallback={<nav className="h-16 bg-white" />}>
           <Navbar />
         </Suspense>
