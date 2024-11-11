@@ -1,27 +1,42 @@
 "use client";
 import React from "react";
-import dynamic from "next/dynamic";
+import styled, { keyframes } from "styled-components";
 import Footer from "../Component/mainpage/Footer";
 import Navbar from "../Component/mainpage/Navbar";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 
-// Types
-interface GalleryProps {
-  maxImages?: number;
-}
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
-// Styled components using MUI styled
-const Container = styled("div")({
-  minHeight: "200vh",
-  maxWidth: "100%",
-  padding: "2rem",
-  background: "#f7fafc",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "flex-start",
-});
+const fadeInBox = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+// Keep all your existing styled components the same...
+const Container = styled.div`
+  min-height: 200vh;
+  max-width: 100%;
+  padding: 2rem;
+  background: #f7fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
 
 const GalleryContainer = styled("div")({
   width: "100%",
@@ -145,10 +160,11 @@ const CloseButton = styled("button")({
   },
 });
 
-const ImageGallery = ({ maxImages = 12 }: GalleryProps) => {
+const ImageGallery = () => {
   const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
+  const maxImages = 12; // Move this inside the component
 
-  // Gallery images and descriptions
+  // Keep all your existing image arrays and handlers the same...
   const galleryImages = [
     "/Images/HomePage/img 8.jpg",
     "/Images/HomePage/img 9.jpg",
@@ -165,7 +181,10 @@ const ImageGallery = ({ maxImages = 12 }: GalleryProps) => {
   ];
 
   const imageDetails = [
-    { title: "Hostel", description: "Dinning Room" },
+    {
+      title: "Hostel",
+      description: "Dinning Room",
+    },
     { title: "Hostel", description: "Hostel Rooms" },
     { title: "Hostel", description: "Hostel Rooms" },
     { title: "Hostel", description: "Study table" },
@@ -218,12 +237,10 @@ const ImageGallery = ({ maxImages = 12 }: GalleryProps) => {
 
         <Lightbox isVisible={selectedImage !== null}>
           <LightboxContent>
-            {selectedImage !== null && (
-              <LightboxImage
-                src={galleryImages[selectedImage]}
-                alt={`Hostel Image ${selectedImage + 1}`}
-              />
-            )}
+            <LightboxImage
+              src={galleryImages[selectedImage!]}
+              alt={`Hostel Image ${selectedImage! + 1}`}
+            />
             <CloseButton onClick={handleClose}>✕</CloseButton>
           </LightboxContent>
         </Lightbox>
