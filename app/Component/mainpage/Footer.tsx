@@ -103,7 +103,7 @@ const Footer = () => {
           <div className="mt-2 pt-2 border-t border-gray-800">
             <div className="flex justify-center ml-8">
               <p className="text-gray-300 text-sm text-center">
-                Copyright © 2024 | All Rights Reserved by Dossiefoyer Pvt Ltd.
+                Copyright © 2024 | All Rights Reserved by www.laturhostel.com
                 Developer and Maintained by Dossiefoyer Private Limited
               </p>
             </div>
