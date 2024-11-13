@@ -149,7 +149,7 @@ const Login: React.FC = () => {
             <div>
               <div className="mb-4 md:mb-8 flex justify-center">
                 <Image
-                  src="/logo/logo.png"
+                  src="/logo/LATUR HOSTEL- FINAL LOGO- PNG.png"
                   alt="Latur Hostel Logo"
                   width={150}
                   height={150}
@@ -286,7 +286,7 @@ const Login: React.FC = () => {
                       href="/register"
                       className="text-blue-400 hover:text-gray-800 transition-colors duration-200"
                     >
-                      sign up
+                      register
                     </a>
                   </span>
                 </div>

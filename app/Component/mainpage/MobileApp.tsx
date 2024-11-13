@@ -26,6 +26,7 @@ import {
   Check,
   Wind,
   Utensils,
+  Layout,
 } from "lucide-react";
 import { gsap } from "gsap";
 import student from "../../../public/student.json";
@@ -66,7 +67,7 @@ interface Step {
   text: string;
 }
 const NavigationButtons: React.FC<NavigationProps> = ({ onNext, onPrev }) => (
-  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 px-4 flex justify-between pointer-events-none">
+  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 px-2 flex justify-between pointer-events-none">
     <button
       onClick={onPrev}
       className="pointer-events-auto bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors z-20"
@@ -95,37 +96,43 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   ];
 
   return (
-    <div className="relative h-full  pb-20 px-2 flex flex-col items-center justify-center bg-white">
-      <NavigationButtons onNext={onNext} onPrev={onPrev} />
-      <h1 className="text-xl mt-2 font-bold mb-2 text-blue-800">
+    <div className="relative h-full pb-16 sm:pb-20 px-2 flex flex-col items-center justify-center bg-white">
+      {/* <NavigationButtons onNext={onNext} onPrev={onPrev} /> */}
+      <h1 className="text-lg sm:text-xl mt-2 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
       </h1>
-      <div className="relative w-64 h-64">
+      <div className="relative w-52 h-52 sm:w-64 sm:h-64">
         <Player
           autoplay
           loop
           src={student}
           style={{ width: "100%", height: "100%" }}
         />
-        {examBubbles.map((bubble, index) => (
-          <div
-            key={bubble.name}
-            className={`exam-bubble absolute ${bubble.color} rounded-full p-2 text-white text-xs font-semibold shadow-lg`}
-            style={{
-              top: `${50 + 40 * Math.sin((index * Math.PI) / 3)}%`,
-              left: `${50 + 40 * Math.cos((index * Math.PI) / 3)}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            {bubble.name}
-          </div>
-        ))}
-        <p className="mt-6 text-center text-gray-700 max-w-xs">
-          Welcome to Latur hostel, located near top tuition centers, where a
-          friendly environment fosters your academic success. Join our vibrant
-          community and enjoy the comfort
-        </p>
+        {examBubbles.map((bubble, index) => {
+          // Adjust radius for mobile
+          const radius = window.innerWidth < 640 ? 35 : 40;
+          return (
+            <div
+              key={bubble.name}
+              className={`exam-bubble absolute ${bubble.color} rounded-full p-1.5 sm:p-2 text-white text-[10px] sm:text-xs font-semibold shadow-lg transform transition-all duration-300 hover:scale-110`}
+              style={{
+                top: `${50 + radius * Math.sin((index * Math.PI) / 3)}%`,
+                left: `${50 + radius * Math.cos((index * Math.PI) / 3)}%`,
+                transform: "translate(-50%, -50%)",
+                minWidth: window.innerWidth < 640 ? "40px" : "48px",
+                textAlign: "center",
+              }}
+            >
+              {bubble.name}
+            </div>
+          );
+        })}
       </div>
+      <p className="mt-4 sm:mt-6 text-center text-gray-700 text-sm sm:text-base max-w-[250px] sm:max-w-xs leading-tight sm:leading-normal">
+        Welcome to Latur hostel, located near top tuition centers, where a
+        friendly environment fosters your academic success. Join our vibrant
+        community and enjoy the comfort
+      </p>
     </div>
   );
 };
@@ -153,48 +160,50 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
         "https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
     },
   ];
+
   const services: Service[] = [
     {
-      icon: <Sun size={24} />,
+      icon: <Sun size={20} className="sm:w-6 sm:h-6" />,
       name: "Solar Power",
       color: "bg-yellow-100 text-yellow-600",
     },
     {
-      icon: <Wifi size={24} />,
+      icon: <Wifi size={20} className="sm:w-6 sm:h-6" />,
       name: "High-Speed WiFi",
       color: "bg-blue-100 text-blue-600",
     },
     {
-      icon: <Book size={24} />,
+      icon: <Book size={20} className="sm:w-6 sm:h-6" />,
       name: "Study Rooms",
       color: "bg-green-100 text-green-600",
     },
     {
-      icon: <Shield size={24} />,
+      icon: <Shield size={20} className="sm:w-6 sm:h-6" />,
       name: "24/7 Security",
       color: "bg-red-100 text-red-600",
     },
     {
-      icon: <Wind size={24} />,
+      icon: <Wind size={20} className="sm:w-6 sm:h-6" />,
       name: "AC Rooms",
       color: "bg-purple-100 text-purple-600",
     },
     {
-      icon: <Users size={24} />,
+      icon: <Users size={20} className="sm:w-6 sm:h-6" />,
       name: "Community Areas",
       color: "bg-indigo-100 text-indigo-600",
     },
     {
-      icon: <Utensils size={24} />,
+      icon: <Utensils size={20} className="sm:w-6 sm:h-6" />,
       name: "Quality Mess",
       color: "bg-orange-100 text-orange-600",
     },
     {
-      icon: <Power size={24} />,
+      icon: <Power size={20} className="sm:w-6 sm:h-6" />,
       name: "Power Backup",
       color: "bg-gray-100 text-gray-600",
     },
   ];
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -203,9 +212,11 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   }, [slides.length]);
 
   return (
-    <div className="relative h-full pt-12 pb-20 px-4 bg-gray-50 overflow-y-auto">
-      <NavigationButtons onNext={onNext} onPrev={onPrev} />
-      <div className="relative h-64 mb-6 rounded-xl overflow-hidden shadow-lg">
+    <div className="relative h-full pt-8 sm:pt-12 pb-16 sm:pb-20 px-3 sm:px-4 bg-gray-50 overflow-y-auto">
+      {/* <NavigationButtons onNext={onNext} onPrev={onPrev} /> */}
+
+      {/* Hero Slider */}
+      <div className="relative h-48 sm:h-64 mb-4 sm:mb-6 rounded-xl overflow-hidden shadow-lg">
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSlide}
@@ -220,11 +231,11 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
               alt={slides[currentSlide].title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-4">
-              <h2 className="text-white text-2xl font-bold">
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-3 sm:p-4">
+              <h2 className="text-white text-xl sm:text-2xl font-bold">
                 {slides[currentSlide].title}
               </h2>
-              <p className="text-white text-sm mt-2">
+              <p className="text-white text-xs sm:text-sm mt-1 sm:mt-2">
                 {slides[currentSlide].description}
               </p>
             </div>
@@ -233,74 +244,77 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-800">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 gap-4">
-          <button className="bg-blue-600 text-white rounded-lg p-4 shadow-md flex items-center justify-center">
-            <Home size={20} className="mr-2" />
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <button className="bg-blue-600 text-white rounded-lg p-3 sm:p-4 shadow-md flex items-center justify-center text-sm sm:text-base">
+            <Home size={18} className="mr-2" />
             <span>Book a Room</span>
           </button>
-          <button className="bg-green-600 text-white rounded-lg p-4 shadow-md flex items-center justify-center">
-            <Coffee size={20} className="mr-2" />
+          <button className="bg-green-600 text-white rounded-lg p-3 sm:p-4 shadow-md flex items-center justify-center text-sm sm:text-base">
+            <Coffee size={18} className="mr-2" />
             <span>View Amenities</span>
           </button>
         </div>
       </div>
 
       {/* Services Section */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-800">
           Our Services
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className={`${service.color} rounded-lg p-4 shadow-md flex items-center`}
+              className={`${service.color} rounded-lg p-3 sm:p-4 shadow-md flex items-center`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               {service.icon}
-              <span className="ml-3 font-medium">{service.name}</span>
+              <span className="ml-2 sm:ml-3 font-medium text-xs sm:text-base">
+                {service.name}
+              </span>
             </motion.div>
           ))}
         </div>
       </div>
 
       {/* Testimonials */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-800">
           What Students Say
         </h2>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <p className="text-gray-600 italic">
+        <div className="bg-white rounded-lg shadow-md p-3 sm:p-4">
+          <p className="text-gray-600 italic text-sm sm:text-base">
             "Latur Hostel provided me with the perfect environment to focus on
             my studies and make lifelong friends. The amenities are top-notch!"
           </p>
-          <p className="text-gray-800 font-semibold mt-2">
+          <p className="text-gray-800 font-semibold mt-2 text-sm sm:text-base">
             - Priya S., Engineering Student
           </p>
         </div>
       </div>
 
       {/* Call to Action */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-4 sm:p-6 text-white">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">
           Ready to Join Our Community?
         </h2>
-        <p className="mb-4">
+        <p className="mb-3 sm:mb-4 text-sm sm:text-base">
           Experience the best of student living at Latur Hostel.
         </p>
-        <button className="bg-white text-blue-600 font-semibold py-2 px-4 rounded-full flex items-center">
-          Apply Now
-          <ChevronRight size={20} className="ml-2" />
+        <button className="bg-white text-blue-600 font-semibold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full flex items-center text-sm sm:text-base">
+          Book Now
+          <ChevronRight size={18} className="ml-1.5 sm:ml-2" />
         </button>
       </div>
     </div>
   );
 };
+
 const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const stepsRef = useRef<HTMLDivElement>(null);
@@ -314,27 +328,61 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     },
     { title: "Take Admission", description: "Follow These Steps" },
   ];
+
   const steps: Step[] = [
-    { icon: <Home size={20} />, text: "1. Registration Process" },
-    { icon: <Home size={20} />, text: "1. Registration Process" },
-    { icon: <Key size={20} />, text: "2. Log in to Your Account" },
-    { icon: <Book size={20} />, text: "3. Explore Hostel Options" },
-    { icon: <ThumbsUp size={20} />, text: "4. Add to Wishlist" },
-    { icon: <Users size={20} />, text: "5. Submit Wishlist for Approval" },
-    { icon: <Calendar size={20} />, text: "6. Schedule Visit to Hostel" },
-    { icon: <MessageCircle size={20} />, text: "7. Provide Feedback" },
-    { icon: <Check size={20} />, text: "8. Take Admission" },
-    { icon: <FileText size={20} />, text: "9. Complete Formalities" },
-    { icon: <HelpCircle size={20} />, text: "10. Follow Hostel Guidelines" },
+    {
+      icon: <Home size={16} className="sm:w-5 sm:h-5" />,
+      text: "1. Registration Process",
+    },
+    {
+      icon: <Home size={16} className="sm:w-5 sm:h-5" />,
+      text: "1. Registration Process",
+    },
+    {
+      icon: <Key size={16} className="sm:w-5 sm:h-5" />,
+      text: "2. Log in to Your Account",
+    },
+    {
+      icon: <Book size={16} className="sm:w-5 sm:h-5" />,
+      text: "3. Explore Hostel Options",
+    },
+    {
+      icon: <ThumbsUp size={16} className="sm:w-5 sm:h-5" />,
+      text: "4. Add to Wishlist",
+    },
+    {
+      icon: <Users size={16} className="sm:w-5 sm:h-5" />,
+      text: "5. Submit Wishlist for Approval",
+    },
+    {
+      icon: <Calendar size={16} className="sm:w-5 sm:h-5" />,
+      text: "6. Schedule Visit to Hostel",
+    },
+    {
+      icon: <MessageCircle size={16} className="sm:w-5 sm:h-5" />,
+      text: "7. Provide Feedback",
+    },
+    {
+      icon: <Check size={16} className="sm:w-5 sm:h-5" />,
+      text: "8. Take Admission",
+    },
+    {
+      icon: <FileText size={16} className="sm:w-5 sm:h-5" />,
+      text: "9. Complete Formalities",
+    },
+    {
+      icon: <HelpCircle size={16} className="sm:w-5 sm:h-5" />,
+      text: "10. Follow Hostel Guidelines",
+    },
   ];
 
   useEffect(() => {
-    const stepHeight: number = 60;
-
+    const stepHeight: number = window.innerWidth < 640 ? 50 : 60;
     if (stepsRef.current) {
       stepsRef.current.scrollTop = currentStepIndex * stepHeight;
     }
   }, [currentStepIndex]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentStepIndex((prev) => (prev + 1) % steps.length);
@@ -343,67 +391,71 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   }, [steps.length]);
 
   return (
-    <div className="relative h-full pt-12 pb-20 px-4 bg-gradient-to-br from-blue-50 to-purple-50">
-      <NavigationButtons onNext={onNext} onPrev={onPrev} />
-      <div className="flex justify-center items-center mb-6">
-        {/* <ChevronLeft size={24} className="text-blue-600" /> */}
-        <h1 className="text-xl font-bold text-blue-800">Steps to get hostel</h1>
+    <div className="relative h-full pt-8 sm:pt-12 pb-16 sm:pb-20 px-3 sm:px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+      {/* <NavigationButtons onNext={onNext} onPrev={onPrev} /> */}
+      <div className="flex justify-center items-center mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-xl font-bold text-blue-800">
+          Steps to get hostel
+        </h1>
       </div>
 
-      {/* Autoplay Slider for Support Screen */}
-      <div className="mb-6 relative h-20 rounded-lg overflow-hidden bg-white shadow-lg">
+      {/* Autoplay Slider */}
+      <div className="mb-4 sm:mb-6 relative h-16 sm:h-20 rounded-lg overflow-hidden bg-white shadow-lg">
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSupportSlide}
-            className="absolute inset-0 flex flex-col justify-center items-center p-4"
+            className="absolute inset-0 flex flex-col justify-center items-center p-3 sm:p-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-xl font-semibold text-blue-700">
+            <h2 className="text-base sm:text-xl font-semibold text-blue-700">
               {supportSlides[currentSupportSlide].title}
             </h2>
-            <p className="text-sm text-gray-600 mt-2 text-center">
+            <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 text-center">
               {supportSlides[currentSupportSlide].description}
             </p>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <h2 className="font-bold text-lg mb-4 text-blue-800">
+      <h2 className="font-bold text-base sm:text-lg mb-3 sm:mb-4 text-blue-800">
         Admission Process
       </h2>
+
       <div
         ref={stepsRef}
-        className="bg-white rounded-lg shadow-lg p-4 mb-6 h-64 overflow-hidden"
+        className="bg-white rounded-lg shadow-lg p-3 sm:p-4 mb-4 sm:mb-6 h-56 sm:h-64 overflow-hidden"
       >
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              className="flex items-center py-3 border-b border-gray-100 last:border-0"
+              className="flex items-center py-2 sm:py-3 border-b border-gray-100 last:border-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className="bg-blue-100 p-2 rounded-full mr-4">
+              <div className="bg-blue-100 p-1.5 sm:p-2 rounded-full mr-3 sm:mr-4">
                 {step.icon}
               </div>
-              <span className="text-sm text-gray-700">{step.text}</span>
-              <ChevronRight size={16} className="ml-auto text-blue-500" />
+              <span className="text-xs sm:text-sm text-gray-700">
+                {step.text}
+              </span>
+              <ChevronRight size={14} className="ml-auto text-blue-500" />
             </motion.div>
           ))}
         </div>
       </div>
 
-      <div className="flex justify-between">
-        <button className="bg-blue-600 text-white rounded-full py-2 px-4 text-sm font-semibold flex items-center shadow-lg hover:bg-blue-700 transition duration-300">
-          <HelpCircle size={16} className="mr-2" />
+      <div className="flex justify-between gap-2">
+        <button className="bg-blue-600 text-white rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-xs sm:text-sm font-semibold flex items-center shadow-lg hover:bg-blue-700 transition duration-300">
+          <HelpCircle size={14} className="mr-1.5 sm:mr-2" />
           <span>Get Help</span>
         </button>
-        <button className="bg-purple-600 text-white rounded-full py-2 px-4 text-sm font-semibold flex items-center shadow-lg hover:bg-purple-700 transition duration-300">
-          <MessageCircle size={16} className="mr-2" />
+        <button className="bg-purple-600 text-white rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-xs sm:text-sm font-semibold flex items-center shadow-lg hover:bg-purple-700 transition duration-300">
+          <MessageCircle size={14} className="mr-1.5 sm:mr-2" />
           <span>Raise a Complaint</span>
         </button>
       </div>
@@ -412,10 +464,17 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 };
 
 const MobileApp: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>("welcome");
-  const appRef = useRef<HTMLDivElement>(null);
-  const screens: ScreenName[] = ["welcome", "home", "support"];
+  const [currentScreen, setCurrentScreen] = useState("welcome");
+  const [time, setTime] = useState(new Date());
+  const appRef = useRef(null);
+  const screens = ["welcome", "home", "support"];
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
   const handleNextScreen = useCallback((): void => {
     setCurrentScreen((prevScreen) => {
       const currentIndex = screens.indexOf(prevScreen);
@@ -436,25 +495,29 @@ const MobileApp: React.FC = () => {
   }, [handleNextScreen]);
 
   return (
-    <div className="relative  flex items-center justify-center h-screen overflow-hidden">
-      {/* Content structure remains the same, now with type safety */}
+    <div className="relative flex items-center justify-center  overflow-hidden  p-4">
       <div
         ref={appRef}
-        className="relative w-[320px] h-[650px] bg-black rounded-[40px] p-2 shadow-xl"
+        className="relative w-[280px] sm:w-[320px] h-[500px] sm:h-[600px] bg-black rounded-[32px] sm:rounded-[40px] p-2 shadow-2xl transform transition-all duration-300 hover:scale-[1.02]"
       >
-        <div className="w-full h-full bg-white rounded-[35px] overflow-hidden relative">
+        <div className="w-full h-full bg-white rounded-[28px] sm:rounded-[35px] overflow-hidden relative">
           {/* Status Bar */}
-          <div className=" top-0 left-0 right-0 h-[44px] bg-white flex items-center justify-between px-6 text-black z-30">
-            <span className="text-sm font-semibold">9:41 AM</span>
+          <div className="sticky top-0 left-0 right-0 h-[36px] sm:h-[44px] bg-white flex items-center justify-between px-4 sm:px-6 text-black z-30 border-b border-gray-100">
+            <span className="text-[10px] sm:text-xs font-semibold">
+              {time.toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </span>
             <div className="flex items-center space-x-1">
-              <div className="w-6 h-3 bg-black rounded-sm relative">
-                <div className=" right-[2px] top-[2px] bottom-[2px] left-[9px] bg-black rounded-sm"></div>
+              <div className="w-4 sm:w-6 h-2 sm:h-3 bg-black rounded-sm relative">
+                <div className="absolute right-[2px] top-[2px] bottom-[2px] left-[6px] sm:left-[9px] bg-white rounded-sm"></div>
               </div>
             </div>
           </div>
 
           {/* Screen Content */}
-          <div className="relative h-[calc(100%-104px)]">
+          <div className="relative h-[calc(100%-90px)] bg-gray-50">
             <AnimatePresence initial={false} custom={currentScreen}>
               <motion.div
                 key={currentScreen}
@@ -462,45 +525,60 @@ const MobileApp: React.FC = () => {
                 initial={{ opacity: 0, x: 300 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -300 }}
-                transition={{ type: "tween", duration: 0.5 }}
-                className="absolute inset-0"
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="absolute inset-0 p-3 sm:p-4"
               >
                 {currentScreen === "welcome" && (
-                  <WelcomeScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-blue-500 rounded-full animate-pulse"></div>
+                    <WelcomeScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
                 )}
                 {currentScreen === "support" && (
-                  <SupportScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-green-500 rounded-full animate-bounce"></div>
+                    <SupportScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
                 )}
                 {currentScreen === "home" && (
-                  <HomeScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <HomeScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
                 )}
               </motion.div>
             </AnimatePresence>
           </div>
 
           {/* Bottom Navigation */}
-          <div className="absolute bottom-2 left-2 right-2 h-[60px] bg-gray-800 rounded-[30px] flex justify-around items-center">
-            <Home size={24} className="text-white" />
-            <Coffee size={24} className="text-white" />
-            <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center -mt-6">
-              <Lock size={24} className="text-white" />
-            </div>
-            <Stay size={24} className="text-white" />
-            <Coffee size={24} className="text-white" />
+          <div className="absolute bottom-2 left-2 right-2 h-[50px] sm:h-[60px] bg-gray-800 rounded-[25px] sm:rounded-[30px] flex justify-around items-center shadow-lg">
+            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+              <Home size={20} className="text-white" />
+            </button>
+            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+              <Coffee size={20} className="text-white" />
+            </button>
+            <button className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-full flex items-center justify-center -mt-4 sm:-mt-6 hover:bg-gray-600 transition-colors shadow-lg">
+              <Lock size={20} className="text-white" />
+            </button>
+            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+              <Layout size={20} className="text-white" />
+            </button>
+            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+              <Coffee size={20} className="text-white" />
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default MobileApp;

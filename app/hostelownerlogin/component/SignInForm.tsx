@@ -272,7 +272,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
                           className="text-blue-400 hover:text-gray-800 transition-colors duration-200"
                           sx={{ textTransform: "none" }}
                         >
-                          Sign up
+                          Register
                         </Button>
                       </span>
                     </div>

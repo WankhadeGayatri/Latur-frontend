@@ -164,14 +164,37 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
+
+    // Existing validations
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
     setemail(formData.email);
-    if (!formData.password) newErrors.password = "Password is required";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
     if (!formData.phoneNumber)
       newErrors.phoneNumber = "Phone number is required";
+
+    // Enhanced password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      if (!passwordRegex.test(formData.password)) {
+        newErrors.password =
+          "Password must be at least 8 characters long, contain one uppercase letter and one special character";
+      }
+    }
+
+    // Confirm password validation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    // Student specific validation
+    const currentRoleName = getCurrentRoleName();
+    if (currentRoleName === "student") {
+      if (!formData.parentnumber) {
+        newErrors.parentnumber = "Parent Phone number is required";
+      }
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -279,10 +302,10 @@ const SignupForm: React.FC<SignupFormProps> = ({
                   Welcome back! Access your property dashboard
                 </p>
               </div>
-              <div className="flex flex-col lg:flex-row gap-8">
+              <div>
                 <div>
                   <form onSubmit={handleSubmit} className="space-y-6 mt-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6">
                       <div>
                         <label
                           htmlFor="name"
@@ -368,7 +391,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                             value={formData.phoneNumber}
                             onChange={handleChange}
                             required
-                            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                            className=" block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                             placeholder="+9125456687"
                           />
                         </div>
@@ -451,7 +474,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         onClick={switchToLogin}
                         sx={{ textTransform: "none" }}
                       >
-                        Sign in
+                        Sign-in
                       </Button>
                     </Typography>
                     {showOtpInput && (

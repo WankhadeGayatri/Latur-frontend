@@ -2,7 +2,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { User, Mail, Lock, Phone, MapPin, Building, Home } from "lucide-react";
 import axios from "axios";
-import { Checkbox, Modal, Tooltip, Typography, Box } from "@mui/material";
+import {
+  Checkbox,
+  Modal,
+  Tooltip,
+  Typography,
+  Box,
+  Button,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import Navbar from "../Component/mainpage/Navbar";
 import Footer from "../Component/mainpage/Footer";
@@ -125,20 +132,38 @@ const RegisterPage: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
+
+    // Existing validations
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
     setemail(formData.email);
-    if (!formData.password) newErrors.password = "Password is required";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
     if (!formData.phoneNumber)
       newErrors.phoneNumber = "Phone number is required";
 
+    // Enhanced password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      if (!passwordRegex.test(formData.password)) {
+        newErrors.password =
+          "Password must be at least 8 characters long, contain one uppercase letter and one special character";
+      }
+    }
+
+    // Confirm password validation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    // Student specific validation
     const currentRoleName = getCurrentRoleName();
     if (currentRoleName === "student") {
-      if (!formData.parentnumber)
+      if (!formData.parentnumber) {
         newErrors.parentnumber = "Parent Phone number is required";
+      }
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -263,7 +288,7 @@ const RegisterPage: React.FC = () => {
               <div className="relative z-10 px-4 py-5 sm:px-6 min-h-[50vh]">
                 <div className="flex items-center space-x-4 mb-4">
                   <Image
-                    src="/logo/logo.png"
+                    src="/logo/LATUR HOSTEL- FINAL LOGO- PNG.png"
                     alt="Latur Hostel Logo"
                     width={80}
                     height={40}
@@ -346,7 +371,7 @@ const RegisterPage: React.FC = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                            className="focus:ring-white-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                             placeholder="you@example.com"
                           />
                         </div>
@@ -483,6 +508,29 @@ const RegisterPage: React.FC = () => {
                         )}
                       </div>
                     </div>
+                    <Typography
+                      variant="body2"
+                      align="center"
+                      color="text.secondary"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 1,
+                      }}
+                    >
+                      Already have an account?
+                      <Button
+                        onClick={() => (window.location.href = "/login")}
+                        sx={{
+                          textTransform: "none",
+                          minWidth: "auto",
+                          padding: "0 4px",
+                        }}
+                      >
+                        Sign-in
+                      </Button>
+                    </Typography>
                     {showOtpInput && (
                       <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                         OTP sent successfully. Please check your email.

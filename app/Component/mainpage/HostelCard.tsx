@@ -354,7 +354,8 @@ const HostelCard: React.FC<HostelCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
+      <Card className="bg-white p-4 md:p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
+        {/* Image Section */}
         <Box className="w-full md:w-1/3 relative overflow-hidden mb-4 md:mb-0">
           <Swiper
             modules={[Pagination, Autoplay]}
@@ -395,15 +396,18 @@ const HostelCard: React.FC<HostelCardProps> = ({
             </IconButton>
           </Tooltip>
         </Box>
+
+        {/* Content Section */}
         <CardContent
           className="w-full md:w-2/3 pl-0 md:pl-6 flex flex-col justify-between"
           style={{ minHeight: "300px" }}
         >
           <div>
-            <div className="flex justify-between items-center mb-4">
+            {/* Title and Verified Badge */}
+            <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
               <Typography
                 variant="h3"
-                className="text-2xl font-semibold text-sky-600"
+                className="text-xl md:text-2xl font-semibold text-sky-600"
               >
                 {name}
               </Typography>
@@ -417,36 +421,45 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 />
               )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+
+            {/* Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-4">
               <Typography
                 variant="body2"
-                className="text-sm text-gray-600 flex items-center"
+                className="text-sm text-gray-600 flex items-center flex-wrap"
               >
-                <LocationIcon className="text-sky-500 mr-2" fontSize="small" />
-                Address:{" "}
-                <span className="font-semibold text-gray-800 ml-1">
+                <LocationIcon
+                  className="text-sky-500 mr-2 shrink-0"
+                  fontSize="small"
+                />
+                <span className="whitespace-nowrap">Address: </span>
+                <span className="font-semibold text-gray-800 ml-1 break-words">
                   {address}
                 </span>
               </Typography>
               <Typography
                 variant="body2"
-                className="text-sm text-gray-600 flex items-center"
+                className="text-sm text-gray-600 flex items-center flex-wrap"
               >
-                <HomeIcon className="text-sky-500 mr-2" fontSize="small" />
-                Type:{" "}
+                <HomeIcon
+                  className="text-sky-500 mr-2 shrink-0"
+                  fontSize="small"
+                />
+                <span className="whitespace-nowrap">Type: </span>
                 <span className="font-semibold text-gray-800 ml-1">
                   {hostelType}
                 </span>
               </Typography>
-              {isMobile ? (
-                ""
-              ) : (
+              {!isMobile && (
                 <Typography
                   variant="body2"
-                  className="text-sm text-gray-600 flex items-center"
+                  className="text-sm text-gray-600 flex items-center flex-wrap"
                 >
-                  <HotelIcon className="text-sky-500 mr-2" fontSize="small" />
-                  Beds:{" "}
+                  <HotelIcon
+                    className="text-sky-500 mr-2 shrink-0"
+                    fontSize="small"
+                  />
+                  <span className="whitespace-nowrap">Beds: </span>
                   <span className="font-semibold text-gray-800 ml-1">
                     {beds}
                   </span>
@@ -459,48 +472,114 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 <StarRating value={calculateAverageRating()} />
               </Typography>
             </div>
+
+            {/* Rent Structure */}
             <div className="mt-4">
               <RentStructureDisplay />
             </div>
+
+            {/* Amenities */}
+
             <div className="mt-4">
               <Typography variant="subtitle1" className="text-sky-600 mb-2">
                 Amenities:
               </Typography>
-              <div className="flex flex-wrap justify-start">
-                <Amenity
-                  icon={<WifiIcon style={iconStyle} />}
-                  label="Wi-Fi"
-                  value={wifi}
-                />
-                <Amenity
-                  icon={<AcIcon style={iconStyle} />}
-                  label="AC"
-                  value={ac}
-                />
-                <Amenity
-                  icon={<MessIcon style={iconStyle} />}
-                  label="Mess"
-                  value={mess}
-                />
-                <Amenity
-                  icon={<SolarIcon style={iconStyle} />}
-                  label="Solar"
-                  value={solar}
-                />
-                <Amenity
-                  icon={<StudyRoomIcon style={iconStyle} />}
-                  label="Study Room"
-                  value={studyRoom}
-                />
-                <Amenity
-                  icon={<TuitionIcon style={iconStyle} />}
-                  label="Tuition"
-                  value={tuition}
-                />
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    wifi ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <WifiIcon
+                    style={iconStyle}
+                    className={`${wifi ? "text-sky-600" : "text-sky-500"} mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {wifi ? "WiFi" : "No WiFi"}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    ac ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <AcIcon
+                    style={iconStyle}
+                    className={`${ac ? "text-sky-600" : "text-sky-500"} mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {ac ? "AC" : "No AC"}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    mess ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <MessIcon
+                    style={iconStyle}
+                    className={`${mess ? "text-sky-600" : "text-sky-500"} mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {mess ? "Mess" : "No Mess"}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    solar ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <SolarIcon
+                    style={iconStyle}
+                    className={`${
+                      solar ? "text-sky-600" : "text-sky-500"
+                    } mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {solar ? "Solar" : "No Solar"}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    studyRoom ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <StudyRoomIcon
+                    style={iconStyle}
+                    className={`${
+                      studyRoom ? "text-sky-600" : "text-sky-500"
+                    } mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {studyRoom ? "Study Room" : "No Study Room"}
+                  </span>
+                </div>
+
+                <div
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+                    tuition ? "bg-sky-100" : "hover:bg-sky-50"
+                  }`}
+                >
+                  <TuitionIcon
+                    style={iconStyle}
+                    className={`${
+                      tuition ? "text-sky-600" : "text-sky-500"
+                    } mb-1`}
+                  />
+                  <span className="text-xs text-gray-600 text-center">
+                    {tuition ? "Tuition" : "No Tuition"}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex justify-end mt-4 relative">
+
+          {/* Action Button */}
+          <div className="flex justify-end mt-4">
             <Button
               variant="contained"
               onClick={handleViewDetails}
