@@ -602,7 +602,7 @@ const HomePage: React.FC = () => {
           type="font/woff2"
         />
       </Head>
-      <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" />
+      {/* <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" /> */}
 
       {/* Sticky header with FilterBar */}
       <div className="sticky top-0 z-10 bg-white">

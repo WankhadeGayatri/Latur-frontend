@@ -53,7 +53,7 @@ const FeatureSlider: React.FC = () => {
   const animationDuration = features.length * 5;
 
   return (
-    <div className="w-full overflow-hidden py-4 sm:py-6 md:py-8">
+    <div className="w-full mt-6 overflow-hidden py-4 sm:py-6 md:py-8">
       <div
         className="flex"
         style={{

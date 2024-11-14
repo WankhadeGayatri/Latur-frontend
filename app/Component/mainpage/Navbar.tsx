@@ -92,6 +92,7 @@ const NavigationContent: React.FC<{
     { text: "Home", path: "/" },
     { text: "About Us", path: "/aboutus" },
     { text: "Amenities", path: "/amenities" },
+    { text: "ContactUs", path: "/contactus" },
     { text: "Gallery", path: "/gallery" },
     { text: "Sign-in", path: "/login" },
     { text: "Register", path: "/register" },
@@ -245,7 +246,7 @@ const Navbar: React.FC = React.memo(() => {
           onClick={handleLogoClick}
         >
           <Image
-            src="/logo/LATUR HOSTEL- FINAL LOGO- PNG.png"
+            src="/logo/lb.svg"
             alt="Latur Hostel Logo"
             width={80}
             height={40}

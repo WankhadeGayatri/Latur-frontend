@@ -32,7 +32,7 @@ const Footer = () => {
             <div className="mb-2">
               <div className="relative w-24 h-24">
                 <Image
-                  src="/logo/LATUR HOSTEL- FINAL LOGO- 16.svg"
+                  src="/logo/logowhite.svg"
                   alt=""
                   fill
                   className="object-contain"
@@ -101,11 +101,15 @@ const Footer = () => {
 
           {/* Bottom Copyright Section */}
           <div className="mt-2 pt-2 border-t border-gray-800">
-            <div className="flex justify-center ml-8">
-              <p className="text-gray-300 text-sm text-center">
-                Copyright © 2024 | All Rights Reserved by www.laturhostel.com
-                Developer and Maintained by Dossiefoyer Private Limited
-              </p>
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 py-2">
+                <p className="text-gray-300 text-sm text-center sm:text-left">
+                  Copyright © 2024 | All Rights Reserved by www.laturhostel.com
+                </p>
+                <p className="text-gray-300 text-sm text-center sm:text-left">
+                  Developed and Maintained by Dossiefoyer Private Limited
+                </p>
+              </div>
             </div>
           </div>
         </div>

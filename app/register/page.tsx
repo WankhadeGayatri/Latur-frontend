@@ -245,7 +245,7 @@ const RegisterPage: React.FC = () => {
   };
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = ["/Images/HomePage/AI.jpg", "/Images/HomePage/ai2.jpg"];
+  const images = ["/Images/register/d.png", "/Images/register/a.jpg"];
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -273,7 +273,7 @@ const RegisterPage: React.FC = () => {
                     <img
                       key={src}
                       src={src}
-                      alt={`AI ${index + 1}`}
+                      alt={`Image ${index + 1}`}
                       className={`absolute inset-0 w-full object-cover transition-opacity duration-1000 ${
                         index === currentImageIndex
                           ? "opacity-100"
@@ -288,7 +288,7 @@ const RegisterPage: React.FC = () => {
               <div className="relative z-10 px-4 py-5 sm:px-6 min-h-[50vh]">
                 <div className="flex items-center space-x-4 mb-4">
                   <Image
-                    src="/logo/LATUR HOSTEL- FINAL LOGO- PNG.png"
+                    src="/logo/lb.svg"
                     alt="Latur Hostel Logo"
                     width={80}
                     height={40}
@@ -690,19 +690,31 @@ const RegisterPage: React.FC = () => {
                       </div>
                     )}
 
+                    {/* Terms and conditions label */}
                     <div className="flex items-center space-x-2">
                       <label
                         htmlFor="terms"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        Read the{" "}
-                        <a
-                          href="#"
-                          onClick={handleOpenModal}
-                          className="text-blue-600 hover:underline"
-                        >
-                          terms and conditions
-                        </a>
+                        {termsAccepted ? (
+                          <span className="text-green-600">
+                            Terms and conditions accepted ✓
+                          </span>
+                        ) : (
+                          <span>
+                            Read the{" "}
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setModalOpen(true);
+                              }}
+                              className="text-blue-600 hover:underline"
+                            >
+                              terms and conditions
+                            </a>
+                          </span>
+                        )}
                       </label>
                     </div>
 
@@ -736,7 +748,14 @@ const RegisterPage: React.FC = () => {
       </div>
       <Modal
         open={modalOpen}
-        onClose={handleCloseModal}
+        onClose={(event, reason) => {
+          // Prevent closing on backdrop click or escape key
+          if (reason === "backdropClick" || reason === "escapeKeyDown") {
+            return;
+          }
+          setModalOpen(false);
+        }}
+        disableEscapeKeyDown
         aria-labelledby="modal-terms-title"
         aria-describedby="modal-terms-description"
       >
@@ -751,7 +770,7 @@ const RegisterPage: React.FC = () => {
             border: "2px solid #000",
             boxShadow: 24,
             p: 4,
-            maxHeight: "80vh",
+            maxHeight: "90vh",
             overflow: "auto",
           }}
         >
@@ -766,12 +785,31 @@ const RegisterPage: React.FC = () => {
               ))}
             </ul>
             <h3 className="font-bold mb-2">Benefits:</h3>
-            <ul className="list-disc pl-5">
+            <ul className="list-disc pl-5 mb-4">
               {studentTerms.benefits.map((benefit, index) => (
                 <li key={index}>{benefit}</li>
               ))}
             </ul>
           </Typography>
+          <div className="flex justify-center mt-4">
+            <Button
+              onClick={() => {
+                setTermsAccepted(true);
+                setModalOpen(false);
+              }}
+              variant="contained"
+              sx={{
+                background: "linear-gradient(to right, #4F46E5, #7C3AED)",
+                "&:hover": {
+                  background: "linear-gradient(to right, #4338CA, #6D28D9)",
+                },
+                minWidth: "200px",
+                py: 1.5,
+              }}
+            >
+              Accept Terms & Continue
+            </Button>
+          </div>
         </Box>
       </Modal>
 

@@ -149,7 +149,7 @@ const Login: React.FC = () => {
             <div>
               <div className="mb-4 md:mb-8 flex justify-center">
                 <Image
-                  src="/logo/LATUR HOSTEL- FINAL LOGO- PNG.png"
+                  src="/logo/lb.svg"
                   alt="Latur Hostel Logo"
                   width={150}
                   height={150}
@@ -164,15 +164,10 @@ const Login: React.FC = () => {
                 novel with every night's stay"
               </p>
               <br />
-              <p className="text-sm md:text-base text-center">
-                Remember: Please follow the community guidelines. If not
-                followed, strong action will be taken against the respective
-                person.
+              <p className="text-xs md:text-sm text-center mt-4 md:mt-0">
+                Your home away from home
               </p>
             </div>
-            <p className="text-xs md:text-sm text-center mt-4 md:mt-0">
-              Your home away from home
-            </p>
           </div>
 
           {/* Right side with login form */}

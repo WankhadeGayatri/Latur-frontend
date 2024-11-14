@@ -166,18 +166,18 @@ const ImageGallery = () => {
 
   // Keep all your existing image arrays and handlers the same...
   const galleryImages = [
-    "/Images/HomePage/img 8.jpg",
-    "/Images/HomePage/img 9.jpg",
-    "/Images/HomePage/img1.jpg",
-    "/Images/HomePage/img3.jpg",
-    "/Images/HomePage/img5.jpg",
-    "/Images/HomePage/img6.jpg",
-    "/Images/HomePage/imgg3.jpg",
+    "/Images/HomePage/dining.jpg",
+    "/Images/HomePage/room.jpg",
+    "/Images/about/about-2.jpg",
+    "/Images/HomePage/study.jpg",
+    "/Images/HomePage/hall.jpg",
+    "/Images/about/about-1.jpg",
+    "/Images/about/about-3.jpg",
     "/Images/HomePage/immgg5.jpg",
-    "/Images/HomePage/img 8.jpg",
-    "/Images/HomePage/img 9.jpg",
-    "/Images/HomePage/img3.jpg",
-    "/Images/HomePage/img5.jpg",
+    "/Images/about/about-3.jpg",
+    "/Images/HomePage/single2.jpg",
+    "/Images/about/about-2.jpg",
+    "/Images/HomePage/game.jpg",
   ];
 
   const imageDetails = [
@@ -187,15 +187,15 @@ const ImageGallery = () => {
     },
     { title: "Hostel", description: "Hostel Rooms" },
     { title: "Hostel", description: "Hostel Rooms" },
-    { title: "Hostel", description: "Study table" },
+    { title: "Hostel", description: "Study Rooms" },
     { title: "Hostel", description: "Hall" },
     { title: "Hostel", description: "Boys Hostel" },
-    { title: "Hostel", description: "Attached rooms" },
+    { title: "Hostel", description: "Attached bed" },
     { title: "Hostel", description: "bedRooms" },
-    { title: "Hostel", description: "Dinning rooms" },
+    { title: "Hostel", description: "Four Shearing Rooms" },
     { title: "Hostel", description: "single room" },
     { title: "Hostel", description: "combine room" },
-    { title: "Hostel", description: "Hall " },
+    { title: "Hostel", description: "Play Zone " },
   ];
 
   const handleImageClick = (index: number) => {

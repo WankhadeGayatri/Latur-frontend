@@ -8,22 +8,25 @@ const AboutPage = () => {
     {
       title: "Our Mission",
       description:
-        "To provide safe, comfortable, and affordable accommodation solutions for students while creating a supportive community environment with direct hostel owner connections.",
+        "Our mission is to offer students safe, affordable, and comfortable living, fostering a supportive community with direct connections to hostel owners.",
       bulletPoints: [
         "No middle man between students and hostel owners",
         "Direct communication for faster problem resolution",
       ],
+      icon: "/Images/about/b.png",
     },
     {
       title: "Our Vision",
       description:
-        "To become the leading platform connecting students with quality hostel accommodations, making the hostel-finding process seamless and reliable.",
+        "Our goal is to be the top platform for students to find quality hostel accommodations—seamless, reliable, and hassle-free.",
       bulletPoints: [
         "Quality assurance standards",
         "Seamless booking experience",
       ],
+      icon: "/Images/about/t.png",
     },
   ];
+
   const teamMembers = [
     {
       name: "",
@@ -69,7 +72,7 @@ const AboutPage = () => {
 
         {/* Main Content Section */}
         <div className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7.5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Column - Grid Layout */}
 
@@ -190,7 +193,7 @@ const AboutPage = () => {
               </div>
 
               {/* Right Column - Content */}
-              <div className="space-y-8">
+              <div className="space-y-2">
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">
                     Creating Better Living Spaces for Students
@@ -203,30 +206,48 @@ const AboutPage = () => {
                   </p>
                 </div>
 
-                <div className="grid gap-6">
-                  {features.map((feature, index) => (
-                    <div key={index} className="bg-sky-50 p-6 rounded-xl">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        {feature.description}
-                      </p>
-                      {feature.bulletPoints && (
-                        <ul className="space-y-2">
-                          {feature.bulletPoints.map((point, pointIndex) => (
-                            <li
-                              key={pointIndex}
-                              className="flex items-start gap-3 text-gray-600"
-                            >
-                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-500 flex-shrink-0"></span>
-                              <span className="text-sm">{point}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+                <div className="container px-1 py-2">
+                  <div className="space-y-2">
+                    {features.map((feature, index) => (
+                      <div
+                        key={index}
+                        className="grid grid-cols-1 md:grid-cols-12 "
+                      >
+                        <div className="md:col-span-3 p-1 flex items-center justify-center bg-sky-50 rounded-xl">
+                          <img
+                            src={feature.icon}
+                            alt={feature.title}
+                            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-38 lg:h-38 xl:w-44 xl:h-44 2xl:w-56 2xl:h-56 object-contain transition-all duration-300"
+                          />
+                        </div>
+                        <div className="md:col-span-9">
+                          <div className="bg-sky-50 p-6  h-full">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                              {feature.title}
+                            </h3>
+                            <p className="text-gray-600 mb-4">
+                              {feature.description}
+                            </p>
+                            {feature.bulletPoints && (
+                              <ul className="space-y-1">
+                                {feature.bulletPoints.map(
+                                  (point, pointIndex) => (
+                                    <li
+                                      key={pointIndex}
+                                      className="flex items-start gap-3 text-gray-600"
+                                    >
+                                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-sky-500 flex-shrink-0" />
+                                      <span className="text-sm">{point}</span>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -247,6 +268,31 @@ const AboutPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* No Middle Man - New Feature */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                  <svg
+                    className="w-6 h-6 text-sky-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  No Middle Man
+                </h3>
+                <p className="text-gray-600">
+                  Direct connection between students and hostel owners, ensuring
+                  transparent communication and better rates.
+                </p>
+              </div>
               {/* Safety & Security */}
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
@@ -328,32 +374,6 @@ const AboutPage = () => {
                 <p className="text-gray-600">
                   Competitive rates with flexible payment options to suit every
                   student's budget.
-                </p>
-              </div>
-
-              {/* No Middle Man - New Feature */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
-                  <svg
-                    className="w-6 h-6 text-sky-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  No Middle Man
-                </h3>
-                <p className="text-gray-600">
-                  Direct connection between students and hostel owners, ensuring
-                  transparent communication and better rates.
                 </p>
               </div>
             </div>
