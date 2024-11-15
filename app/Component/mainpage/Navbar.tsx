@@ -94,7 +94,7 @@ const NavigationContent: React.FC<{
     { text: "Amenities", path: "/amenities" },
     { text: "ContactUs", path: "/contactus" },
     { text: "Gallery", path: "/gallery" },
-    { text: "Sign-in", path: "/login" },
+    { text: "Login", path: "/login" },
     { text: "Register", path: "/register" },
   ];
 

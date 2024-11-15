@@ -334,10 +334,7 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
       icon: <Home size={16} className="sm:w-5 sm:h-5" />,
       text: "1. Registration Process",
     },
-    {
-      icon: <Home size={16} className="sm:w-5 sm:h-5" />,
-      text: "1. Registration Process",
-    },
+
     {
       icon: <Key size={16} className="sm:w-5 sm:h-5" />,
       text: "2. Log in to Your Account",

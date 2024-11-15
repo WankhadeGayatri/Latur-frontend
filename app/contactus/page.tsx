@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-
-import Footer from "../Component/mainpage/Footer";
 import ContactForm from "./component/ContactForm";
+import Footer from "../Component/mainpage/Footer";
 import Navbar from "../Component/mainpage/Navbar";
 
 const ContactCard = ({
@@ -79,8 +78,8 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4">
-        <div className="relative bg-sky-50 py-16 mt-28">
+      <div className="max-w-7xl mx-auto min-h-screen bg-white px-4">
+        <div className="relative bg-sky-50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -97,9 +96,9 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 items-center">
+        <div className="grid md:grid-cols-2 gap-1 items-center">
           {/* Left Content */}
-          <div className="space-y-6 relative h-[550px] rounded-lg overflow-hidden">
+          <div className="space-y-6 relative h-[450px] rounded-lg overflow-hidden">
             <Image
               src="/Images/contact.jpg"
               alt="Contact support team"
@@ -109,12 +108,19 @@ export default function ContactPage() {
             />
           </div>
 
-          {/* Right Image */}
-          <div className="relative h-[600px] rounded-lg overflow-hidden mt-20">
-            <ContactForm />
+          <div className="relative h-[600px] rounded-lg overflow-hidden mt-4 md:mt-16">
+            {/* <ContactForm/> */}
+
+            <ContactForm
+              imageHeight="h-52" // Makes image taller
+              imageWidth="w-full" // Full width
+              imageFit="contain" // Options: 'cover', 'contain', 'fill'
+              imagePosition="object-center" // Control image position
+              imageSrc="/your-custom-image.png" // Custom image path
+            />
           </div>
         </div>
-      </main>
+      </div>
       <Footer />
     </>
   );

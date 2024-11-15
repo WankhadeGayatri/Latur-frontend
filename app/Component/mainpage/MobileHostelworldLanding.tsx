@@ -40,18 +40,34 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
           {/* Person Image */}
           <div
             className="absolute bottom-0 left-2 sm:left-8 z-30"
-            style={{ transform: "translateY(-10%)" }}
+            style={{ transform: "translateY(0%)", marginLeft: "-2rem" }}
           >
             <Image
-              src="/Images/about/m.png"
+              src="/Images/banner/banner1.png"
               alt="Person"
-              width={300}
-              height={300}
+              width={200}
+              height={200}
               className="h-[120px] xs:h-[140px] sm:h-[200px] md:h-[250px] w-auto object-contain opacity-90 drop-shadow-lg transition-all duration-300"
               priority
             />
           </div>
-
+          {/* Right Person Image - Mirrored */}
+          <div
+            className="absolute bottom-0 right-2 sm:right-8 z-30"
+            style={{
+              transform: "translateY(0%)",
+              marginRight: "-2rem",
+            }}
+          >
+            <Image
+              src="/Images/banner/banner2.png"
+              alt="Person"
+              width={400}
+              height={400}
+              className="h-[120px] xs:h-[140px] mb-2 sm:h-[200px] md:h-[250px] w-auto object-contain opacity-90 drop-shadow-lg transition-all duration-300"
+              priority
+            />
+          </div>
           {/* Background Logo */}
           <div className="absolute inset-0 z-10 flex justify-start items-center pl-[8%] sm:pl-[12%]">
             <Image
@@ -75,7 +91,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
                 Welcome to Latur Hostel
               </h1>
               <p className="font-serif text-sm sm:text-base lg:text-xl text-white/90 italic drop-shadow-lg">
-                Find Your Home, away from Home
+                Find your Home, away from Home
               </p>
             </div>
           </div>

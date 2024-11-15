@@ -16,6 +16,7 @@ import Footer from "../Component/mainpage/Footer";
 import RoleSpecificTermsAndBenefits from "../Dashboard/student/component/RoleSpecificTermsAndBenefits";
 import { API_BASE_URL } from "@/config/api";
 import Image from "next/image";
+import router from "next/router";
 
 interface Role {
   _id: string;
@@ -66,10 +67,8 @@ const RegisterPage: React.FC = () => {
   const [otp, setOtp] = useState<string>("");
   const [email, setemail] = useState<string>("");
   const [userId, setUserId] = useState<string | null>(null);
-  //const [showOAuthRoleModal, setShowOAuthRoleModal] = useState<boolean>(false);
   const [oauthSelectedRole, setOauthSelectedRole] = useState<string>("");
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
-
   const [modalOpen, setModalOpen] = useState(false);
   const [studentRoleId, setStudentRoleId] = useState<string>("");
   const router = useRouter();
@@ -100,7 +99,6 @@ const RegisterPage: React.FC = () => {
     setTermsAccepted(!termsAccepted);
     setModalOpen(false);
   };
-
   useEffect(() => {
     axios
       .get<{ _id: string; name: string }[]>(
@@ -133,14 +131,12 @@ const RegisterPage: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
-    // Existing validations
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
     setemail(formData.email);
     if (!formData.phoneNumber)
       newErrors.phoneNumber = "Phone number is required";
 
-    // Enhanced password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else {
@@ -151,12 +147,10 @@ const RegisterPage: React.FC = () => {
       }
     }
 
-    // Confirm password validation
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    // Student specific validation
     const currentRoleName = getCurrentRoleName();
     if (currentRoleName === "student") {
       if (!formData.parentnumber) {
@@ -168,51 +162,60 @@ const RegisterPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [registeredEmail, setRegisteredEmail] = useState<string>(""); // Add this state
-
+  // Modified handleSubmit to handle form submission and modal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (showOtpInput) {
       await handleOtpSubmit();
-    } else {
-      if (!validateForm()) return;
+      return;
+    }
 
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formDataToSend.append(key, value);
-        }
-      });
+    // Validate form first
+    if (!validateForm()) return;
 
-      try {
-        const response = await api.post(
-          "/api/auth/student/register",
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+    // Open terms modal
+    setModalOpen(true);
+  };
 
-        // Store email in localStorage or state
-        localStorage.setItem("registrationEmail", formData.email);
-        setUserId(response.data.userId);
-        setShowOtpInput(true);
-      } catch (error: any) {
-        console.error("Registration error:", error);
-        setErrors({
-          email:
-            error.response?.data?.message ||
-            "Registration failed. Please try again.",
-        });
+  // New function to handle modal acceptance and registration
+  const handleModalAccept = async () => {
+    setTermsAccepted(true);
+    setModalOpen(false);
+
+    const formDataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formDataToSend.append(key, value);
       }
+    });
+
+    try {
+      const response = await api.post(
+        "/api/auth/student/register",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      localStorage.setItem("registrationEmail", formData.email);
+      setUserId(response.data.userId);
+      setShowOtpInput(true);
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      setErrors({
+        email:
+          error.response?.data?.message ||
+          "Registration failed. Please try again.",
+      });
     }
   };
 
   const handleOtpSubmit = async () => {
     try {
-      // Get email from localStorage
       const registrationEmail = localStorage.getItem("registrationEmail");
 
       const response = await api.post(
@@ -223,9 +226,7 @@ const RegisterPage: React.FC = () => {
         }
       );
 
-      // Clear stored email after successful verification
       localStorage.removeItem("registrationEmail");
-
       alert("Registration completed successfully!");
       router.push("/login");
     } catch (error: any) {
@@ -240,7 +241,6 @@ const RegisterPage: React.FC = () => {
 
   const handleOAuthLogin = (provider: string) => {
     const baseUrl = `${API_BASE_URL}`;
-
     window.location.href = `${baseUrl}/api/auth/student/${provider}`;
   };
 
@@ -266,7 +266,7 @@ const RegisterPage: React.FC = () => {
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-7xl z-10">
           <div className="bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col lg:flex-row items-stretch">
-            <div className="relative">
+            <div className="relative lg:w-1/4">
               <div className="absolute inset-0 z-0">
                 <div className="w-full h-full relative overflow-hidden">
                   {images.map((src, index) => (
@@ -285,8 +285,8 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="relative z-10 px-4 py-5 sm:px-6 min-h-[50vh]">
-                <div className="flex items-center space-x-4 mb-4">
+              <div className="relative z-10 px-2 py-6 min-h-[50vh]">
+                <div className="flex items-center space-x-1 mb-4">
                   <Image
                     src="/logo/lb.svg"
                     alt="Latur Hostel Logo"
@@ -299,8 +299,8 @@ const RegisterPage: React.FC = () => {
                     <h1 className="text-3xl font-bold text-white">
                       Latur Hostel
                     </h1>
-                    <p className="mt-1 text-sm text-purple-100">
-                      Your Home Away from Home
+                    <p className="mt-1 text-sm text-purple-100 whitespace-nowrap">
+                      Find your Home, away from Home
                     </p>
                   </div>
                 </div>
@@ -520,16 +520,12 @@ const RegisterPage: React.FC = () => {
                       }}
                     >
                       Already have an account?
-                      <Button
-                        onClick={() => (window.location.href = "/login")}
-                        sx={{
-                          textTransform: "none",
-                          minWidth: "auto",
-                          padding: "0 4px",
-                        }}
+                      <a
+                        href="/login"
+                        className="text-blue-400 hover:text-gray-800 transition-colors duration-200"
                       >
-                        Sign-in
-                      </Button>
+                        login
+                      </a>
                     </Typography>
                     {showOtpInput && (
                       <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
@@ -719,25 +715,12 @@ const RegisterPage: React.FC = () => {
                     </div>
 
                     <div className="mt-6">
-                      <>
-                        <Tooltip
-                          title={
-                            !termsAccepted
-                              ? "Please click and read the terms and conditions."
-                              : ""
-                          }
-                        >
-                          <button
-                            type="submit"
-                            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:-translate-y-1 hover:scale-105 ${
-                              !termsAccepted && "opacity-50 cursor-not-allowed"
-                            }`}
-                            disabled={!termsAccepted}
-                          >
-                            {showOtpInput ? "Verify OTP" : "Register"}
-                          </button>
-                        </Tooltip>
-                      </>
+                      <button
+                        type="submit"
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                      >
+                        {showOtpInput ? "Verify OTP" : "Register"}
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -749,7 +732,6 @@ const RegisterPage: React.FC = () => {
       <Modal
         open={modalOpen}
         onClose={(event, reason) => {
-          // Prevent closing on backdrop click or escape key
           if (reason === "backdropClick" || reason === "escapeKeyDown") {
             return;
           }
@@ -793,10 +775,7 @@ const RegisterPage: React.FC = () => {
           </Typography>
           <div className="flex justify-center mt-4">
             <Button
-              onClick={() => {
-                setTermsAccepted(true);
-                setModalOpen(false);
-              }}
+              onClick={handleModalAccept}
               variant="contained"
               sx={{
                 background: "linear-gradient(to right, #4F46E5, #7C3AED)",
@@ -819,3 +798,7 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
+
+function setErrors(arg0: {}) {
+  throw new Error("Function not implemented.");
+}

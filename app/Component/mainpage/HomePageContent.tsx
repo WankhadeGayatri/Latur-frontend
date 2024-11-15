@@ -415,7 +415,35 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleSearch = useCallback((query: string, location: string) => {
-    setFilters((prev) => ({ ...prev, searchName: query }));
+    // Normalize search terms
+    let searchQuery = query.toLowerCase();
+
+    // Handle common variations of gender searches
+    const girlsTerms = [
+      "girl",
+      "girls",
+      "girlshostel",
+      "girlhostel",
+      "girls hostel",
+      "girl hostel",
+    ];
+    const boysTerms = [
+      "boy",
+      "boys",
+      "boyshostel",
+      "boyhostel",
+      "boys hostel",
+      "boy hostel",
+    ];
+
+    // Check if search includes gender terms and standardize them
+    const isGirlsSearch = girlsTerms.some((term) => searchQuery.includes(term));
+    const isBoysSearch = boysTerms.some((term) => searchQuery.includes(term));
+    setFilters((prev) => ({
+      ...prev,
+      searchName: query,
+      type: isGirlsSearch ? "girls" : isBoysSearch ? "boys" : prev.type,
+    }));
 
     // Scroll to the hostel list after a short delay to allow for filtering
     setTimeout(() => {
@@ -434,13 +462,35 @@ const HomePage: React.FC = () => {
 
       // Apply all filters
       if (filters.searchName.trim() !== "") {
-        const searchLower = filters.searchName.toLowerCase();
-        result = result.filter(
-          (hostel) =>
-            hostel.name.toLowerCase().includes(searchLower) ||
-            hostel.address.toLowerCase().includes(searchLower) ||
-            hostel.owner.toLowerCase().includes(searchLower)
-        );
+        const searchTerms = filters.searchName.toLowerCase().split(" ");
+        result = result.filter((hostel) => {
+          return searchTerms.some((term) => {
+            // Check for name, address, and owner matches
+            const matchesBasic =
+              hostel.name.toLowerCase().includes(term) ||
+              hostel.address.toLowerCase().includes(term) ||
+              hostel.owner.toLowerCase().includes(term);
+
+            // Enhanced gender matching
+            const isGirlsSearch =
+              term === "girls" ||
+              term === "girl" ||
+              term === "girlshostel" ||
+              term === "girlhostel";
+
+            const isBoysSearch =
+              term === "boys" ||
+              term === "boy" ||
+              term === "boyshostel" ||
+              term === "boyhostel";
+
+            const matchesGender =
+              (isGirlsSearch && hostel.hostelType.toLowerCase() === "girls") ||
+              (isBoysSearch && hostel.hostelType.toLowerCase() === "boys");
+
+            return matchesBasic || matchesGender;
+          });
+        });
       }
 
       if (filters.type !== "All") {

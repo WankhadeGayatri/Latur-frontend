@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
+import emailjs from "@emailjs/browser";
 
 interface FormData {
   name: string;
@@ -10,7 +12,21 @@ interface FormData {
   allowNotifications: boolean;
 }
 
-const ContactForm = () => {
+interface ContactFormProps {
+  imageHeight?: string;
+  imageWidth?: string;
+  imageFit?: "cover" | "contain" | "fill";
+  imagePosition?: string;
+  imageSrc?: string;
+}
+
+const ContactForm: React.FC<ContactFormProps> = ({
+  imageHeight = "h-48",
+  imageWidth = "w-full",
+  imageFit = "cover",
+  imagePosition = "object-center",
+  imageSrc = "/Images/LaturHostelLogo.png",
+}) => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -18,10 +34,53 @@ const ContactForm = () => {
     country: "India",
     allowNotifications: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+
+    try {
+      const templateParams = {
+        to_email: "anuragsulkiya@gmail.com",
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        country: formData.country,
+        notifications: formData.allowNotifications ? "Yes" : "No",
+        message: `
+          Name: ${formData.name}
+          Email: ${formData.email}
+          Phone: ${formData.phone}
+          Country: ${formData.country}
+          Notifications: ${formData.allowNotifications ? "Yes" : "No"}
+        `,
+      };
+
+      // Replace these with your actual EmailJS credentials
+      const result = await emailjs.send(
+        "service_ban2vye", // Get from EmailJS dashboard
+        "template_fzneikb", // Get from EmailJS dashboard
+        templateParams,
+        "Wv6TvP7-bndVjA0Mg" // Get from EmailJS dashboard
+      );
+
+      if (result.text === "OK") {
+        alert("Message sent successfully!");
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          country: "India",
+          allowNotifications: false,
+        });
+      }
+    } catch (error) {
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -37,15 +96,21 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-3xl overflow-hidden">
-      {/* Image Section */}
-      <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-56">
+    <div className="max-w-md mx-auto bg-white shadow-sm rounded-3xl overflow-hidden">
+      {/* Image Section with configurable properties */}
+      <div className={`relative ${imageWidth} ${imageHeight}`}>
         <Image
-          src="/logo/l.jpg"
-          alt="Building"
-          width={200}
-          height={200}
-          className="object-cover rounded-t-3xl w-full h-full"
+          src="/logo/lb.svg"
+          alt="logo"
+          fill
+          className={`${
+            imageFit === "contain"
+              ? "object-contain"
+              : imageFit === "fill"
+              ? "object-fill"
+              : "object-cover"
+          } 
+                     ${imagePosition} rounded-t-3xl`}
           priority
         />
       </div>
@@ -133,9 +198,10 @@ const ContactForm = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full p-3 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition-colors duration-200 text-sm font-semibold uppercase"
+            className="w-full p-3 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition-colors duration-200 text-sm font-semibold uppercase disabled:opacity-70"
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? "Sending..." : "Submit"}
           </button>
         </form>
       </div>

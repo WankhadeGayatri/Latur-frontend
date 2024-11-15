@@ -149,7 +149,7 @@ const Login: React.FC = () => {
             <div>
               <div className="mb-4 md:mb-8 flex justify-center">
                 <Image
-                  src="/logo/lb.svg"
+                  src="/logo/logowhite.svg"
                   alt="Latur Hostel Logo"
                   width={150}
                   height={150}
@@ -165,7 +165,7 @@ const Login: React.FC = () => {
               </p>
               <br />
               <p className="text-xs md:text-sm text-center mt-4 md:mt-0">
-                Your home away from home
+                Find your Home, away from Home
               </p>
             </div>
           </div>

@@ -267,13 +267,12 @@ const SignInForm: React.FC<SignInFormProps> = ({
                     <div className="relative flex justify-center text-xs md:text-sm">
                       <span className="px-2 bg-white text-gray-500">
                         Don't have an account?{" "}
-                        <Button
+                        <a
                           onClick={switchToSignUp}
-                          className="text-blue-400 hover:text-gray-800 transition-colors duration-200"
-                          sx={{ textTransform: "none" }}
+                          className="cursor-pointer text-blue-400 hover:text-gray-800 transition-colors duration-200 no-underline"
                         >
                           Register
-                        </Button>
+                        </a>
                       </span>
                     </div>
                   </div>

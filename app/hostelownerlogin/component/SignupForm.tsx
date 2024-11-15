@@ -470,12 +470,12 @@ const SignupForm: React.FC<SignupFormProps> = ({
                       color="text.secondary"
                     >
                       Already have an account?{" "}
-                      <Button
+                      <a
                         onClick={switchToLogin}
-                        sx={{ textTransform: "none" }}
+                        className="cursor-pointer text-sky-500 hover:text-sky-600 no-underline"
                       >
-                        Sign-in
-                      </Button>
+                        Login
+                      </a>
                     </Typography>
                     {showOtpInput && (
                       <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">

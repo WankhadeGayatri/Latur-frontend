@@ -43,12 +43,12 @@ const RoleSpecificTermsAndBenefits: React.FC<
     currentRole.charAt(0).toUpperCase() + currentRole.slice(1);
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-3 shadow-md">
       <h2 className="text-2xl font-bold text-center text-indigo-700">
         Benefits for Student
       </h2>
       <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1 bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="flex-1 bg-white rounded-lg  overflow-hidden">
           <div className="p-6">
             <div className="space-y-6">
               {roleContent[currentRole] && (

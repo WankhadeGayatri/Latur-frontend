@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.2.5",
+    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-free": "^6.6.0",
@@ -51,6 +52,7 @@
     "react-star-ratings": "^2.3.0",
     "react-toastify": "^10.0.5",
     "recharts": "^2.12.7",
+    "sharp": "^0.33.5",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.13",
     "swiper": "^11.1.8",
