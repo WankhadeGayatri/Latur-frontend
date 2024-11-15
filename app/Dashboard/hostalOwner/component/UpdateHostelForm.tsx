@@ -181,6 +181,7 @@ const UpdateHostelForm: React.FC<UpdateHostelFormProps> = ({
 
       onUpdate(response.data);
       onClose();
+      window.location.reload();
       toast.success("Hostel updated successfully!");
     } catch (error) {
       console.error("Error updating hostel:", error);

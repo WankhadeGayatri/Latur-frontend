@@ -13,7 +13,7 @@ const AboutPage = () => {
         "No middle man between students and hostel owners",
         "Direct communication for faster problem resolution",
       ],
-      icon: "/Images/about/b.png",
+      icon: "/Images/about/mission.png",
     },
     {
       title: "Our Vision",
@@ -23,7 +23,7 @@ const AboutPage = () => {
         "Quality assurance standards",
         "Seamless booking experience",
       ],
-      icon: "/Images/about/t.png",
+      icon: "/Images/about/vision.png",
     },
   ];
 

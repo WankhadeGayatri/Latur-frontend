@@ -228,13 +228,15 @@ const PrimeFeatures: React.FC = () => {
     <div className="min-h-screen pt-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Pricing Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Simple, Transparent Pricing
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect plan for your business needs
-          </p>
+        <div className="text-center mb-12">
+          <div className="inline-block backdrop-blur-lg  px-8 py-6 rounded-xl border border-gray-200/50 shadow-lg">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 drop-shadow-lg mb-3">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium">
+              Choose the perfect plan for your business needs
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
@@ -245,10 +247,12 @@ const PrimeFeatures: React.FC = () => {
 
         {/* Feature Slider Section */}
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-4">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Discover Our Premium Features
-            </h3>
+          <div className="text-center mb-8">
+            <div className="inline-block backdrop-blur-sm bg-white/10 px-8 py-3 rounded-full shadow-lg">
+              <h3 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 drop-shadow-lg">
+                Discover Our Premium Features
+              </h3>
+            </div>
           </div>
           <GlassFeatureSlider />
         </div>

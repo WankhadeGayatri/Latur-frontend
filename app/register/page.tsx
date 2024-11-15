@@ -290,8 +290,8 @@ const RegisterPage: React.FC = () => {
                   <Image
                     src="/logo/lb.svg"
                     alt="Latur Hostel Logo"
-                    width={80}
-                    height={40}
+                    width={90}
+                    height={50}
                     className="object-contain"
                   />
 
@@ -309,13 +309,13 @@ const RegisterPage: React.FC = () => {
             <div className="px-4 py-8 sm:p-6 flex-grow">
               <div className="flex flex-col lg:flex-row gap-8">
                 {/* Terms and Conditions */}
-                <div className="lg:w-2/3">
+                <div className="lg:w-1/3">
                   <RoleSpecificTermsAndBenefits
                     getCurrentRoleName={getCurrentRoleName}
                   />
                 </div>
                 {/* Registration Form */}
-                <div className="lg:w-1/3">
+                <div className="lg:w-2/3">
                   <form onSubmit={handleSubmit} className="space-y-6 mt-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
@@ -340,7 +340,7 @@ const RegisterPage: React.FC = () => {
                             onChange={handleChange}
                             required
                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                            placeholder="John Doe"
+                            placeholder="Your Name"
                           />
                         </div>
                         {errors.name && (
@@ -387,7 +387,7 @@ const RegisterPage: React.FC = () => {
                           htmlFor="phoneNumber"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          Own Phone Number
+                          Primary Contact
                         </label>
                         <div className="mt-1 relative rounded-md shadow-sm">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -419,7 +419,7 @@ const RegisterPage: React.FC = () => {
                           htmlFor="phoneNumber"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          Parent Phone Number
+                          Parent Contact
                         </label>
                         <div className="mt-1 relative rounded-md shadow-sm">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

@@ -248,8 +248,8 @@ const Navbar: React.FC = React.memo(() => {
           <Image
             src="/logo/lb.svg"
             alt="Latur Hostel Logo"
-            width={80}
-            height={40}
+            width={90}
+            height={60}
             className="mr-2"
           />
         </motion.div>
