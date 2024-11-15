@@ -95,11 +95,11 @@ const OptimizedCard = memo(
           {/* Content overlay with fixed dimensions */}
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="relative h-full">
-              <div className="absolute right-0 top-0 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+              {/* <div className="absolute right-0 top-0 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
                 <span className="text-lg font-bold text-purple-600">
                   ₹{price}
                 </span>
-              </div>
+              </div> */}
 
               <h3 className="text-lg font-bold text-white mb-2 truncate">
                 {name}
@@ -121,7 +121,7 @@ const OptimizedCard = memo(
                 </span>
               </div>
 
-              <button
+              {/* <button
                 className="
                 absolute bottom-0 right-0
                 bg-purple-600 text-white
@@ -134,7 +134,7 @@ const OptimizedCard = memo(
               >
                 View Details
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

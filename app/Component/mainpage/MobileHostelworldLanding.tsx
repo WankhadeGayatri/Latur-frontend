@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Search, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
@@ -12,30 +12,54 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const images = [
-    "/Images/banner/about-1.jpg",
-    "/Images/banner/about-2.jpg",
-    "/Images/banner/about-3.jpg",
-  ];
+  // Memoize images array to prevent recreation on each render
+  const images = useMemo(
+    () => [
+      "/Images/banner/about-1.jpg",
+      "/Images/banner/about-2.jpg",
+      "/Images/banner/about-3.jpg",
+    ],
+    []
+  );
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000);
+  // Use requestAnimationFrame for smoother image transitions
+  React.useEffect(() => {
+    let rafId: number;
+    let lastUpdate = 0;
+    const interval = 3000; // 3 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+    const updateImage = (timestamp: number) => {
+      if (timestamp - lastUpdate >= interval) {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        lastUpdate = timestamp;
+      }
+      rafId = requestAnimationFrame(updateImage);
+    };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchQuery, ""); // Empty string for location as it's not implemented
-  };
+    rafId = requestAnimationFrame(updateImage);
+    return () => cancelAnimationFrame(rafId);
+  }, [images.length]);
+
+  // Memoize the search handler
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      onSearch(searchQuery, "");
+    },
+    [searchQuery, onSearch]
+  );
+
+  // Memoize the input change handler
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
+  );
 
   return (
     <div className="relative">
-      {/* Main Banner with aspect ratio wrapper */}
       <div className="w-full relative">
-        {/* Aspect ratio container */}
         <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:h-[430px]">
           {/* Person Image */}
           <div
@@ -49,23 +73,32 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
               height={300}
               className="h-[120px] xs:h-[140px] sm:h-[200px] md:h-[250px] w-auto object-contain opacity-90 drop-shadow-lg transition-all duration-300"
               priority
+              loading="eager"
+              quality={75}
             />
           </div>
 
           {/* Background Logo */}
-          <div className="absolute inset-0 z-10 flex justify-start items-center pl-[8%] sm:pl-[12%]">
-            <Image
-              src="/builddemo.png"
-              alt="Background"
-              width={550}
-              height={550}
-              className="w-[350px] sm:w-[450px] md:w-[550px] h-auto object-contain opacity-75"
-              style={{
-                mixBlendMode: "overlay",
-                filter: "brightness(1.2) contrast(1.1)",
-              }}
-              priority
-            />
+          <div className="absolute inset-0 z-10">
+            <div className="relative h-full flex items-center">
+              <div className="absolute left-0 w-full sm:w-auto pl-2 xs:pl-4 sm:pl-[8%] transform-gpu">
+                <Image
+                  src="/builddemo.png"
+                  alt="Background"
+                  width={550}
+                  height={550}
+                  className="w-[280px] xs:w-[320px] sm:w-[450px] md:w-[550px] h-auto object-contain opacity-75 transform-gpu transition-transform duration-300"
+                  style={{
+                    mixBlendMode: "overlay",
+                    filter: "brightness(1.2) contrast(1.1)",
+                    transform: "scale(1.2) translateX(-8%)",
+                  }}
+                  priority
+                  loading="eager"
+                  quality={75}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Text Content */}
@@ -75,21 +108,25 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
                 Welcome to Latur Hostel
               </h1>
               <p className="font-serif text-sm sm:text-base lg:text-xl text-white/90 italic drop-shadow-lg">
-                Find Your Home, away From Home
+                Find Your Home, away from Home
               </p>
             </div>
           </div>
 
           {/* Background Gradients */}
           <div className="absolute inset-0 flex">
+            {/* Left gradient section */}
             <div className="relative w-[45%] flex items-center bg-gradient-to-r from-[#FF8C42] via-[#5BB5E6] to-[#3A9BD8]">
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#3A9BD8]/30 to-[#3A9BD8]/70" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#3A9BD8]/30 to-[#3A9BD8]" />{" "}
+              {/* Removed /70 opacity */}
             </div>
 
+            {/* Right section */}
             <div className="relative w-[55%]">
               <div className="absolute inset-0 z-10">
-                <div className="absolute left-0 top-0 h-full w-[150px] sm:w-[250px] bg-gradient-to-r from-[#3A9BD8] via-[#3A9BD8]/70 to-transparent" />
+                {/* Adjusted the leftmost gradient to start exactly at edge */}
+                <div className="absolute -left-px top-0 h-full w-[150px] sm:w-[250px] bg-gradient-to-r from-[#3A9BD8] via-[#3A9BD8]/70 to-transparent" />
                 <div className="absolute left-[50px] sm:left-[100px] top-0 h-full w-[100px] sm:w-[200px] bg-gradient-to-r from-[#3A9BD8]/40 via-[#3A9BD8]/20 to-transparent" />
                 <div className="absolute left-[100px] sm:left-[200px] top-0 h-full w-[75px] sm:w-[150px] bg-gradient-to-r from-[#3A9BD8]/30 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-transparent" />
@@ -97,22 +134,16 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
 
               {/* Image Carousel */}
               <div className="absolute inset-0">
-                {images.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                      index === currentImageIndex ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <Image
-                      src={image}
-                      alt={`Carousel image ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      priority={index === 0}
-                    />
-                  </div>
-                ))}
+                <Image
+                  key={currentImageIndex}
+                  src={images[currentImageIndex]}
+                  alt={`Carousel image ${currentImageIndex + 1}`}
+                  fill
+                  className="object-cover transition-opacity duration-1000 ease-in-out"
+                  priority={currentImageIndex === 0}
+                  loading={currentImageIndex === 0 ? "eager" : "lazy"}
+                  quality={75}
+                />
               </div>
               <div className="absolute inset-0 bg-black/10" />
             </div>
@@ -134,7 +165,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
                   type="text"
                   placeholder="Search your Hostel"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                   className="w-full bg-transparent text-black text-base sm:text-lg py-2 sm:py-4 focus:outline-none"
                 />
               </div>
@@ -155,4 +186,4 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
   );
 };
 
-export default MobileHostelworldLanding;
+export default React.memo(MobileHostelworldLanding);
