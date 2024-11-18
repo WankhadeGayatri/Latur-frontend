@@ -486,10 +486,10 @@ const MobileApp: React.FC = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const timer = setInterval(handleNextScreen, 10000);
-  //   return () => clearInterval(timer);
-  // }, [handleNextScreen]);
+  useEffect(() => {
+    const timer = setInterval(handleNextScreen, 10000);
+    return () => clearInterval(timer);
+  }, [handleNextScreen]);
 
   return (
     <div className="relative flex items-center justify-center  overflow-hidden  p-4">
@@ -525,13 +525,32 @@ const MobileApp: React.FC = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="absolute inset-0 p-3 sm:p-4"
               >
-                <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
-                  <div className="w-12 sm:w-16 h-12 sm:h-16 bg-blue-500 rounded-full animate-pulse"></div>
-                  <WelcomeScreen
-                    onNext={handleNextScreen}
-                    onPrev={handlePrevScreen}
-                  />
-                </div>
+                {currentScreen === "welcome" && (
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-blue-500 rounded-full animate-pulse"></div>
+                    <WelcomeScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
+                )}
+                {currentScreen === "support" && (
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-green-500 rounded-full animate-bounce"></div>
+                    <SupportScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
+                )}
+                {currentScreen === "home" && (
+                  <div className="h-full flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <HomeScreen
+                      onNext={handleNextScreen}
+                      onPrev={handlePrevScreen}
+                    />
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>

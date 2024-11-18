@@ -6,18 +6,18 @@ import { ArrowRight } from "lucide-react";
 
 const Gallery = () => {
   const images = [
-    { src: "/Images/HomePage/dining.jpg", alt: "guitar player at concert" },
-    { src: "/Images/HomePage/room.jpg", alt: "duo singing" },
-    { src: "/Images/about/about-2.jpg", alt: "crowd cheering" },
-    { src: "/Images/HomePage/study.jpg", alt: "singer performing" },
-    { src: "/Images/HomePage/hall.jpg", alt: "singer fistbumping crowd" },
-    { src: "/Images/about/about-1.jpg", alt: "man with a guitar singing" },
+    { src: "/Images/HomePage/dining.jpg", alt: "Dinning Room" },
+    { src: "/Images/HomePage/room.jpg", alt: "Hostel Rooms" },
+    { src: "/Images/about/about-2.jpg", alt: " Rooms" },
+    { src: "/Images/HomePage/study.jpg", alt: "Study Rooms" },
+    { src: "/Images/HomePage/hall.jpg", alt: "Hall" },
+    { src: "/Images/about/about-1.jpg", alt: "Attached bed" },
     {
       src: "/Images/HomePage/single2.jpg",
-      alt: "crowd looking at a lighted stage",
+      alt: "single room",
     },
-    { src: "/Images/HomePage/room.jpg", alt: "duo singing" },
-    { src: "/Images/about/about-2.jpg", alt: "woman singing on stage" },
+    { src: "/Images/HomePage/room.jpg", alt: "Rooms" },
+    { src: "/Images/about/about-2.jpg", alt: "combine room" },
   ];
 
   return (
