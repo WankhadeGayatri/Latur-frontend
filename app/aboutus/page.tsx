@@ -269,7 +269,7 @@ const AboutPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* No Middle Man - New Feature */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl  transition-shadow duration-300">
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
                   <svg
                     className="w-6 h-6 text-sky-600"
@@ -294,7 +294,7 @@ const AboutPage = () => {
                 </p>
               </div>
               {/* Safety & Security */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl justify-center transition-shadow duration-300">
                 <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
                   <svg
                     className="w-6 h-6 text-sky-600"

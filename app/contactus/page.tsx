@@ -100,7 +100,7 @@ export default function ContactPage() {
           {/* Left Content */}
           <div className="space-y-6 relative h-[450px] rounded-lg overflow-hidden">
             <Image
-              src="/Images/contact.jpg"
+              src="/Images/contact1.png"
               alt="Contact support team"
               fill
               className="object-cover"

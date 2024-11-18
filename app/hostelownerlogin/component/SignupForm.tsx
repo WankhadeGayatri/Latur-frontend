@@ -204,6 +204,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("owner");
     if (showOtpInput) {
       await handleOtpSubmit();
     } else {

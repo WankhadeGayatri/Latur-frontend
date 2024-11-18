@@ -1,5 +1,5 @@
-// pages/amenities.tsx
 "use client";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
 import React from "react";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import {
   Wifi as WifiIcon,
-  Coffee as CoffeeIcon,
+  // Coffee as CoffeeIcon,
   MenuBook as MenuBookIcon,
   WbSunny as WbSunnyIcon,
   Restaurant as RestaurantIcon,
@@ -23,6 +23,8 @@ import {
   DirectionsBus as DirectionsBusIcon,
   BoltRounded as BoltIcon,
   Home as HomeIcon,
+  BorderAll,
+  Padding,
 } from "@mui/icons-material";
 import Footer from "../Component/mainpage/Footer";
 import Navbar from "../Component/mainpage/Navbar";
@@ -70,7 +72,7 @@ const amenities: AmenityItem[] = [
     bgcolor: "#e3f2fd",
   },
   {
-    icon: CoffeeIcon,
+    icon: LibraryBooksIcon,
     title: "Study Room",
     description: "Quiet space equipped with desks and chairs",
     color: "#7b1fa2",
@@ -191,7 +193,7 @@ const AmenitiesPage = () => {
                         borderRadius: "8px",
                         border: "1px solid #e0e0e0",
                         transition: "all 0.3s ease",
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#F0F8FF",
                         "&:hover": {
                           transform: "translateY(-4px)",
                           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
@@ -211,14 +213,16 @@ const AmenitiesPage = () => {
                           mb: 2.5,
                           transition: "all 0.3s ease",
                           "&:hover": {
-                            backgroundColor: "#e3f2fd",
+                            backgroundColor: "#d4e6f1",
                           },
                         }}
                       >
                         <Icon
                           sx={{
-                            fontSize: 28,
-                            color: "#2196f3",
+                            fontSize: 40,
+                            color: "#2874a6",
+                            // backgroundColor: "#d4e6f1",
+                            // border: "1px solid #e0e0e0",
                           }}
                         />
                       </Box>

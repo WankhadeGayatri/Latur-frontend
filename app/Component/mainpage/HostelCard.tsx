@@ -21,6 +21,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import GenderIcon from "@mui/icons-material/Wc";
 import {
   Favorite as FavoriteIcon,
   FavoriteBorder as FavoriteBorderIcon,
@@ -441,7 +442,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 variant="body2"
                 className="text-sm text-gray-600 flex items-center flex-wrap"
               >
-                <HomeIcon
+                <GenderIcon
                   className="text-sky-500 mr-2 shrink-0"
                   fontSize="small"
                 />
