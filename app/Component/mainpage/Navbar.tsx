@@ -92,7 +92,7 @@ const NavigationContent: React.FC<{
     { text: "Home", path: "/" },
     { text: "About Us", path: "/aboutus" },
     { text: "Amenities", path: "/amenities" },
-    { text: "ContactUs", path: "/contactus" },
+    { text: "Contact-Us", path: "/contactus" },
     { text: "Gallery", path: "/gallery" },
     { text: "Login", path: "/login" },
     { text: "Register", path: "/register" },

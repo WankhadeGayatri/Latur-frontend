@@ -47,6 +47,7 @@ import MobileHostelworldLanding from "./MobileHostelworldLanding";
 import dynamic from "next/dynamic";
 import CoverflowSlider from "./CoverflowSlider";
 import InfiniteCardCarousel from "./InfiniteCardCarousel";
+import Gallery from "./Gallery";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -640,26 +641,10 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
-        <link rel="preload" href="/css/4ebd156d80596fe3.css" as="style" />
-        <link rel="preload" href="/css/6940938c9d0594bd.css" as="style" />
-        <link rel="preload" href="/css/4a5f3d9e576ed0f5.css" as="style" />
-        <link
-          rel="preload"
-          href="/fonts/your-main-font.woff2"
-          as="font"
-          type="font/woff2"
-        />
-      </Head>
-      {/* <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" /> */}
-
       {/* Sticky header with FilterBar */}
       <div className="sticky top-0 z-10 bg-white">
         <MobileHostelworldLanding onSearch={handleSearch} />
-        <Suspense fallback={<AmenitiesSliderLoader />}>
-          <CenteredFeatureSlider />
-        </Suspense>
+
         <FilterBar
           onFilterChange={handleFilterChange}
           onSearch={handleSearch}
@@ -790,8 +775,8 @@ const HomePage: React.FC = () => {
             <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
           </h1>
 
-          <div className="mt-8 md:mt-12">
-            <InfiniteCardCarousel items={sliderItems} />
+          <div className="mt-8 justify-center md:mt-12">
+            <Gallery />
           </div>
         </div>
       </motion.section>

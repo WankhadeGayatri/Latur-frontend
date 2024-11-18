@@ -14,8 +14,8 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
 
   const images = [
     "/Images/banner/about-1.jpg",
-    "/Images/banner/about-2.jpg",
-    "/Images/banner/about-3.jpg",
+    // "/Images/banner/about-2.jpg",
+    // "/Images/banner/about-3.jpg",
   ];
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative mb-8">
       {/* Main Banner with aspect ratio wrapper */}
       <div className="w-full relative">
         {/* Aspect ratio container */}
@@ -113,7 +113,13 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
 
               {/* Image Carousel */}
               <div className="absolute inset-0">
-                {images.map((image, index) => (
+                <Image
+                  src="/Images/banner/about-3.jpg"
+                  alt="Carousel image "
+                  fill
+                  className="object-cover"
+                />
+                {/* {images.map((image, index) => (
                   <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
@@ -128,7 +134,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
                       priority={index === 0}
                     />
                   </div>
-                ))}
+                ))} */}
               </div>
               <div className="absolute inset-0 bg-black/10" />
             </div>
