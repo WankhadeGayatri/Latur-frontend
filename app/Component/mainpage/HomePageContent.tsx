@@ -792,7 +792,8 @@ const HomePage: React.FC = () => {
           </h1>
 
           <div className="mt-8 md:mt-12">
-            <Gallery />
+            <InfiniteCardCarousel items={sliderItems} />
+            {/* <Gallery /> */}
           </div>
         </div>
       </motion.section>
