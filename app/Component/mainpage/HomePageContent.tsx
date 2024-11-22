@@ -48,6 +48,7 @@ import dynamic from "next/dynamic";
 import CoverflowSlider from "./CoverflowSlider";
 import InfiniteCardCarousel from "./InfiniteCardCarousel";
 import Gallery from "./Gallery";
+import LoaderComponent from "./LoaderComponent";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -106,6 +107,20 @@ interface Hostel {
   }[];
   latitude: number;
   longitude: number;
+}
+interface PaginatedResponse {
+  hostels: Hostel[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
+}
+interface PaginationState {
+  currentPage: number;
+  hasMore: boolean;
+  isLoading: boolean;
 }
 
 // HostelCard props interface
@@ -182,6 +197,15 @@ const HomePage: React.FC = () => {
     tuition: false,
   });
 
+  const [pagination, setPagination] = useState<PaginationState>({
+    currentPage: 1,
+    hasMore: true,
+    isLoading: false,
+  });
+
+  // Ref for intersection observer
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadingRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const hostelsPerPage = 10;
 
@@ -192,16 +216,6 @@ const HomePage: React.FC = () => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const searchParams1 = useSearchParams();
-  useEffect(() => {
-    // Check if the URL has a section parameter
-    const section = searchParams.get("section");
-    if (section === "gallery" && galleryRef.current) {
-      galleryRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [searchParams1]);
 
   const sliderItems = [
     // {
@@ -270,57 +284,117 @@ const HomePage: React.FC = () => {
     },
     // Add more items as needed
   ];
-  const fetchHostels = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/hostels/all`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+
+  const fetchHostels = useCallback(
+    async (page: number) => {
+      try {
+        setPagination((prev) => ({ ...prev, isLoading: true }));
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: page.toString(),
+          limit: "10",
+          search: filters.searchName,
+          type: filters.type !== "All" ? filters.type : "",
+          studentsPerRoom:
+            filters.studentsPerRoom !== "Any" ? filters.studentsPerRoom : "",
+          minRent: filters.rentRange[0].toString(),
+          maxRent: filters.rentRange[1].toString(),
+        });
+
+        // Add amenities if selected
+        const selectedAmenities = [];
+        if (filters.wifi) selectedAmenities.push("wifi");
+        if (filters.ac) selectedAmenities.push("ac");
+        if (filters.mess) selectedAmenities.push("mess");
+        if (filters.solar) selectedAmenities.push("solar");
+        if (filters.studyRoom) selectedAmenities.push("studyRoom");
+        if (filters.tuition) selectedAmenities.push("tuition");
+
+        if (selectedAmenities.length > 0) {
+          queryParams.append("amenities", selectedAmenities.join(","));
+        }
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/hostels/all?${queryParams.toString()}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // If it's the first page, replace hostels, otherwise append
+        setHostels((prev) =>
+          page === 1 ? data.hostels : [...prev, ...data.hostels]
+        );
+
+        // Update pagination state
+        setPagination((prev) => ({
+          ...prev,
+          hasMore: data.hostels.length === 10, // If we got less than 10 items, we've reached the end
+          isLoading: false,
+        }));
+      } catch (error) {
+        console.error("Error fetching hostels:", error);
+        setError("Error fetching hostels");
+        setPagination((prev) => ({ ...prev, isLoading: false }));
       }
-      const data = await response.json();
-      const hostelsWithPhotos = await Promise.all(
-        data.map(async (hostel: Hostel) => {
-          try {
-            const photoResponse = await fetch(
-              `${API_BASE_URL}/api/hostels/gethostalphotos/${hostel._id}`
-            );
-            if (!photoResponse.ok) {
-              throw new Error(`HTTP error! status: ${photoResponse.status}`);
-            }
-            const photos = await photoResponse.json();
-            return {
-              ...hostel,
-              images: photos,
-              id: hostel._id,
-              latitude: hostel.latitude || 0,
-              longitude: hostel.longitude || 0,
-            };
-          } catch (photoError) {
-            console.error("Error fetching hostel photos:", photoError);
-            return {
-              ...hostel,
-              images: [],
-              id: hostel._id,
-              latitude: hostel.latitude || 0,
-              longitude: hostel.longitude || 0,
-            };
-          }
-        })
-      );
+    },
+    [filters]
+  );
 
-      setHostels(hostelsWithPhotos);
-      setFilteredHostels(hostelsWithPhotos);
-    } catch (error) {
-      console.error("Error fetching hostels:", error);
-      setError("Error fetching hostels");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
+  // Reset and fetch when filters change
   useEffect(() => {
-    fetchHostels();
-  }, [fetchHostels]);
+    setPagination({
+      currentPage: 1,
+      hasMore: true,
+      isLoading: false,
+    });
+    fetchHostels(1);
+  }, [filters, fetchHostels]);
+  // Setup intersection observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (
+          first.isIntersecting &&
+          pagination.hasMore &&
+          !pagination.isLoading
+        ) {
+          setPagination((prev) => ({
+            ...prev,
+            currentPage: prev.currentPage + 1,
+          }));
+          fetchHostels(pagination.currentPage + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [
+    pagination.hasMore,
+    pagination.isLoading,
+    fetchHostels,
+    pagination.currentPage,
+  ]);
+
+  // Update pagination handler
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const criticalCSS = `
   .MuiToolbar-root {
     height: 60px;
@@ -346,10 +420,6 @@ const HomePage: React.FC = () => {
   const handleFilter = useCallback((newFilters: Filters) => {
     setFilters(newFilters);
   }, []);
-
-  const LoaderComponent: React.FC = () => {
-    return <div>Searching Hostels</div>;
-  };
 
   const NoHostelsFound: React.FC = () => (
     <motion.div
@@ -402,14 +472,6 @@ const HomePage: React.FC = () => {
     indexOfFirstHostel,
     indexOfLastHostel
   );
-
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setCurrentPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const handleFilterChange = useCallback((newFilters: Filters) => {
     setFilters(newFilters);
@@ -653,9 +715,7 @@ const HomePage: React.FC = () => {
           type="font/woff2"
         />
       </Head>
-      {/* <WavePromoBanner text="Welcome to our Latur Hostel Management ! Book your stay now and get 20% off!" /> */}
 
-      {/* Sticky header with FilterBar */}
       <div className="sticky top-0 z-10 bg-white">
         <MobileHostelworldLanding onSearch={handleSearch} />
         <Suspense fallback={<AmenitiesSliderLoader />}>
@@ -667,46 +727,43 @@ const HomePage: React.FC = () => {
         />
       </div>
 
-      {isLoading ? (
+      {isLoading && !hostels.length ? (
         <LoaderComponent />
       ) : error ? (
         <div className="text-red-500 text-center py-4">{error}</div>
       ) : (
-        <div className="containe px-4">
+        <div className="container px-4">
           <div className="flex flex-col md:flex-row md:gap-6">
-            {/* Mobile App section - removed all margins/padding */}
-            <div className="w-full md:w-1/3 md:order-2">
+            {/* Mobile App - Fixed position on desktop */}
+            <div className="hidden md:block w-full md:w-1/3 md:order-2">
+              <div className="sticky mt-12">
+                <MobileApp />
+              </div>
+            </div>
+
+            {/* Mobile View of MobileApp */}
+            <div className="md:hidden w-full mb-6">
               <MobileApp />
             </div>
 
-            {/* Main content area */}
-            <div className="w-full md:w-2/3 md:order-1 relative">
-              <div
-                ref={hostelListRef}
-                className="overflow-y-auto"
-                style={{
-                  height:
-                    currentHostels.length === 0
-                      ? "auto"
-                      : "calc(150vh - 220px)",
-                }}
-              >
+            {/* Hostel List - Scrollable on desktop */}
+            <div className="w-full md:w-2/3 md:order-1">
+              <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
                 <AnimatePresence>
-                  {currentHostels.length > 0 ? (
+                  {hostels.length > 0 ? (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="space-y-3 md:space-y-4"
+                      className="space-y-4"
                     >
-                      {currentHostels.map((hostel, index) => (
+                      {hostels.map((hostel, index) => (
                         <motion.div
-                          key={hostel._id}
+                          key={`${hostel._id}-${index}`}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="rounded-lg shadow-lg overflow-hidden"
-                          style={{ minHeight: "200px" }}
+                          transition={{ delay: Math.min(index * 0.1, 0.5) }}
+                          className="rounded-lg shadow-lg overflow-hidden bg-white"
                         >
                           <HostelCard
                             id={hostel._id}
@@ -747,37 +804,35 @@ const HomePage: React.FC = () => {
                           />
                         </motion.div>
                       ))}
+
+                      {/* Infinite scroll loader */}
+                      <div ref={loadingRef} className="py-4">
+                        {pagination.isLoading && (
+                          <div className="flex justify-center">
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                              className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"
+                            />
+                          </div>
+                        )}
+                      </div>
                     </motion.div>
                   ) : (
-                    <div className="flex justify-center items-center">
-                      <NoHostelsFound />
-                    </div>
+                    !pagination.isLoading && <NoHostelsFound />
                   )}
                 </AnimatePresence>
               </div>
-
-              {currentHostels.length > 0 && (
-                <>
-                  {showScrollIndicator && (
-                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-                  )}
-                  <div className="mt-4 md:mt-6 flex justify-center">
-                    <Pagination
-                      count={Math.ceil(filteredHostels.length / hostelsPerPage)}
-                      page={currentPage}
-                      onChange={handlePageChange}
-                      color="primary"
-                    />
-                  </div>
-                </>
-              )}
             </div>
           </div>
         </div>
       )}
 
       <motion.section
-        ref={galleryRef}
         id="gallery"
         className="py-8 md:py-12 px-4"
         initial={{ opacity: 0 }}
@@ -793,7 +848,6 @@ const HomePage: React.FC = () => {
 
           <div className="mt-8 md:mt-12">
             <InfiniteCardCarousel items={sliderItems} />
-            {/* <Gallery /> */}
           </div>
         </div>
       </motion.section>

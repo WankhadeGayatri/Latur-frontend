@@ -243,7 +243,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
         setIsInWishlist(true);
       } else {
         const response = await axios.post(
-          "${API_BASE_URL}/api/students/wishlist/remove",
+          `${API_BASE_URL}/api/students/wishlist/remove`,
           { hostelId: id, profileId },
           {
             headers: {
@@ -355,7 +355,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
 
   return (
     <>
-      <Card className="bg-white p-4 md:p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
+      <Card className="bg-white p-3 md:p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
         {/* Image Section */}
         <Box className="w-full md:w-1/3 relative overflow-hidden mb-4 md:mb-0">
           <Swiper
@@ -424,7 +424,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
             </div>
 
             {/* Details Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-2">
               <Typography
                 variant="body2"
                 className="text-sm text-gray-600 flex items-center flex-wrap"
@@ -450,27 +450,12 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 <span className="font-semibold text-gray-800 ml-1">
                   {hostelType}
                 </span>
-              </Typography>
-              {!isMobile && (
                 <Typography
                   variant="body2"
-                  className="text-sm text-gray-600 flex items-center flex-wrap"
+                  className="text-sm ml-5 text-gray-600 flex items-center"
                 >
-                  <HotelIcon
-                    className="text-sky-500 mr-2 shrink-0"
-                    fontSize="small"
-                  />
-                  <span className="whitespace-nowrap">Beds: </span>
-                  <span className="font-semibold text-gray-800 ml-1">
-                    {beds}
-                  </span>
+                  <StarRating value={calculateAverageRating()} />
                 </Typography>
-              )}
-              <Typography
-                variant="body2"
-                className="text-sm text-gray-600 flex items-center"
-              >
-                <StarRating value={calculateAverageRating()} />
               </Typography>
             </div>
 
@@ -481,8 +466,8 @@ const HostelCard: React.FC<HostelCardProps> = ({
 
             {/* Amenities */}
 
-            <div className="mt-4">
-              <Typography variant="subtitle1" className="text-sky-600 mb-2">
+            <div className="mt-1">
+              <Typography variant="subtitle1" className="text-sky-600 mb-1">
                 Amenities:
               </Typography>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -580,7 +565,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
           </div>
 
           {/* Action Button */}
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-2">
             <Button
               variant="contained"
               onClick={handleViewDetails}
