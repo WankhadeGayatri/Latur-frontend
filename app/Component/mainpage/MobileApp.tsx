@@ -86,6 +86,23 @@ const NavigationButtons: React.FC<NavigationProps> = ({ onNext, onPrev }) => (
 );
 
 const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
+  const [screenSize, setScreenSize] = useState({ width: 0 });
+
+  useEffect(() => {
+    // Set initial size
+    setScreenSize({ width: window.innerWidth });
+
+    // Add resize listener
+    const handleResize = () => {
+      setScreenSize({ width: window.innerWidth });
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const examBubbles: ExamBubble[] = [
     { name: "NEET", color: "bg-blue-400" },
     { name: "JEE", color: "bg-green-400" },
@@ -95,9 +112,10 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     { name: "CAT", color: "bg-pink-400" },
   ];
 
+  const getRadius = () => (screenSize.width < 640 ? 35 : 40);
+
   return (
     <div className="relative h-full pb-16 sm:pb-20 px-2 flex flex-col items-center justify-center bg-white">
-      {/* <NavigationButtons onNext={onNext} onPrev={onPrev} /> */}
       <h1 className="text-lg sm:text-xl mt-2 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
       </h1>
@@ -109,8 +127,7 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
           style={{ width: "100%", height: "100%" }}
         />
         {examBubbles.map((bubble, index) => {
-          // Adjust radius for mobile
-          const radius = window.innerWidth < 640 ? 35 : 40;
+          const radius = getRadius();
           return (
             <div
               key={bubble.name}
@@ -119,7 +136,7 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
                 top: `${50 + radius * Math.sin((index * Math.PI) / 3)}%`,
                 left: `${50 + radius * Math.cos((index * Math.PI) / 3)}%`,
                 transform: "translate(-50%, -50%)",
-                minWidth: window.innerWidth < 640 ? "40px" : "48px",
+                minWidth: screenSize.width < 640 ? "40px" : "48px",
                 textAlign: "center",
               }}
             >

@@ -181,6 +181,7 @@ const HomePage: React.FC = () => {
   const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [prefetchedData, setPrefetchedData] = useState<Hostel[] | null>(null);
   const [filters, setFilters] = useState<Filters>({
     searchName: "",
     type: "All",
@@ -203,12 +204,11 @@ const HomePage: React.FC = () => {
     isLoading: false,
   });
 
-  // Ref for intersection observer
+  // Keep existing refs...
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const hostelsPerPage = 10;
-
   const searchParams = useSearchParams();
   const filterRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -216,7 +216,6 @@ const HomePage: React.FC = () => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const searchParams1 = useSearchParams();
-
   const sliderItems = [
     // {
     //   src: "/Images/HomePage/Hostel7.avif",
@@ -286,11 +285,13 @@ const HomePage: React.FC = () => {
   ];
 
   const fetchHostels = useCallback(
-    async (page: number) => {
+    async (page: number, isPrefetch: boolean = false) => {
       try {
-        setPagination((prev) => ({ ...prev, isLoading: true }));
+        if (!isPrefetch) {
+          setPagination((prev) => ({ ...prev, isLoading: true }));
+        }
 
-        // Build query parameters
+        // Build query parameters (keep existing logic)
         const queryParams = new URLSearchParams({
           page: page.toString(),
           limit: "10",
@@ -302,7 +303,7 @@ const HomePage: React.FC = () => {
           maxRent: filters.rentRange[1].toString(),
         });
 
-        // Add amenities if selected
+        // Keep existing amenities logic
         const selectedAmenities = [];
         if (filters.wifi) selectedAmenities.push("wifi");
         if (filters.ac) selectedAmenities.push("ac");
@@ -325,21 +326,28 @@ const HomePage: React.FC = () => {
 
         const data = await response.json();
 
-        // If it's the first page, replace hostels, otherwise append
-        setHostels((prev) =>
-          page === 1 ? data.hostels : [...prev, ...data.hostels]
-        );
-
-        // Update pagination state
-        setPagination((prev) => ({
-          ...prev,
-          hasMore: data.hostels.length === 10, // If we got less than 10 items, we've reached the end
-          isLoading: false,
-        }));
+        if (isPrefetch) {
+          setPrefetchedData(data.hostels);
+        } else {
+          setHostels((prev) =>
+            page === 1 ? data.hostels : [...prev, ...data.hostels]
+          );
+          // Prefetch next page
+          if (data.hostels.length === hostelsPerPage) {
+            fetchHostels(page + 1, true);
+          }
+          setPagination((prev) => ({
+            ...prev,
+            hasMore: data.hostels.length === hostelsPerPage,
+            isLoading: false,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching hostels:", error);
         setError("Error fetching hostels");
-        setPagination((prev) => ({ ...prev, isLoading: false }));
+        if (!isPrefetch) {
+          setPagination((prev) => ({ ...prev, isLoading: false }));
+        }
       }
     },
     [filters]
@@ -386,14 +394,27 @@ const HomePage: React.FC = () => {
     pagination.currentPage,
   ]);
 
-  // Update pagination handler
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setCurrentPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const handlePageChange = useCallback(
+    (event: React.ChangeEvent<unknown>, value: number) => {
+      setCurrentPage(value);
+      if (prefetchedData && value === pagination.currentPage + 1) {
+        // Use prefetched data
+        setHostels(prefetchedData);
+        setPrefetchedData(null);
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: value,
+        }));
+        // Prefetch next page
+        fetchHostels(value + 1, true);
+      } else {
+        // Fetch new data
+        fetchHostels(value);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [pagination.currentPage, prefetchedData, fetchHostels]
+  );
 
   const criticalCSS = `
   .MuiToolbar-root {
@@ -402,13 +423,6 @@ const HomePage: React.FC = () => {
   }
   /* Add other critical styles here */
 `;
-
-  useEffect(() => {
-    const query = searchParams.get("search");
-    if (query) {
-      setFilters((prevFilters) => ({ ...prevFilters, searchName: query }));
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     if (filterRef.current) {
@@ -703,19 +717,6 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <Head>
-        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
-        <link rel="preload" href="/css/4ebd156d80596fe3.css" as="style" />
-        <link rel="preload" href="/css/6940938c9d0594bd.css" as="style" />
-        <link rel="preload" href="/css/4a5f3d9e576ed0f5.css" as="style" />
-        <link
-          rel="preload"
-          href="/fonts/your-main-font.woff2"
-          as="font"
-          type="font/woff2"
-        />
-      </Head>
-
       <div className="sticky top-0 z-10 bg-white">
         <MobileHostelworldLanding onSearch={handleSearch} />
         <Suspense fallback={<AmenitiesSliderLoader />}>
@@ -727,28 +728,30 @@ const HomePage: React.FC = () => {
         />
       </div>
 
-      {isLoading && !hostels.length ? (
-        <LoaderComponent />
-      ) : error ? (
-        <div className="text-red-500 text-center py-4">{error}</div>
-      ) : (
-        <div className="container px-4">
-          <div className="flex flex-col md:flex-row md:gap-6">
-            {/* Mobile App - Fixed position on desktop */}
-            <div className="hidden md:block w-full md:w-1/3 md:order-2">
-              <div className="sticky mt-12">
-                <MobileApp />
-              </div>
-            </div>
-
-            {/* Mobile View of MobileApp */}
-            <div className="md:hidden w-full mb-6">
+      <div className="container px-4">
+        <div className="flex flex-col md:flex-row md:gap-6">
+          {/* Mobile App - Fixed position on desktop - Always visible */}
+          <div className="hidden md:block w-full md:w-1/3 md:order-2">
+            <div className="sticky mt-12">
               <MobileApp />
             </div>
+          </div>
 
-            {/* Hostel List - Scrollable on desktop */}
-            <div className="w-full md:w-2/3 md:order-1">
-              <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
+          {/* Mobile View of MobileApp - Always visible */}
+          <div className="md:hidden w-full mb-6">
+            <MobileApp />
+          </div>
+
+          {/* Hostel List - Scrollable on desktop */}
+          <div className="w-full md:w-2/3 md:order-1">
+            <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
+              {isLoading && !hostels.length ? (
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <LoaderComponent />
+                </div>
+              ) : error ? (
+                <div className="text-red-500 text-center py-4">{error}</div>
+              ) : (
                 <AnimatePresence>
                   {hostels.length > 0 ? (
                     <motion.div
@@ -826,12 +829,24 @@ const HomePage: React.FC = () => {
                     !pagination.isLoading && <NoHostelsFound />
                   )}
                 </AnimatePresence>
-              </div>
+              )}
             </div>
           </div>
         </div>
+      </div>
+      {!isLoading && hostels.length > 0 && (
+        <div className="flex justify-center mt-6">
+          <Pagination
+            count={Math.ceil(filteredHostels.length / hostelsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            size="large"
+            siblingCount={1}
+            boundaryCount={1}
+          />
+        </div>
       )}
-
       <motion.section
         id="gallery"
         className="py-8 md:py-12 px-4"

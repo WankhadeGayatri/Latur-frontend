@@ -269,10 +269,10 @@ const AboutPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* No Middle Man - New Feature */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl  transition-shadow duration-300">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6 mx-auto">
                   <svg
-                    className="w-6 h-6 text-sky-600"
+                    className="w-7 h-7 text-sky-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -285,19 +285,20 @@ const AboutPage = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 text-center">
                   No Middle Man
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-center">
                   Direct connection between students and hostel owners, ensuring
                   transparent communication and better rates.
                 </p>
               </div>
+
               {/* Safety & Security */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl justify-center transition-shadow duration-300">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6 mx-auto">
                   <svg
-                    className="w-6 h-6 text-sky-600"
+                    className="w-7 h-7 text-sky-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -310,10 +311,10 @@ const AboutPage = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 text-center">
                   Safety & Security
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-center">
                   24/7 security systems and strict access controls to ensure
                   student safety at all times.
                 </p>
@@ -321,9 +322,9 @@ const AboutPage = () => {
 
               {/* Location Convenience */}
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6 mx-auto">
                   <svg
-                    className="w-6 h-6 text-sky-600"
+                    className="w-7 h-7 text-sky-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -342,10 +343,10 @@ const AboutPage = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 text-center">
                   Prime Locations
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-center">
                   Strategically located hostels near educational institutions
                   and public transport.
                 </p>
@@ -353,9 +354,9 @@ const AboutPage = () => {
 
               {/* Affordable Pricing */}
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6">
+                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mb-6 mx-auto">
                   <svg
-                    className="w-6 h-6 text-sky-600"
+                    className="w-7 h-7 text-sky-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -368,10 +369,10 @@ const AboutPage = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 text-center">
                   Affordable Pricing
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-center">
                   Competitive rates with flexible payment options to suit every
                   student's budget.
                 </p>
