@@ -50,7 +50,7 @@ const LoaderComponent: React.FC = (): JSX.Element => {
 
         <div className="flex items-center space-x-3">
           <h2 className="text-lg font-medium text-gray-800 whitespace-nowrap">
-            Searching Hostels{state.dots}
+            Loading Hostels{state.dots}
           </h2>
 
           <div

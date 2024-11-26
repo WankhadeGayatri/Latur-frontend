@@ -49,6 +49,7 @@ import CoverflowSlider from "./CoverflowSlider";
 import InfiniteCardCarousel from "./InfiniteCardCarousel";
 import Gallery from "./Gallery";
 import LoaderComponent from "./LoaderComponent";
+import HostelCardLoader from "./HostelCardLoader";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -346,7 +347,13 @@ const HomePage: React.FC = () => {
         console.error("Error fetching hostels:", error);
         setError("Error fetching hostels");
         if (!isPrefetch) {
-          setPagination((prev) => ({ ...prev, isLoading: false }));
+          setPagination((prev) => ({
+            ...prev,
+            isLoading: false,
+            hasMore: false,
+          }));
+          // Ensure hostels is set to an empty array if fetch fails
+          setHostels([]);
         }
       }
     },
@@ -516,6 +523,8 @@ const HomePage: React.FC = () => {
     // Check if search includes gender terms and standardize them
     const isGirlsSearch = girlsTerms.some((term) => searchQuery.includes(term));
     const isBoysSearch = boysTerms.some((term) => searchQuery.includes(term));
+
+    // Set filters
     setFilters((prev) => ({
       ...prev,
       searchName: query,
@@ -630,6 +639,8 @@ const HomePage: React.FC = () => {
 
       setFilteredHostels(result);
       setCurrentPage(1);
+    } else {
+      setFilteredHostels([]);
     }
   }, [hostels, filters]);
 
@@ -745,12 +756,12 @@ const HomePage: React.FC = () => {
           {/* Hostel List - Scrollable on desktop */}
           <div className="w-full md:w-2/3 md:order-1">
             <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
-              {isLoading && !hostels.length ? (
-                <div className="flex items-center justify-center min-h-[400px]">
-                  <LoaderComponent />
-                </div>
-              ) : error ? (
-                <div className="text-red-500 text-center py-4">{error}</div>
+              {isLoading && pagination.isLoading ? (
+                <>
+                  <HostelCardLoader />
+                  <HostelCardLoader />
+                  <HostelCardLoader />
+                </>
               ) : (
                 <AnimatePresence>
                   {hostels.length > 0 ? (
@@ -826,7 +837,7 @@ const HomePage: React.FC = () => {
                       </div>
                     </motion.div>
                   ) : (
-                    !pagination.isLoading && <NoHostelsFound />
+                    <NoHostelsFound />
                   )}
                 </AnimatePresence>
               )}
@@ -834,7 +845,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
-      {!isLoading && hostels.length > 0 && (
+      {!isLoading && filteredHostels.length > 0 && (
         <div className="flex justify-center mt-6">
           <Pagination
             count={Math.ceil(filteredHostels.length / hostelsPerPage)}
