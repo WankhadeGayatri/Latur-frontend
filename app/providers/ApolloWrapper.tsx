@@ -7,13 +7,17 @@ import {
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
 
+// Configure the HTTP Link
 const httpLink = createHttpLink({
   uri: `${API_BASE_URL}/graphql`,
   credentials: "include",
   headers: {
-    "Apollo-Require-Preflight": "true",
+    "Content-Type": "application/json",
+    // Remove Apollo-Require-Preflight header as it's causing issues
+  },
+  fetchOptions: {
+    mode: "cors",
   },
 });
 
