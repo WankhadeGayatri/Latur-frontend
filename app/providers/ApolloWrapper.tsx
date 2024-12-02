@@ -7,6 +7,15 @@ import {
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+
+const httpLink = createHttpLink({
+  uri: `${API_BASE_URL}/graphql`,
+  credentials: "include",
+  headers: {
+    "Apollo-Require-Preflight": "true",
+  },
+});
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -30,15 +39,6 @@ export const cache = new InMemoryCache({
         },
       },
     },
-  },
-});
-
-// Create HTTP link with CORS settings
-const httpLink = createHttpLink({
-  uri: `${API_BASE_URL}/graphql`,
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json",
   },
 });
 
