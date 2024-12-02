@@ -7,28 +7,7 @@ import {
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { Hostel } from "../types/Hostel";
-interface HostelResponse {
-  hostels: Hostel[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-  };
-}
 
-interface HostelQueryArgs {
-  type?: string;
-  studentsPerRoom?: number;
-  minRent?: number;
-  maxRent?: number;
-  amenities?: string[];
-  search?: string;
-  page?: number;
-}
-// Optimized cache configuration
 export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -54,49 +33,26 @@ export const cache = new InMemoryCache({
   },
 });
 
-// Create HTTP link with CORS configuration
+// Create HTTP link with CORS settings
 const httpLink = createHttpLink({
   uri: `${API_BASE_URL}/graphql`,
   credentials: "include",
-  fetchOptions: {
-    mode: "cors",
+  headers: {
+    "Content-Type": "application/json",
   },
 });
 
-// Add auth context if needed
-const authLink = setContext((_, { headers }) => {
-  // Get authentication token or other headers
-  const token = localStorage.getItem("token");
-
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-      "Apollo-Require-Preflight": "true",
-    },
-  };
-});
-
-// Create Apollo Client instance
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: httpLink,
   cache,
+  credentials: "include",
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "cache-and-network",
-      errorPolicy: "ignore",
-      notifyOnNetworkStatusChange: true,
-    },
-    query: {
-      fetchPolicy: "cache-first",
-      errorPolicy: "all",
-    },
-    mutate: {
-      errorPolicy: "all",
     },
   },
-  connectToDevTools: process.env.NODE_ENV === "development",
-  assumeImmutableResults: true,
-  name: "hostel-client",
-  version: "1.0",
 });
+
+export function ApolloWrapper({ children }: { children: React.ReactNode }) {
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+}
