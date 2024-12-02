@@ -50,6 +50,7 @@ import InfiniteCardCarousel from "./InfiniteCardCarousel";
 import Gallery from "./Gallery";
 import LoaderComponent from "./LoaderComponent";
 import HostelCardLoader from "./HostelCardLoader";
+import { useHostels } from "@/app/hooks/useHostels";
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -178,11 +179,6 @@ interface GalleryImage {
 }
 
 const HomePage: React.FC = () => {
-  const [hostels, setHostels] = useState<Hostel[]>([]);
-  const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [prefetchedData, setPrefetchedData] = useState<Hostel[] | null>(null);
   const [filters, setFilters] = useState<Filters>({
     searchName: "",
     type: "All",
@@ -199,11 +195,12 @@ const HomePage: React.FC = () => {
     tuition: false,
   });
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    currentPage: 1,
-    hasMore: true,
-    isLoading: false,
-  });
+  const { hostels, loading, error, pagination, loadMore } = useHostels(filters);
+
+  const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [prefetchedData, setPrefetchedData] = useState<Hostel[] | null>(null);
 
   // Keep existing refs...
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -285,143 +282,35 @@ const HomePage: React.FC = () => {
     // Add more items as needed
   ];
 
-  const fetchHostels = useCallback(
-    async (page: number, isPrefetch: boolean = false) => {
-      try {
-        if (!isPrefetch) {
-          setPagination((prev) => ({ ...prev, isLoading: true }));
-        }
-
-        // Build query parameters (keep existing logic)
-        const queryParams = new URLSearchParams({
-          page: page.toString(),
-          limit: "10",
-          search: filters.searchName,
-          type: filters.type !== "All" ? filters.type : "",
-          studentsPerRoom:
-            filters.studentsPerRoom !== "Any" ? filters.studentsPerRoom : "",
-          minRent: filters.rentRange[0].toString(),
-          maxRent: filters.rentRange[1].toString(),
-        });
-
-        // Keep existing amenities logic
-        const selectedAmenities = [];
-        if (filters.wifi) selectedAmenities.push("wifi");
-        if (filters.ac) selectedAmenities.push("ac");
-        if (filters.mess) selectedAmenities.push("mess");
-        if (filters.solar) selectedAmenities.push("solar");
-        if (filters.studyRoom) selectedAmenities.push("studyRoom");
-        if (filters.tuition) selectedAmenities.push("tuition");
-
-        if (selectedAmenities.length > 0) {
-          queryParams.append("amenities", selectedAmenities.join(","));
-        }
-
-        const response = await fetch(
-          `${API_BASE_URL}/api/hostels/all?${queryParams.toString()}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (isPrefetch) {
-          setPrefetchedData(data.hostels);
-        } else {
-          setHostels((prev) =>
-            page === 1 ? data.hostels : [...prev, ...data.hostels]
-          );
-          // Prefetch next page
-          if (data.hostels.length === hostelsPerPage) {
-            fetchHostels(page + 1, true);
-          }
-          setPagination((prev) => ({
-            ...prev,
-            hasMore: data.hostels.length === hostelsPerPage,
-            isLoading: false,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching hostels:", error);
-        setError("Error fetching hostels");
-        if (!isPrefetch) {
-          setPagination((prev) => ({
-            ...prev,
-            isLoading: false,
-            hasMore: false,
-          }));
-          // Ensure hostels is set to an empty array if fetch fails
-          setHostels([]);
-        }
-      }
-    },
-    [filters]
-  );
-
-  // Reset and fetch when filters change
-  useEffect(() => {
-    setPagination({
-      currentPage: 1,
-      hasMore: true,
-      isLoading: false,
-    });
-    fetchHostels(1);
-  }, [filters, fetchHostels]);
-  // Setup intersection observer
+  //Setup intersection observer
+  // Update infinite scroll handler
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
         if (
           first.isIntersecting &&
-          pagination.hasMore &&
-          !pagination.isLoading
+          !loading &&
+          pagination &&
+          pagination.currentPage < pagination.totalPages
         ) {
-          setPagination((prev) => ({
-            ...prev,
-            currentPage: prev.currentPage + 1,
-          }));
-          fetchHostels(pagination.currentPage + 1);
+          loadMore(pagination.currentPage + 1);
         }
       },
       { threshold: 0.1 }
     );
 
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
+    const currentLoader = loadingRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
     }
 
-    return () => observer.disconnect();
-  }, [
-    pagination.hasMore,
-    pagination.isLoading,
-    fetchHostels,
-    pagination.currentPage,
-  ]);
-
-  const handlePageChange = useCallback(
-    (event: React.ChangeEvent<unknown>, value: number) => {
-      setCurrentPage(value);
-      if (prefetchedData && value === pagination.currentPage + 1) {
-        // Use prefetched data
-        setHostels(prefetchedData);
-        setPrefetchedData(null);
-        setPagination((prev) => ({
-          ...prev,
-          currentPage: value,
-        }));
-        // Prefetch next page
-        fetchHostels(value + 1, true);
-      } else {
-        // Fetch new data
-        fetchHostels(value);
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
       }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
-    [pagination.currentPage, prefetchedData, fetchHostels]
-  );
+    };
+  }, [loading, pagination, loadMore]);
 
   const criticalCSS = `
   .MuiToolbar-root {
@@ -498,52 +387,38 @@ const HomePage: React.FC = () => {
     setFilters(newFilters);
   }, []);
 
+  // Optimized search handler
   const handleSearch = useCallback((query: string, location: string) => {
-    // Normalize search terms
-    let searchQuery = query.toLowerCase();
+    const searchQuery = query.toLowerCase();
+    const girlsTerms = ["girl", "girls", "girlshostel", "girls hostel"];
+    const boysTerms = ["boy", "boys", "boyshostel", "boys hostel"];
 
-    // Handle common variations of gender searches
-    const girlsTerms = [
-      "girl",
-      "girls",
-      "girlshostel",
-      "girlhostel",
-      "girls hostel",
-      "girl hostel",
-    ];
-    const boysTerms = [
-      "boy",
-      "boys",
-      "boyshostel",
-      "boyhostel",
-      "boys hostel",
-      "boy hostel",
-    ];
-
-    // Check if search includes gender terms and standardize them
     const isGirlsSearch = girlsTerms.some((term) => searchQuery.includes(term));
     const isBoysSearch = boysTerms.some((term) => searchQuery.includes(term));
 
-    // Set filters
     setFilters((prev) => ({
       ...prev,
       searchName: query,
       type: isGirlsSearch ? "girls" : isBoysSearch ? "boys" : prev.type,
     }));
 
-    // Scroll to the hostel list after a short delay to allow for filtering
-    setTimeout(() => {
-      if (hostelListRef.current) {
-        hostelListRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 100);
+    // Smooth scroll with RAF for better performance
+    requestAnimationFrame(() => {
+      hostelListRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   }, []);
 
+  // Error handling
+  if (error) {
+    console.error("GraphQL Error:", error);
+    return <div>Error loading hostels. Please try again later.</div>;
+  }
+
   useEffect(() => {
-    if (hostels.length > 0) {
+    if (hostels?.length > 0) {
       let result = hostels;
 
       // Apply all filters
@@ -756,7 +631,7 @@ const HomePage: React.FC = () => {
           {/* Hostel List - Scrollable on desktop */}
           <div className="w-full md:w-2/3 md:order-1">
             <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
-              {isLoading && pagination.isLoading ? (
+              {loading && !hostels.length ? (
                 <>
                   <HostelCardLoader />
                   <HostelCardLoader />
@@ -773,10 +648,13 @@ const HomePage: React.FC = () => {
                     >
                       {hostels.map((hostel, index) => (
                         <motion.div
-                          key={`${hostel._id}-${index}`}
+                          key={hostel._id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: Math.min(index * 0.1, 0.5) }}
+                          transition={{
+                            delay: Math.min(index * 0.1, 0.5),
+                            duration: 0.3,
+                          }}
                           className="rounded-lg shadow-lg overflow-hidden bg-white"
                         >
                           <HostelCard
@@ -821,7 +699,7 @@ const HomePage: React.FC = () => {
 
                       {/* Infinite scroll loader */}
                       <div ref={loadingRef} className="py-4">
-                        {pagination.isLoading && (
+                        {loading && (
                           <div className="flex justify-center">
                             <motion.div
                               animate={{ rotate: 360 }}
@@ -845,19 +723,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
-      {!isLoading && filteredHostels.length > 0 && (
-        <div className="flex justify-center mt-6">
-          <Pagination
-            count={Math.ceil(filteredHostels.length / hostelsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="primary"
-            size="large"
-            siblingCount={1}
-            boundaryCount={1}
-          />
-        </div>
-      )}
+
       <motion.section
         id="gallery"
         className="py-8 md:py-12 px-4"

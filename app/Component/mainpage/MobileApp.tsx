@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { Player, PlayerEvent } from "@lottiefiles/react-lottie-player";
 import {
   Search,
@@ -86,21 +92,10 @@ const NavigationButtons: React.FC<NavigationProps> = ({ onNext, onPrev }) => (
 );
 
 const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
-  const [screenSize, setScreenSize] = useState({ width: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Set initial size
-    setScreenSize({ width: window.innerWidth });
-
-    // Add resize listener
-    const handleResize = () => {
-      setScreenSize({ width: window.innerWidth });
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup
-    return () => window.removeEventListener("resize", handleResize);
+    setMounted(true);
   }, []);
 
   const examBubbles: ExamBubble[] = [
@@ -112,7 +107,15 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     { name: "CAT", color: "bg-pink-400" },
   ];
 
-  const getRadius = () => (screenSize.width < 640 ? 35 : 40);
+  // Preset exact positions to avoid floating-point variations
+  const fixedPositions = [
+    { top: "15.359%", left: "30%" },
+    { top: "50%", left: "85%" },
+    { top: "84.641%", left: "70%" },
+    { top: "84.641%", left: "30%" },
+    { top: "50%", left: "15%" },
+    { top: "15.359%", left: "70%" },
+  ];
 
   return (
     <div className="relative h-full pb-16 sm:pb-20 px-2 flex flex-col items-center justify-center bg-white">
@@ -126,24 +129,25 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
           src={student}
           style={{ width: "100%", height: "100%" }}
         />
-        {examBubbles.map((bubble, index) => {
-          const radius = getRadius();
-          return (
-            <div
-              key={bubble.name}
-              className={`exam-bubble absolute ${bubble.color} rounded-full p-1.5 sm:p-2 text-white text-[10px] sm:text-xs font-semibold shadow-lg transform transition-all duration-300 hover:scale-110`}
-              style={{
-                top: `${50 + radius * Math.sin((index * Math.PI) / 3)}%`,
-                left: `${50 + radius * Math.cos((index * Math.PI) / 3)}%`,
-                transform: "translate(-50%, -50%)",
-                minWidth: screenSize.width < 640 ? "40px" : "48px",
-                textAlign: "center",
-              }}
-            >
-              {bubble.name}
-            </div>
-          );
-        })}
+        {examBubbles.map((bubble, index) => (
+          <div
+            key={bubble.name}
+            className={`exam-bubble absolute ${bubble.color} rounded-full p-1.5 sm:p-2 text-white text-[10px] sm:text-xs font-semibold shadow-lg transform transition-all duration-300 hover:scale-110`}
+            style={{
+              top: fixedPositions[index].top,
+              left: fixedPositions[index].left,
+              transform: "translate(-50%, -50%)",
+              minWidth: mounted
+                ? window.innerWidth < 640
+                  ? "40px"
+                  : "48px"
+                : "40px",
+              textAlign: "center",
+            }}
+          >
+            {bubble.name}
+          </div>
+        ))}
       </div>
       <p className="mt-4 sm:mt-6 text-center text-gray-700 text-sm sm:text-base max-w-[250px] sm:max-w-xs leading-tight sm:leading-normal">
         Welcome to Latur hostel, located near top tuition centers, where a
@@ -479,14 +483,25 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
 const MobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState("welcome");
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<string>(() => {
+    return new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  });
   const appRef = useRef(null);
   const screens = ["welcome", "home", "support"];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date());
+      setTime(
+        new Date().toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      );
     }, 1000);
+
     return () => clearInterval(timer);
   }, []);
   const handleNextScreen = useCallback((): void => {
@@ -517,12 +532,7 @@ const MobileApp: React.FC = () => {
         <div className="w-full h-full bg-white rounded-[28px] sm:rounded-[35px] overflow-hidden relative">
           {/* Status Bar */}
           <div className="sticky top-0 left-0 right-0 h-[36px] sm:h-[44px] bg-white flex items-center justify-between px-4 sm:px-6 text-black z-30 border-b border-gray-100">
-            <span className="text-[10px] sm:text-xs font-semibold">
-              {time.toLocaleTimeString([], {
-                hour: "numeric",
-                minute: "2-digit",
-              })}
-            </span>
+            <span className="text-[10px] sm:text-xs font-semibold">{time}</span>
             <div className="flex items-center space-x-1">
               <div className="w-4 sm:w-6 h-2 sm:h-3 bg-black rounded-sm relative">
                 <div className="absolute right-[2px] top-[2px] bottom-[2px] left-[6px] sm:left-[9px] bg-white rounded-sm"></div>
@@ -595,4 +605,5 @@ const MobileApp: React.FC = () => {
     </div>
   );
 };
+
 export default MobileApp;

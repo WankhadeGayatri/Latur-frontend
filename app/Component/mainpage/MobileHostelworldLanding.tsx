@@ -28,7 +28,7 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchQuery, ""); // Empty string for location as it's not implemented
+    onSearch(searchQuery, "");
   };
 
   return (

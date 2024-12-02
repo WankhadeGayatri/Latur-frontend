@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.2.5",
+    "@apollo/client": "^3.11.10",
     "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
@@ -23,10 +24,15 @@
     "@mui/material": "^5.16.4",
     "@react-google-maps/api": "^2.19.3",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tanstack/react-query": "^5.62.0",
+    "@tanstack/react-query-devtools": "^5.62.0",
+    "@tanstack/react-virtual": "^3.10.9",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "formik": "^2.4.6",
     "framer-motion": "^11.11.17",
+    "graphql": "^16.9.0",
+    "graphql-request": "^7.1.2",
     "gsap": "^3.12.5",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
@@ -58,6 +64,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.13",
     "swiper": "^11.1.8",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {

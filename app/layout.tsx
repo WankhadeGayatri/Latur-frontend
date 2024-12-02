@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import { ApolloWrapper } from "./providers/ApolloWrapper";
 
 export const metadata: Metadata = {
   title: "Latur Hostel",
@@ -10,14 +11,14 @@ export const metadata: Metadata = {
         url: "/logo/logowhite.svg",
         href: "/logo/logowhite.svg",
         type: "image/svg+xml",
-        sizes: "32x32 48x48 96x96 128x128 256x256", // Multiple sizes for different contexts
+        sizes: "32x32 48x48 96x96 128x128 256x256",
       },
     ],
     shortcut: [
       {
         url: "/logo/logowhite.svg",
         type: "image/svg+xml",
-        sizes: "128x128", // Larger shortcut icon
+        sizes: "128x128",
       },
     ],
     apple: [
@@ -90,7 +91,10 @@ export default function RootLayout({
           type="image/svg+xml"
         />
       </head>
-      <body>{children}</body>
+
+      <body>
+        <ApolloWrapper>{children}</ApolloWrapper>
+      </body>
     </html>
   );
 }

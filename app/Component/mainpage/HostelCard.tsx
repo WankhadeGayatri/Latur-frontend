@@ -450,12 +450,12 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 <span className="font-semibold text-gray-800 ml-1">
                   {hostelType}
                 </span>
-                <Typography
+                {/* <Typography
                   variant="body2"
                   className="text-sm ml-5 text-gray-600 flex items-center"
                 >
                   <StarRating value={calculateAverageRating()} />
-                </Typography>
+                </Typography> */}
               </Typography>
             </div>
 
