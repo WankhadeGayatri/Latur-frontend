@@ -14,7 +14,6 @@ const httpLink = createHttpLink({
   credentials: "include",
   headers: {
     "Content-Type": "application/json",
-    // Remove Apollo-Require-Preflight header as it's causing issues
   },
   fetchOptions: {
     mode: "cors",

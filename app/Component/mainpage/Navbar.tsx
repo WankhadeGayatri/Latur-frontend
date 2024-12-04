@@ -14,6 +14,7 @@ import {
   Modal,
   Button,
   Fade,
+  Stack,
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
@@ -25,9 +26,175 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hand } from "lucide-react";
+import { Hand, Mail } from "lucide-react";
 
-// Separate CustomButton component remains the same
+// EmailStrip Component
+const EmailStrip = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const theme = useTheme();
+  const [isBlinking, setIsBlinking] = useState(true);
+  const isMobileOrTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setIsBlinking((prev) => !prev);
+    }, 1000);
+
+    return () => {
+      clearInterval(blinkInterval);
+    };
+  }, []);
+
+  const isHostelOwnerPage = pathname === "/hostelownerlogin";
+
+  const getHostelOwnerButtonStyles = () => {
+    if (isHostelOwnerPage) {
+      return {
+        backgroundColor: "#831843",
+        "&:hover": {
+          backgroundColor: "#9d174d",
+          transform: "scale(1.05)",
+          transition: "all 0.3s ease-in-out",
+        },
+      };
+    }
+    return {
+      backgroundColor: "#ffe5e5",
+      "&:hover": {
+        backgroundColor: "#ffd6d6",
+        transform: "scale(1.05)",
+        transition: "all 0.3s ease-in-out",
+      },
+    };
+  };
+
+  const getHostelOwnerTextColor = () => {
+    return isHostelOwnerPage ? "#ffffff" : "#d32f2f";
+  };
+
+  return (
+    <Box
+      sx={{
+        background: "linear-gradient(90deg, #FFFFFF 0%, #f0f7ff 100%)",
+        py: { xs: 2, sm: 1 },
+        px: { xs: 2, sm: 3 },
+        color: "#566573",
+        fontFamily: "'Poppins', sans-serif",
+        position: "relative",
+        minHeight: { xs: "80px", sm: "auto" },
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: { xs: "100%", sm: "30%" },
+          height: "100%",
+          background: "#FFFFFF",
+          zIndex: 0,
+        },
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          position: "relative",
+          zIndex: 1,
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 2, sm: 2 }}
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {/* Placeholder for left side */}
+          <Box
+            sx={{
+              width: { xs: "100%", sm: "auto" },
+              order: { xs: 1, sm: 1 },
+            }}
+          />
+
+          {/* Right side with email and other content */}
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 1, sm: 2 }}
+            alignItems="center"
+            sx={{
+              flex: 1,
+              gap: { xs: 1, sm: 2 },
+              justifyContent: "flex-end",
+              width: { xs: "100%", sm: "auto" },
+              order: { xs: 2, sm: 2 },
+            }}
+          >
+            {/* Email section - now on the right side */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                justifyContent: { xs: "center", sm: "flex-end" },
+                gap: { xs: 2, sm: 3 },
+                width: { xs: "100%", sm: "auto" },
+                mb: { xs: 1, sm: 0 },
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: { xs: 1, sm: 1 },
+                }}
+              >
+                <Mail size={16} />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  contact@laturhostel.com
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: { xs: 1, sm: 1 },
+                }}
+              >
+                <Mail size={16} />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  admin@laturhostel.com
+                </Typography>
+              </Box>
+            </Box>
+          </Stack>
+        </Stack>
+      </motion.div>
+    </Box>
+  );
+};
+
+// Rest of your existing components remain the same
 interface CustomButtonProps {
   onClick: () => void;
   isMobile: boolean;
@@ -75,7 +242,6 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   );
 };
 
-// Navigation content component remains the same
 const NavigationContent: React.FC<{
   pathname: string;
   onNavigate: (path: string) => void;
@@ -92,9 +258,9 @@ const NavigationContent: React.FC<{
     { text: "Home", path: "/" },
     { text: "About Us", path: "/aboutus" },
     { text: "Amenities", path: "/amenities" },
-    { text: "Contact-Us", path: "/contactus" },
+    { text: "ContactUs", path: "/contactus" },
     { text: "Gallery", path: "/gallery" },
-    { text: "Login", path: "/login" },
+    { text: "Sign-in", path: "/login" },
     { text: "Register", path: "/register" },
   ];
 
@@ -110,7 +276,7 @@ const NavigationContent: React.FC<{
           <Box
             onClick={() => onNavigate(item.path)}
             className={`
-              ${isMobile ? "px-4 py-3 my-1 rounded-lg w-full" : ""}
+              ${isMobile ? "px-3 py-2 my-0.5 rounded-lg w-full" : ""}
               ${
                 isActive(item.path)
                   ? "bg-sky-50 shadow-sm"
@@ -121,7 +287,7 @@ const NavigationContent: React.FC<{
           >
             <Typography
               className={`
-                ${isMobile ? "text-base" : ""}
+                ${isMobile ? "text-sm" : ""}
                 ${
                   isActive(item.path)
                     ? "text-sky-700 font-semibold"
@@ -159,6 +325,7 @@ const Navbar: React.FC = React.memo(() => {
   const router = useRouter();
   const pathname = usePathname();
   const isMobileOrTablet = useMediaQuery(theme.breakpoints.down("md"));
+
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
@@ -229,40 +396,139 @@ const Navbar: React.FC = React.memo(() => {
   };
 
   return (
-    <AppBar
-      position="sticky"
+    <Box
       sx={{
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 1100,
         backgroundColor: "white",
-        boxShadow: "none",
       }}
-      className="bg-white"
     >
-      <Toolbar className="justify-between items-center px-4 py-2">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center cursor-pointer"
-          onClick={handleLogoClick}
-        >
-          <Image
-            src="/logo/lb.svg"
-            alt="Latur Hostel Logo"
-            width={90}
-            height={60}
-            className="mr-2"
-          />
-        </motion.div>
+      <EmailStrip />
+      <AppBar
+        position="sticky"
+        sx={{
+          backgroundColor: "white",
+          boxShadow: "none",
+        }}
+        className="bg-white"
+      >
+        <Toolbar className="justify-between items-center px-2 xs:px-3 sm:px-4 py-1 xs:py-2">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center cursor-pointer relative"
+            onClick={handleLogoClick}
+          >
+            <Image
+              src="/logo/lb.svg"
+              alt="Latur Hostel Logo"
+              width={0}
+              height={0}
+              className="w-[60px] xs:w-[80px] sm:w-[100px] md:w-[150px] h-auto 
+             mr-1 xs:mr-2 
+             -mt-[13px] xs:-mt-[18px] sm:-mt-[28px] md:-mt-[53px]
+             transform scale-90 xs:scale-100"
+              style={{
+                objectFit: "contain",
+              }}
+              priority
+            />
+          </motion.div>
 
-        {/* Desktop Navigation - Only show on larger screens */}
-        {!isMobileOrTablet && (
-          <Box className="flex items-center">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center space-x-4"
-            >
+          {/* Desktop Navigation - Only show on larger screens */}
+          {!isMobileOrTablet && (
+            <Box className="flex items-center">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center space-x-4"
+              >
+                *{" "}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px 16px",
+                    borderRadius: "24px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer",
+                    marginRight: "16px",
+                    ...getHostelOwnerButtonStyles(),
+                  }}
+                  onClick={() => router.push("/hostelownerlogin")}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: getHostelOwnerTextColor(),
+                      fontWeight: "bold",
+                      marginRight: "12px",
+                      fontSize: "0.700rem",
+                      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+                    }}
+                  >
+                    Are you hostel owner?
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <motion.div
+                      animate={{
+                        opacity: isBlinking ? 1 : 0.5,
+                        scale: isBlinking ? 1.1 : 1,
+                      }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Hand size={20} color={getHostelOwnerTextColor()} />
+                    </motion.div>
+                  </Box>
+                </Box>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <NavigationContent
+                    pathname={pathname}
+                    onNavigate={handleNavigation}
+                    isMobile={isMobileOrTablet}
+                  />
+                </Suspense>
+              </motion.div>
+            </Box>
+          )}
+
+          {/* Mobile/Tablet Menu Button */}
+          {isMobileOrTablet && (
+            <Box className="flex items-center">
+              <CustomButton
+                onClick={handleMobileMenuToggle}
+                isMobile={isMobileOrTablet}
+                className="transition-colors duration-300"
+                ariaLabel="Toggle menu"
+              />
+            </Box>
+          )}
+        </Toolbar>
+
+        {/* Mobile/Tablet Drawer */}
+        <Drawer
+          anchor="right"
+          open={mobileMenuOpen}
+          onClose={handleMobileMenuClose}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: { xs: "250px", sm: "300px" },
+              bgcolor: "rgb(240 249 255)",
+              paddingTop: { xs: "10px", sm: "20px" },
+            },
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
+            <IconButton onClick={handleMobileMenuClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List>
+            <ListItem>
               <Box
                 sx={{
                   display: "flex",
@@ -271,7 +537,9 @@ const Navbar: React.FC = React.memo(() => {
                   borderRadius: "24px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   cursor: "pointer",
-                  marginRight: "16px",
+                  marginBottom: "16px",
+                  position: "relative",
+                  overflow: "hidden",
                   ...getHostelOwnerButtonStyles(),
                 }}
                 onClick={() => router.push("/hostelownerlogin")}
@@ -300,96 +568,18 @@ const Navbar: React.FC = React.memo(() => {
                   </motion.div>
                 </Box>
               </Box>
-              <Suspense fallback={<div>Loading...</div>}>
-                <NavigationContent
-                  pathname={pathname}
-                  onNavigate={handleNavigation}
-                  isMobile={isMobileOrTablet}
-                />
-              </Suspense>
-            </motion.div>
-          </Box>
-        )}
-
-        {/* Mobile/Tablet Menu Button */}
-        {isMobileOrTablet && (
-          <Box className="flex items-center">
-            <CustomButton
-              onClick={handleMobileMenuToggle}
-              isMobile={isMobileOrTablet}
-              className="transition-colors duration-300"
-              ariaLabel="Toggle menu"
-            />
-          </Box>
-        )}
-      </Toolbar>
-
-      {/* Mobile/Tablet Drawer */}
-      <Drawer
-        anchor="right"
-        open={mobileMenuOpen}
-        onClose={handleMobileMenuClose}
-        sx={{
-          "& .MuiDrawer-paper": { width: "250px", bgcolor: "rgb(240 249 255)" },
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-          <IconButton onClick={handleMobileMenuClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <List>
-          <ListItem>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                padding: "10px 16px",
-                borderRadius: "24px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                cursor: "pointer",
-                marginBottom: "16px",
-                position: "relative",
-                overflow: "hidden",
-                ...getHostelOwnerButtonStyles(),
-              }}
-              onClick={() => router.push("/hostelownerlogin")}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  color: getHostelOwnerTextColor(),
-                  fontWeight: "bold",
-                  marginRight: "12px",
-                  fontSize: "0.700rem",
-                  fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-                }}
-              >
-                Are you hostel owner?
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <motion.div
-                  animate={{
-                    opacity: isBlinking ? 1 : 0.5,
-                    scale: isBlinking ? 1.1 : 1,
-                  }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Hand size={20} color={getHostelOwnerTextColor()} />
-                </motion.div>
-              </Box>
-            </Box>
-          </ListItem>
-          <Suspense fallback={<div>Loading...</div>}>
-            <NavigationContent
-              pathname={pathname}
-              onNavigate={handleNavigation}
-              isMobile={isMobileOrTablet}
-            />
-          </Suspense>
-        </List>
-      </Drawer>
-    </AppBar>
+            </ListItem>
+            <Suspense fallback={<div>Loading...</div>}>
+              <NavigationContent
+                pathname={pathname}
+                onNavigate={handleNavigation}
+                isMobile={isMobileOrTablet}
+              />
+            </Suspense>
+          </List>
+        </Drawer>
+      </AppBar>
+    </Box>
   );
 });
 

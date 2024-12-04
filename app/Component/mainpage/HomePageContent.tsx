@@ -14,14 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { API_BASE_URL } from "../../../config/api";
 import FilterBar from "./FilterBar";
 import Head from "next/head";
-import {
-  Typography,
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  Pagination,
-} from "@mui/material";
+import { Typography, Container, Grid, Card, CardContent } from "@mui/material";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -51,6 +44,9 @@ import Gallery from "./Gallery";
 import LoaderComponent from "./LoaderComponent";
 import HostelCardLoader from "./HostelCardLoader";
 import { useHostels } from "@/app/hooks/useHostels";
+import Pagination from "./Pagination";
+import ScrollIndicator from "./ScrollIndicator";
+
 const CenteredFeatureSlider = dynamic(() => import("./CenterFeatureSlider"), {
   ssr: false,
 });
@@ -195,17 +191,25 @@ const HomePage: React.FC = () => {
     tuition: false,
   });
 
-  const { hostels, loading, error, pagination, loadMore } = useHostels(filters);
+  const {
+    hostels,
+    loading,
+    error,
+    pagination,
+    currentPage,
+    goToPage,
+    isPageLoading,
+    prefetchedPages,
+  } = useHostels(filters);
 
   const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [prefetchedData, setPrefetchedData] = useState<Hostel[] | null>(null);
 
-  // Keep existing refs...
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+
   const hostelsPerPage = 10;
   const searchParams = useSearchParams();
   const filterRef = useRef<HTMLDivElement>(null);
@@ -215,13 +219,6 @@ const HomePage: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const searchParams1 = useSearchParams();
   const sliderItems = [
-    // {
-    //   src: "/Images/HomePage/Hostel7.avif",
-    //   alt: "Hostel 8",
-    //   name: "Geeta Hostel",
-    //   price: 1999,
-    //   rating: 3.5,
-    // },
     {
       src: "/Images/HomePage/Hostel6.avif",
       alt: "Hostel 8",
@@ -284,33 +281,33 @@ const HomePage: React.FC = () => {
 
   //Setup intersection observer
   // Update infinite scroll handler
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (
-          first.isIntersecting &&
-          !loading &&
-          pagination &&
-          pagination.currentPage < pagination.totalPages
-        ) {
-          loadMore(pagination.currentPage + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       const first = entries[0];
+  //       if (
+  //         first.isIntersecting &&
+  //         !loading &&
+  //         pagination &&
+  //         pagination.currentPage < pagination.totalPages
+  //       ) {
+  //         loadMore(pagination.currentPage + 1);
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   );
 
-    const currentLoader = loadingRef.current;
-    if (currentLoader) {
-      observer.observe(currentLoader);
-    }
+  //   const currentLoader = loadingRef.current;
+  //   if (currentLoader) {
+  //     observer.observe(currentLoader);
+  //   }
 
-    return () => {
-      if (currentLoader) {
-        observer.unobserve(currentLoader);
-      }
-    };
-  }, [loading, pagination, loadMore]);
+  //   return () => {
+  //     if (currentLoader) {
+  //       observer.unobserve(currentLoader);
+  //     }
+  //   };
+  // }, [loading, pagination]);
 
   const criticalCSS = `
   .MuiToolbar-root {
@@ -513,7 +510,6 @@ const HomePage: React.FC = () => {
       }
 
       setFilteredHostels(result);
-      setCurrentPage(1);
     } else {
       setFilteredHostels([]);
     }
@@ -629,11 +625,10 @@ const HomePage: React.FC = () => {
           </div>
 
           {/* Hostel List - Scrollable on desktop */}
-          <div className="w-full md:w-2/3 md:order-1">
+          <div ref={hostelListRef} className="w-full md:w-2/3 md:order-1">
             <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
               {loading && !hostels.length ? (
                 <>
-                  <HostelCardLoader />
                   <HostelCardLoader />
                   <HostelCardLoader />
                 </>
@@ -698,7 +693,7 @@ const HomePage: React.FC = () => {
                       ))}
 
                       {/* Infinite scroll loader */}
-                      <div ref={loadingRef} className="py-4">
+                      {/* <div ref={loadingRef} className="py-4">
                         {loading && (
                           <div className="flex justify-center">
                             <motion.div
@@ -712,7 +707,7 @@ const HomePage: React.FC = () => {
                             />
                           </div>
                         )}
-                      </div>
+                      </div> */}
                     </motion.div>
                   ) : (
                     <NoHostelsFound />
@@ -720,10 +715,20 @@ const HomePage: React.FC = () => {
                 </AnimatePresence>
               )}
             </div>
+            {pagination && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                onPageChange={goToPage}
+                isLoading={isPageLoading}
+                prefetchedPages={prefetchedPages}
+              />
+            )}
           </div>
         </div>
       </div>
-
+      <ScrollIndicator listRef={hostelListRef} />
       <motion.section
         id="gallery"
         className="py-8 md:py-12 px-4"

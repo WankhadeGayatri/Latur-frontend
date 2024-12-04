@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import Footer from "../Component/mainpage/Footer";
 import Navbar from "../Component/mainpage/Navbar";
+import Footer from "../Component/mainpage/Footer";
 
 const fadeIn = keyframes`
   from {
@@ -166,36 +166,36 @@ const ImageGallery = () => {
 
   // Keep all your existing image arrays and handlers the same...
   const galleryImages = [
-    "/Images/HomePage/dining.jpg",
-    "/Images/HomePage/room.jpg",
-    "/Images/about/about-2.jpg",
-    "/Images/HomePage/study.jpg",
-    "/Images/HomePage/hall.jpg",
-    "/Images/about/about-1.jpg",
-    "/Images/about/about-3.jpg",
-    "/Images/HomePage/immgg5.jpg",
-    "/Images/about/about-3.jpg",
-    "/Images/HomePage/single2.jpg",
-    "/Images/about/about-2.jpg",
-    "/Images/HomePage/game.jpg",
+    "/Images/Gallary/neha-girl-hostel.png",
+    "/Images/Gallary/sagar-hostel.png",
+    "/Images/Gallary/avani-girls-hostel-latur.png",
+    "/Images/Gallary/samarth-boys-hostel.png",
+    "/Images/Gallary/sharda-girls-hostel.png",
+    "/Images/Gallary/sanchit-hostel.png",
+    "/Images/Gallary/venutai-girls-hostel.png",
+    "/Images/Gallary/shiv-hostel.png",
+    "/Images/Gallary/shourya-girls-hostel.png",
+    "/Images/Gallary/amit-boys-hostel.png",
+    "/Images/Gallary/raman-girls-hostel.png",
+    "/Images/Gallary/ssk-gils-hostel.png",
   ];
 
   const imageDetails = [
     {
-      title: "Hostel",
-      description: "Dinning Room",
+      title: "Neha Hostel",
+      description: "Girls Hostel",
     },
-    { title: "Hostel", description: "Hostel Rooms" },
-    { title: "Hostel", description: "Hostel Rooms" },
-    { title: "Hostel", description: "Study Rooms" },
-    { title: "Hostel", description: "Hall" },
-    { title: "Hostel", description: "Boys Hostel" },
-    { title: "Hostel", description: "Attached bed" },
-    { title: "Hostel", description: "bedRooms" },
-    { title: "Hostel", description: "Four Shearing Rooms" },
-    { title: "Hostel", description: "single room" },
-    { title: "Hostel", description: "combine room" },
-    { title: "Hostel", description: "Play Zone " },
+    { title: "Sagar Hostel", description: "Boys Hostel" },
+    { title: "Avani  Hostel", description: "Girls Hostel" },
+    { title: "Samarth Hostel", description: "Boys Hostel" },
+    { title: "Sharda Hostel", description: "Girls Hostel" },
+    { title: "Sanchit Hostel", description: "Boys Hostel" },
+    { title: "Venutai Hostel", description: "Girls Hostel" },
+    { title: "Shiv Hostel", description: "Boys Hostel" },
+    { title: "Shourya Hostel", description: "Girls Hostel" },
+    { title: "Amit Hostel", description: "Boys Hostel" },
+    { title: "Raman Hostel", description: "Girls Hostel" },
+    { title: "SSK Hostel", description: "Girls Hostel" },
   ];
 
   const handleImageClick = (index: number) => {
