@@ -3,6 +3,7 @@
 import { useQuery, useLazyQuery, ApolloQueryResult } from "@apollo/client";
 import { GET_HOSTELS } from "../graphql/queries/hostel";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Image {
   contentType: string;
@@ -111,6 +112,7 @@ interface UseHostelsReturn {
   hasPreviousPage: boolean;
   prefetchedPages: Set<number>;
   isPageLoading: boolean;
+  isBackendAvailable: boolean;
 }
 interface QueryVariables {
   search?: string;
@@ -129,64 +131,117 @@ export const useHostels = (
 ): UseHostelsReturn => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
+  const [backendError, setBackendError] = useState<boolean>(false);
   const prefetchedPages = useRef<Set<number>>(new Set([1]));
   const hostelCache = useRef<Map<number, Hostel[]>>(new Map());
-
+  const router = useRouter();
   // Convert filters to query variables
-  const getQueryVariables = (filters: Filters): QueryVariables => {
-    const variables: QueryVariables = {
-      page: currentPage,
-      limit: itemsPerPage,
-    };
+  const getQueryVariables = useCallback(
+    (filters: Filters): QueryVariables => {
+      const variables: QueryVariables = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
 
-    if (filters.searchName) {
-      variables.search = filters.searchName;
-    }
+      // Only add other filters if backend is available
+      if (!backendError) {
+        if (filters.searchName) {
+          variables.search = filters.searchName;
+        }
 
-    if (filters.type !== "All") {
-      variables.type = filters.type.toLowerCase();
-    }
+        if (filters.type !== "All") {
+          variables.type = filters.type.toLowerCase();
+        }
 
-    if (filters.studentsPerRoom !== "Any") {
-      variables.studentsPerRoom = parseInt(filters.studentsPerRoom);
-    }
+        if (filters.studentsPerRoom !== "Any") {
+          variables.studentsPerRoom = parseInt(filters.studentsPerRoom);
+        }
 
-    if (filters.rentRange[0] > 0) {
-      variables.minRent = filters.rentRange[0];
-    }
+        if (filters.rentRange[0] > 0) {
+          variables.minRent = filters.rentRange[0];
+        }
 
-    if (filters.rentRange[1] < 10000) {
-      variables.maxRent = filters.rentRange[1];
-    }
+        if (filters.rentRange[1] < 10000) {
+          variables.maxRent = filters.rentRange[1];
+        }
 
-    // Filter and map amenities that are true
-    const selectedAmenities = Object.entries({
-      wifi: filters.wifi,
-      ac: filters.ac,
-      mess: filters.mess,
-      solar: filters.solar,
-      studyRoom: filters.studyRoom,
-      tuition: filters.tuition,
-    })
-      .filter(([_, value]) => value)
-      .map(([key]) => key);
+        const selectedAmenities = Object.entries({
+          wifi: filters.wifi,
+          ac: filters.ac,
+          mess: filters.mess,
+          solar: filters.solar,
+          studyRoom: filters.studyRoom,
+          tuition: filters.tuition,
+        })
+          .filter(([_, value]) => value)
+          .map(([key]) => key);
 
-    if (selectedAmenities.length > 0) {
-      variables.amenities = selectedAmenities;
-    }
+        if (selectedAmenities.length > 0) {
+          variables.amenities = selectedAmenities;
+        }
+      }
 
-    return variables;
-  };
+      return variables;
+    },
+    [currentPage, itemsPerPage, backendError]
+  );
 
-  // Main query for current page
   const { data, loading, error, client } = useQuery<HostelsResponse>(
     GET_HOSTELS,
     {
       variables: getQueryVariables(filters),
       notifyOnNetworkStatusChange: true,
+      onError: (queryError) => {
+        console.error("Query Error:", queryError);
+        setBackendError(true);
+      },
+      skip: backendError, // Skip the query if backend is not available
     }
   );
+  if (backendError) {
+    return {
+      hostels: [],
+      loading: false,
+      error: new Error("Backend is not responding"),
+      pagination: null,
+      currentPage: 1,
+      goToPage: async () => {},
+      hasNextPage: false,
+      hasPreviousPage: false,
+      prefetchedPages: new Set(),
+      isPageLoading: false,
+      isBackendAvailable: false,
+    };
+  }
 
+  const isValidResponse = useCallback(
+    (responseData: HostelsResponse | undefined): boolean => {
+      // Check if response exists and has expected structure
+      return Boolean(
+        responseData &&
+          responseData.hostels &&
+          Array.isArray(responseData.hostels.hostels) &&
+          responseData.hostels.pagination
+      );
+    },
+    []
+  );
+
+  if (backendError || error) {
+    return {
+      hostels: [],
+      loading: false,
+      error: error || new Error("Backend is not responding"),
+      pagination: null,
+      currentPage: 1,
+      goToPage: async () => {},
+      hasNextPage: false,
+      hasPreviousPage: false,
+      prefetchedPages: new Set(),
+      isPageLoading: false,
+      isBackendAvailable: false,
+    };
+  }
   // Type guard to check if pagination data exists and is valid
   const isPaginationValid = (
     data: HostelsResponse | undefined
@@ -286,7 +341,7 @@ export const useHostels = (
   return {
     hostels: data?.hostels?.hostels || [],
     loading,
-    error: error || null,
+    error: null,
     pagination: data?.hostels?.pagination || null,
     currentPage,
     goToPage,
@@ -294,6 +349,7 @@ export const useHostels = (
     hasPreviousPage: currentPage > 1,
     prefetchedPages: prefetchedPages.current,
     isPageLoading,
+    isBackendAvailable: true,
   };
 };
 

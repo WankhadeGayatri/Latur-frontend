@@ -15,6 +15,7 @@ import {
   Button,
   Fade,
   Stack,
+  Menu,
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
@@ -318,31 +319,19 @@ const NavigationContent: React.FC<{
 // Main Navbar component
 const Navbar: React.FC = React.memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const theme = useTheme();
   const [isBlinking, setIsBlinking] = useState(true);
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const pathname = usePathname();
   const isMobileOrTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    const link = document.createElement("link");
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap";
-    link.rel = "stylesheet";
-    link.setAttribute("media", "print");
-    link.onload = () => {
-      link.media = "all";
-    };
-    document.head.appendChild(link);
-
     const blinkInterval = setInterval(() => {
       setIsBlinking((prev) => !prev);
     }, 1000);
 
     return () => {
-      document.head.removeChild(link);
       clearInterval(blinkInterval);
     };
   }, []);
@@ -352,13 +341,6 @@ const Navbar: React.FC = React.memo(() => {
   }, []);
 
   const handleMobileMenuClose = () => setMobileMenuOpen(false);
-  const handleAuthModalOpen = () => setAuthModalOpen(true);
-  const handleAuthModalClose = () => setAuthModalOpen(false);
-
-  const handleAuthAction = (action: "signin" | "signup") => {
-    handleAuthModalClose();
-    router.push(action === "signin" ? "/login" : "/register");
-  };
 
   const handleLogoClick = useCallback(() => {
     router.push("/");
@@ -366,6 +348,7 @@ const Navbar: React.FC = React.memo(() => {
 
   const handleNavigation = (path: string) => {
     router.push(path);
+    handleMobileMenuClose();
   };
 
   const isHostelOwnerPage = pathname === "/hostelownerlogin";
@@ -405,7 +388,9 @@ const Navbar: React.FC = React.memo(() => {
         backgroundColor: "white",
       }}
     >
-      <EmailStrip />
+      {/* Conditionally render EmailStrip only on desktop */}
+      {!isMobileOrTablet && <EmailStrip />}
+
       <AppBar
         position="sticky"
         sx={{
@@ -415,6 +400,7 @@ const Navbar: React.FC = React.memo(() => {
         className="bg-white"
       >
         <Toolbar className="justify-between items-center px-2 xs:px-3 sm:px-4 py-1 xs:py-2">
+          {/* Logo Section - More Responsive Sizing */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -427,10 +413,16 @@ const Navbar: React.FC = React.memo(() => {
               alt="Latur Hostel Logo"
               width={0}
               height={0}
-              className="w-[60px] xs:w-[80px] sm:w-[100px] md:w-[150px] h-auto 
-             mr-1 xs:mr-2 
-             -mt-[13px] xs:-mt-[18px] sm:-mt-[28px] md:-mt-[53px]
-             transform scale-90 xs:scale-100"
+              className={`
+                h-auto 
+                mr-1 xs:mr-2
+                ${
+                  isMobile
+                    ? "w-[100px] sm:w-[120px] mt-[5px] sm:mt-[30px]"
+                    : "w-[120px] md:w-[150px] -mt-[53px]"
+                }
+                transform scale-90 xs:scale-100
+              `}
               style={{
                 objectFit: "contain",
               }}
@@ -438,7 +430,7 @@ const Navbar: React.FC = React.memo(() => {
             />
           </motion.div>
 
-          {/* Desktop Navigation - Only show on larger screens */}
+          {/* Desktop Navigation */}
           {!isMobileOrTablet && (
             <Box className="flex items-center">
               <motion.div
@@ -447,7 +439,6 @@ const Navbar: React.FC = React.memo(() => {
                 transition={{ duration: 0.5 }}
                 className="flex items-center space-x-4"
               >
-                *{" "}
                 <Box
                   sx={{
                     display: "flex",
@@ -485,18 +476,16 @@ const Navbar: React.FC = React.memo(() => {
                     </motion.div>
                   </Box>
                 </Box>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <NavigationContent
-                    pathname={pathname}
-                    onNavigate={handleNavigation}
-                    isMobile={isMobileOrTablet}
-                  />
-                </Suspense>
+                <NavigationContent
+                  pathname={pathname}
+                  onNavigate={handleNavigation}
+                  isMobile={false}
+                />
               </motion.div>
             </Box>
           )}
 
-          {/* Mobile/Tablet Menu Button */}
+          {/* Mobile Menu Toggle */}
           {isMobileOrTablet && (
             <Box className="flex items-center">
               <CustomButton
@@ -509,7 +498,8 @@ const Navbar: React.FC = React.memo(() => {
           )}
         </Toolbar>
 
-        {/* Mobile/Tablet Drawer */}
+        {/* Mobile Drawer Menu */}
+        {/* Mobile Drawer Menu */}
         <Drawer
           anchor="right"
           open={mobileMenuOpen}
@@ -519,6 +509,8 @@ const Navbar: React.FC = React.memo(() => {
               width: { xs: "250px", sm: "300px" },
               bgcolor: "rgb(240 249 255)",
               paddingTop: { xs: "10px", sm: "20px" },
+              display: "flex",
+              flexDirection: "column",
             },
           }}
         >
@@ -527,7 +519,7 @@ const Navbar: React.FC = React.memo(() => {
               <CloseIcon />
             </IconButton>
           </Box>
-          <List>
+          <List sx={{ flexGrow: 1 }}>
             <ListItem>
               <Box
                 sx={{
@@ -538,8 +530,6 @@ const Navbar: React.FC = React.memo(() => {
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   cursor: "pointer",
                   marginBottom: "16px",
-                  position: "relative",
-                  overflow: "hidden",
                   ...getHostelOwnerButtonStyles(),
                 }}
                 onClick={() => router.push("/hostelownerlogin")}
@@ -569,14 +559,33 @@ const Navbar: React.FC = React.memo(() => {
                 </Box>
               </Box>
             </ListItem>
-            <Suspense fallback={<div>Loading...</div>}>
-              <NavigationContent
-                pathname={pathname}
-                onNavigate={handleNavigation}
-                isMobile={isMobileOrTablet}
-              />
-            </Suspense>
+            <NavigationContent
+              pathname={pathname}
+              onNavigate={handleNavigation}
+              isMobile={true}
+            />
           </List>
+
+          {/* Added email section at the bottom */}
+          <Box
+            sx={{
+              padding: "16px",
+              borderTop: "1px solid rgba(0,0,0,0.1)",
+              textAlign: "center",
+              backgroundColor: "rgb(230, 240, 250)",
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{ marginBottom: "8px", color: "text.secondary" }}
+            >
+              Contact Us
+            </Typography>
+            <Typography variant="body2" sx={{ marginBottom: "4px" }}>
+              contact@laturhostel.com
+            </Typography>
+            <Typography variant="body2">admin@laturhostel.com</Typography>
+          </Box>
         </Drawer>
       </AppBar>
     </Box>
