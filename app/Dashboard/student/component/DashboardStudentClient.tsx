@@ -46,6 +46,8 @@ import FeedbackDisplay from "./FeedbackDisplay";
 import Visits from "./Visits";
 import { API_BASE_URL } from "@/config/api";
 
+import HomePage from "./Hostel";
+
 const drawerWidth = 240;
 
 interface SidebarItem {
@@ -111,6 +113,7 @@ const StudentDashboardContent: React.FC = () => {
       setLoading(false);
     }
   }, []);
+  // In StudentDashboardContent.tsx
 
   useEffect(() => {
     fetchUserData();
@@ -119,7 +122,25 @@ const StudentDashboardContent: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+  // Add this to handle URL navigation and state sync
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get("view");
+      const id = params.get("id");
 
+      if (view === "hostel-details" && id) {
+        setActivePage("hostel-details");
+      }
+    };
+
+    // Call it once on mount
+    handleRouteChange();
+
+    // Set up a listener for URL changes
+    window.addEventListener("popstate", handleRouteChange);
+    return () => window.removeEventListener("popstate", handleRouteChange);
+  }, []);
   const logoutUser = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -164,10 +185,45 @@ const StudentDashboardContent: React.FC = () => {
       .slice(0, 2);
   };
 
+  // const sidebarItems: SidebarItem[] = [
+  //   { name: "Home", icon: <HomeIcon />, value: "home" },
+  //   { name: "My Profile", icon: <PersonIcon />, value: "profile" },
+  //   { name: "Wishlist", icon: <FavoriteIcon />, value: "wishlist" },
+
+  //   {
+  //     name: "My Visits",
+  //     icon: <Building />,
+  //     value: "visit",
+  //   },
+  //   {
+  //     name: "My Hostel Data",
+  //     icon: <Building />,
+  //     value: "myhostel",
+  //     locked: !userData.admittedHostel,
+  //   },
+  //   {
+  //     name: "My Complaints",
+  //     icon: <ComplaintsIcon />,
+  //     value: "complaint",
+  //     locked: !userData.admittedHostel,
+  //   },
+  //   {
+  //     name: "My Feedback",
+  //     icon: <FeedbackIcon />,
+  //     value: "feedback",
+  //     locked: !userData.admittedHostel,
+  //   },
+  //   {
+  //     name: "Notifications",
+  //     icon: <NotificationsIcon />,
+  //     value: "notifications",
+  //   },
+  // ];
   const sidebarItems: SidebarItem[] = [
     { name: "Home", icon: <HomeIcon />, value: "home" },
     { name: "My Profile", icon: <PersonIcon />, value: "profile" },
     { name: "Wishlist", icon: <FavoriteIcon />, value: "wishlist" },
+    { name: "Hostel Details", icon: <HomeIcon />, value: "hostel-details" }, // Added this line
     {
       name: "My Visits",
       icon: <Building />,
@@ -197,7 +253,6 @@ const StudentDashboardContent: React.FC = () => {
       value: "notifications",
     },
   ];
-
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <CssBaseline />
@@ -389,6 +444,35 @@ const StudentDashboardContent: React.FC = () => {
         }}
       >
         <Container maxWidth="lg">
+          {/* <Paper
+            elevation={3}
+            sx={{
+              p: 1,
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%)",
+              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+         {activePage === "home" && <Hostel setActivePage={setActivePage} />}
+            {activePage === "profile" && <UserProfile />}
+            {activePage === "wishlist" && <WishlistPage />}
+            {activePage === "visit" && <Visits />}
+            
+            {activePage === "hostel-details" && <HostelDetailsPage />}  
+            {activePage === "notifications" && (
+              <ProfileNotifications profileData={userData} />
+            )}
+            {activePage === "myhostel" && userData.admittedHostel && (
+              <MyHostel />
+            )}
+            {activePage === "complaint" && userData.admittedHostel && (
+              <ComplaintDashboard />
+            )}
+            {activePage === "feedback" && userData.admittedHostel && (
+              <FeedbackDisplay />
+            )}
+         
+          </Paper> */}
           <Paper
             elevation={3}
             sx={{
@@ -398,10 +482,11 @@ const StudentDashboardContent: React.FC = () => {
               boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
             }}
           >
-            {activePage === "home" && <Hostel />}
+            {activePage === "home" && <Hostel setActivePage={setActivePage} />}
             {activePage === "profile" && <UserProfile />}
             {activePage === "wishlist" && <WishlistPage />}
             {activePage === "visit" && <Visits />}
+
             {activePage === "notifications" && (
               <ProfileNotifications profileData={userData} />
             )}

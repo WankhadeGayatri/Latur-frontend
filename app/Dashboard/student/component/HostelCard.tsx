@@ -162,6 +162,7 @@ interface HostelCardProps {
   studyRoom: boolean;
   tuition: boolean;
   paymentStatus: string;
+  setActivePage: (page: string) => void;
   pendingVisits: Hostel["pendingVisits"];
   complaints: Hostel["complaints"];
   onWishlistToggle: (id: string, isInWishlist: boolean) => void;
@@ -189,6 +190,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
   paymentStatus,
   pendingVisits,
   rentStructure,
+  setActivePage,
   feedback,
   complaints,
   onWishlistToggle,
@@ -207,7 +209,9 @@ const HostelCard: React.FC<HostelCardProps> = ({
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!profileId && !!token);
   }, [id]);
-
+  interface HostelProps {
+    setActivePage: (page: string) => void;
+  }
   const handleWishlistToggle = async () => {
     if (!isLoggedIn) {
       toast.error("Please log in to add to wishlist");
@@ -266,16 +270,15 @@ const HostelCard: React.FC<HostelCardProps> = ({
       }
     }
   };
-
   const handleViewDetails = () => {
     if (!isLoggedIn) {
       toast.error("Please log in to view full details");
       router.push("/login");
     } else {
-      setDetailsOpen(true);
+      setActivePage("hostel-details");
+      router.push(`/hosteldetails?id=${id}`);
     }
   };
-
   const handleCloseDetails = () => {
     setDetailsOpen(false);
   };
@@ -301,21 +304,29 @@ const HostelCard: React.FC<HostelCardProps> = ({
     <span className="filter blur-sm select-none">{text}</span>
   );
 
+  // Modify the RentStructureDisplay component
   const RentStructureDisplay: React.FC = () => (
     <div className="mt-4">
       <Typography variant="subtitle1" className="text-sky-600 mb-2">
         Rent Structure:
       </Typography>
       {isLoggedIn ? (
-        rentStructure.map((rent, index) => (
-          <Typography
-            key={index}
-            variant="body2"
-            className="text-sm text-gray-600"
-          >
-            {rent.studentsPerRoom} Students: ₹{rent.rentPerStudent}/student
+        Array.isArray(rentStructure) && rentStructure.length > 0 ? (
+          rentStructure.map((rent, index) => (
+            <Typography
+              key={index}
+              variant="body2"
+              className="text-sm text-gray-600"
+            >
+              {rent.studentsPerRoom || 0} Students: ₹{rent.rentPerStudent || 0}
+              /student
+            </Typography>
+          ))
+        ) : (
+          <Typography variant="body2" className="text-sm text-gray-600">
+            No rent structure available
           </Typography>
-        ))
+        )
       ) : (
         <div>
           <BlurredText text="Rent information is hidden" />
@@ -414,7 +425,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                   {address}
                 </span>
               </Typography>
-              <Typography
+              {/* <Typography
                 variant="body2"
                 className="text-sm text-gray-600 flex items-center"
               >
@@ -423,7 +434,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 <span className="font-semibold text-gray-800 ml-1">
                   {hostelType}
                 </span>
-              </Typography>
+              </Typography> */}
               <Typography
                 variant="body2"
                 className="text-sm text-gray-600 flex items-center"
@@ -476,213 +487,6 @@ const HostelCard: React.FC<HostelCardProps> = ({
             </Button>
           </div>
         </CardContent>
-
-        <Dialog
-          open={detailsOpen}
-          onClose={handleCloseDetails}
-          fullWidth
-          maxWidth="md"
-          PaperProps={{
-            style: {
-              borderRadius: "16px",
-              background: "linear-gradient(145deg, #ffffff, #f0f0f0)",
-              boxShadow: "20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff",
-            },
-          }}
-        >
-          <DialogTitle className="text-3xl font-bold text-sky-600 border-b border-gray-200 pb-4 flex justify-between items-center">
-            <span>{name}</span>
-            {isVerified && (
-              <Chip
-                icon={<VerifiedIcon />}
-                label="Verified"
-                color="primary"
-                className="bg-sky-600"
-              />
-            )}
-          </DialogTitle>
-          <DialogContent>
-            <Swiper
-              modules={[Pagination, Navigation, Autoplay]}
-              pagination={{ clickable: true }}
-              navigation
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
-              className="w-full h-80 rounded-lg shadow-md my-4"
-            >
-              {images && images.length > 0 ? (
-                images.map((image, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={`data:${image.contentType};base64,${image.data}`}
-                      alt={`${name} - ${index + 1}`}
-                      className="w-full h-full object-cover object-center rounded-lg"
-                    />
-                  </SwiperSlide>
-                ))
-              ) : (
-                <SwiperSlide>
-                  <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
-                    <p className="text-gray-400">No images available</p>
-                  </div>
-                </SwiperSlide>
-              )}
-            </Swiper>
-            <DialogTitle className="text-2xl font-bold text-sky-600 border-b border-gray-200 pb-2">
-              {name}
-              {isVerified && (
-                <Chip
-                  icon={<VerifiedIcon />}
-                  label="Verified"
-                  size="small"
-                  color="primary"
-                  className="ml-2 bg-sky-600"
-                />
-              )}
-            </DialogTitle>
-
-            <Grid container spacing={3} className="mt-2">
-              <Grid item xs={12} md={6}>
-                <List>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <PersonIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Owner"
-                      secondary={
-                        isLoggedIn ? owner : <BlurredText text={owner} />
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <PhoneIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Contact"
-                      secondary={
-                        isLoggedIn ? number : <BlurredText text={number} />
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <LocationIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Address" secondary={address} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Type" secondary={hostelType} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <HotelIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Beds" secondary={beds} />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemIcon className="text-sky-500">
-                      <RestaurantIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Food"
-                      secondary={
-                        food
-                          ? `${foodType} (${mealOptions?.join(", ")})`
-                          : "Not provided"
-                      }
-                    />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant="h6" className="text-sky-600 mb-2">
-                  Rent Structure
-                </Typography>
-                <List>
-                  {rentStructure.map((rent, index) => (
-                    <ListItem key={index}>
-                      <ListItemIcon className="text-sky-500">
-                        <AttachMoneyIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`${rent.studentsPerRoom} Students`}
-                        secondary={`₹${rent.rentPerStudent} per student`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-                <Typography variant="h6" className="text-sky-600 mt-4 mb-2">
-                  Amenities
-                </Typography>
-                <div className="flex flex-wrap">
-                  <Amenity icon={<WifiIcon />} label="Wi-Fi" value={wifi} />
-                  <Amenity icon={<AcIcon />} label="AC" value={ac} />
-                  <Amenity icon={<MessIcon />} label="Mess" value={mess} />
-                  <Amenity icon={<SolarIcon />} label="Solar" value={solar} />
-                  <Amenity
-                    icon={<StudyRoomIcon />}
-                    label="Study Room"
-                    value={studyRoom}
-                  />
-                  <Amenity
-                    icon={<TuitionIcon />}
-                    label="Tuition"
-                    value={tuition}
-                  />
-                </div>
-                {isLoggedIn && (
-                  <>
-                    <Typography variant="h6" className="text-sky-600 mt-4 mb-2">
-                      Ratings
-                    </Typography>
-                    <List>
-                      {feedback.slice(0, 3).map((item, index) => (
-                        <ListItem key={index}>
-                          <ListItemIcon className="text-sky-500">
-                            <StarRating value={item.rating} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={item.comment}
-                            secondary={new Date(item.date).toLocaleDateString()}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                    {feedback.length > 3 && (
-                      <Typography variant="body2" className="text-sky-600 mt-2">
-                        And {feedback.length - 3} more reviews...
-                      </Typography>
-                    )}
-                  </>
-                )}
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions className="p-4">
-            <Button
-              onClick={handleWishlistToggle}
-              variant="contained"
-              color={isInWishlist ? "error" : "primary"}
-              startIcon={
-                isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />
-              }
-              className="mr-2"
-            >
-              {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-            </Button>
-            <Button
-              onClick={handleCloseDetails}
-              variant="outlined"
-              color="primary"
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Card>
       <ToastContainer
         position="top-right"

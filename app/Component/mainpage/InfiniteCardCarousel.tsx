@@ -95,12 +95,6 @@ const OptimizedCard = memo(
           {/* Content overlay with fixed dimensions */}
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="relative h-full">
-              {/* <div className="absolute right-0 top-0 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
-                <span className="text-lg font-bold text-purple-600">
-                  ₹{price}
-                </span>
-              </div> */}
-
               <h3 className="text-lg font-bold text-white mb-2 truncate">
                 {name}
               </h3>
@@ -120,21 +114,6 @@ const OptimizedCard = memo(
                   {rating.toFixed(1)}
                 </span>
               </div>
-
-              {/* <button
-                className="
-                absolute bottom-0 right-0
-                bg-purple-600 text-white
-                px-3 py-1.5 rounded-lg
-                text-sm font-medium
-                flex items-center gap-1.5
-                hover:bg-purple-700
-                transition-colors
-              "
-              >
-                View Details
-                <ArrowRight className="w-4 h-4" />
-              </button> */}
             </div>
           </div>
         </div>
@@ -229,12 +208,8 @@ const InfiniteCardCarousel = ({
   return (
     <div className="relative w-full bg-white py-8">
       <div className="max-w-[90rem] mx-auto px-4 relative isolate">
-        {" "}
-        {/* Added isolate for stacking context */}
         {/* Navigation buttons with adjusted z-index */}
         <div className="absolute inset-0 pointer-events-none z-[5]">
-          {" "}
-          {/* Container for navigation */}
           <button
             onClick={() => handleScroll("prev")}
             className="absolute left-4 top-1/2 -translate-y-1/2 

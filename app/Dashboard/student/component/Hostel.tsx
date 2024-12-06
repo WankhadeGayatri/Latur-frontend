@@ -27,6 +27,9 @@ interface RentStructure {
   studentsPerRoom: number;
   rentPerStudent: number;
 }
+interface HostelProps {
+  setActivePage: (page: string) => void;
+}
 
 interface Feedback {
   student: string;
@@ -110,7 +113,7 @@ interface GalleryImage {
   description: string;
 }
 
-const HomePage: React.FC = () => {
+const HomePage: React.FC<HostelProps> = ({ setActivePage }) => {
   const [hostels, setHostels] = useState<Hostel[]>([]);
   const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -190,50 +193,113 @@ const HomePage: React.FC = () => {
   const fetchHostels = useCallback(async () => {
     try {
       setIsLoading(true);
+      setError(null);
+
+      // Fetch hostels data
       const response = await fetch(`${API_BASE_URL}/api/hostels/all`);
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to fetch hostels. Status: ${response.status}`,
+          errorText
+        );
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      // Parse the response and ensure it's an array
       const data = await response.json();
+      console.log("Raw data from API:", data);
+
+      // Handle different possible response formats
+      let hostels = [];
+      if (Array.isArray(data)) {
+        hostels = data;
+      } else if (data && data.data && Array.isArray(data.data)) {
+        hostels = data.data;
+      } else if (data && data.hostels && Array.isArray(data.hostels)) {
+        hostels = data.hostels;
+      } else {
+        console.warn("Unexpected data format:", data);
+        setError("Received unexpected data format");
+        setHostels([]);
+        return;
+      }
+
+      if (hostels.length === 0) {
+        console.warn("No hostels found.");
+        setError("No hostels available.");
+        setHostels([]);
+        return;
+      }
+
+      // Fetch photos for each hostel
       const hostelsWithPhotos = await Promise.all(
-        data.map(async (hostel: Hostel) => {
-          try {
-            const photoResponse = await fetch(
-              `${API_BASE_URL}/api/hostels/gethostalphotos/${hostel._id}`
-            );
-            if (!photoResponse.ok) {
-              throw new Error(`HTTP error! status: ${photoResponse.status}`);
+        hostels.map(
+          async (hostel: { _id: any; latitude: any; longitude: any }) => {
+            try {
+              const photoResponse = await fetch(
+                `${API_BASE_URL}/api/hostels/gethostalphotos/${hostel._id}`
+              );
+
+              if (!photoResponse.ok) {
+                console.error(
+                  `Photo fetch error for ${hostel._id}:`,
+                  photoResponse.statusText
+                );
+                return {
+                  ...hostel,
+                  images: [],
+                  id: hostel._id,
+                  latitude: hostel.latitude || 0,
+                  longitude: hostel.longitude || 0,
+                };
+              }
+
+              const photos = await photoResponse.json();
+
+              // Handle different possible photo response formats
+              const photoArray = Array.isArray(photos)
+                ? photos
+                : photos.data && Array.isArray(photos.data)
+                ? photos.data
+                : photos.photos && Array.isArray(photos.photos)
+                ? photos.photos
+                : [];
+
+              return {
+                ...hostel,
+                images: photoArray,
+                id: hostel._id,
+                latitude: hostel.latitude || 0,
+                longitude: hostel.longitude || 0,
+              };
+            } catch (photoError) {
+              console.error(
+                `Error fetching photos for hostel ${hostel._id}:`,
+                photoError
+              );
+              return {
+                ...hostel,
+                images: [],
+                id: hostel._id,
+                latitude: hostel.latitude || 0,
+                longitude: hostel.longitude || 0,
+              };
             }
-            const photos = await photoResponse.json();
-            return {
-              ...hostel,
-              images: photos,
-              id: hostel._id,
-              latitude: hostel.latitude || 0,
-              longitude: hostel.longitude || 0,
-            };
-          } catch (photoError) {
-            console.error("Error fetching hostel photos:", photoError);
-            return {
-              ...hostel,
-              images: [],
-              id: hostel._id,
-              latitude: hostel.latitude || 0,
-              longitude: hostel.longitude || 0,
-            };
           }
-        })
+        )
       );
 
+      console.log("Final hostels data:", hostelsWithPhotos);
       setHostels(hostelsWithPhotos);
       setFilteredHostels(hostelsWithPhotos);
     } catch (error) {
       console.error("Error fetching hostels:", error);
-      setError("Error fetching hostels");
+      setError("Failed to fetch hostels. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [API_BASE_URL]);
 
   useEffect(() => {
     fetchHostels();
@@ -503,6 +569,7 @@ const HomePage: React.FC = () => {
                         rentStructure={hostel.rentStructure}
                         isVerified={hostel.verified}
                         feedback={hostel.feedback}
+                        setActivePage={setActivePage}
                         ratings={
                           hostel.feedback.reduce(
                             (sum, f) => sum + f.rating,
