@@ -206,6 +206,8 @@ const HomePage: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   const {
     hostels = [],
     loading,
@@ -249,6 +251,7 @@ const HomePage: React.FC = () => {
     },
     [isBackendAvailable]
   );
+
   const handleFilterChange = useCallback((newFilters: Filters) => {
     setFilters(newFilters);
   }, []);
@@ -523,6 +526,16 @@ const HomePage: React.FC = () => {
       </button>
     </div>
   );
+
+  useEffect(() => {
+    if ((loading || isPageLoading) && scrollContainerRef.current) {
+      scrollContainerRef.current?.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [loading, isPageLoading, hostels]);
+
   const NoHostelsFound: React.FC = () => (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -565,46 +578,6 @@ const HomePage: React.FC = () => {
       <p className="text-gray-500">
         Try adjusting your filters or search criteria.
       </p>
-    </motion.div>
-  );
-
-  // Error handling component
-  const ErrorDisplay = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 50 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col items-center justify-center h-64 text-center"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="100"
-        height="100"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="text-red-500 mb-4"
-      >
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-      </svg>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-        Unable to Load Hostels
-      </h2>
-      <p className="text-gray-500">
-        {error?.message || "Something went wrong. Please try again later."}
-      </p>
-      <button
-        onClick={() => window.location.reload()}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Reload Page
-      </button>
     </motion.div>
   );
 
@@ -686,7 +659,10 @@ const HomePage: React.FC = () => {
 
             {/* Hostel List - Scrollable on desktop */}
             <div ref={hostelListRef} className="w-full md:w-2/3 md:order-1">
-              <div className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth">
+              <div
+                ref={scrollContainerRef}
+                className="md:h-[calc(150vh-280px)] md:overflow-y-auto md:pr-4 md:scroll-smooth"
+              >
                 {loading && !hostels.length ? (
                   <>
                     <HostelCardLoader />
@@ -751,23 +727,6 @@ const HomePage: React.FC = () => {
                             />
                           </motion.div>
                         ))}
-
-                        {/* Infinite scroll loader */}
-                        {/* <div ref={loadingRef} className="py-4">
-                        {loading && (
-                          <div className="flex justify-center">
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{
-                                duration: 1,
-                                repeat: Infinity,
-                                ease: "linear",
-                              }}
-                              className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"
-                            />
-                          </div>
-                        )}
-                      </div> */}
                       </motion.div>
                     ) : (
                       <NoHostelsFound />

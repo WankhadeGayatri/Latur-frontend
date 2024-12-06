@@ -324,6 +324,7 @@ export const useHostels = (
       setIsPageLoading(false);
     }
   };
+
   // Effect for prefetching next page with proper error handling
   useEffect(() => {
     if (!loading && !error && isPaginationValid(data)) {

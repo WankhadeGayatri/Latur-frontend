@@ -39,10 +39,14 @@ const createApolloClient = () => {
                 "maxRent",
                 "amenities",
                 "search",
+                "page",
+                "limit",
               ],
-              merge(existing = { hostels: [], pagination: {} }, incoming) {
+              merge(existing, incoming, { args }) {
+                // Always return the incoming data for the requested page
+                // This ensures we replace existing data instead of appending
                 return {
-                  hostels: [...existing.hostels, ...incoming.hostels],
+                  hostels: incoming.hostels,
                   pagination: incoming.pagination,
                 };
               },
@@ -54,10 +58,11 @@ const createApolloClient = () => {
     link: httpLink,
     defaultOptions: {
       watchQuery: {
-        fetchPolicy: "cache-and-network",
+        fetchPolicy: "network-only", // Changed to network-only to always fetch fresh data
         errorPolicy: "all",
       },
       query: {
+        fetchPolicy: "network-only",
         errorPolicy: "all",
       },
       mutate: {

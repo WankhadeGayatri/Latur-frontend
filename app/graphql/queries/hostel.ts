@@ -25,7 +25,6 @@ export const GET_HOSTELS = gql`
       hostels {
         _id
         name
-
         number
         address
         hostelType
@@ -45,7 +44,6 @@ export const GET_HOSTELS = gql`
         studyRoom
         tuition
         verified
-
         rentStructure {
           studentsPerRoom
           rentPerStudent
