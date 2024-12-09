@@ -21,13 +21,13 @@ const OAuthSuccessClient: React.FC = () => {
       // Redirect based on role
       switch (role) {
         case "student":
-          router.push("/Dashboard/student");
+          window.location.href = "/Dashboard/student";
           break;
         case "hostelOwner":
-          router.push("/Dashboard/hostalOwner");
+          window.location.href = "/Dashboard/hostalOwner";
           break;
         case "admin":
-          router.push("/Dashboard/admin");
+          window.location.href = "/Dashboard/admin";
           break;
         default:
           router.push("/customizeDashboard");

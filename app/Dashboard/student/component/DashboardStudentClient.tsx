@@ -164,7 +164,7 @@ const StudentDashboardContent: React.FC = () => {
       localStorage.removeItem("wishlist");
       await logoutUser();
       window.dispatchEvent(new Event("storage"));
-      router.push("/");
+      window.location.href = "/";
     } catch (error) {
       console.error("Error during logout:", error);
       localStorage.removeItem("token");

@@ -123,12 +123,8 @@ const Login: React.FC = () => {
   };
 
   const handleContinueWith = (method: string) => {
-    if (method === "google") {
-      window.location.href = `${API_BASE_URL}/api/auth/student/google`;
-    } else {
-      console.log(`Continuing with ${method}`);
-      // Implement other social login logic here
-    }
+    const baseUrl = `${API_BASE_URL}`;
+    window.location.href = `${baseUrl}/api/auth/student/${method}`;
   };
 
   return (
