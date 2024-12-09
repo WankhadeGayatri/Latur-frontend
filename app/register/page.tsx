@@ -235,10 +235,6 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  const handleOAuthRoleSelect = () => {
-    handleOAuthLogin("google");
-  };
-
   const handleOAuthLogin = (provider: string) => {
     const baseUrl = `${API_BASE_URL}`;
     window.location.href = `${baseUrl}/api/auth/student/${provider}`;
@@ -577,7 +573,7 @@ const RegisterPage: React.FC = () => {
                             >
                               <button
                                 type="button"
-                                onClick={() => handleOAuthRoleSelect()}
+                                onClick={() => handleOAuthLogin("google")}
                                 className={`w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out ${
                                   !termsAccepted &&
                                   "opacity-50 cursor-not-allowed"
@@ -623,6 +619,7 @@ const RegisterPage: React.FC = () => {
                             >
                               <button
                                 type="button"
+                                onClick={() => handleOAuthLogin("facebook")}
                                 className={`w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-[#1877F2] hover:bg-[#166FE5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1877F2] transition duration-150 ease-in-out ${
                                   !termsAccepted &&
                                   "opacity-50 cursor-not-allowed"
@@ -658,6 +655,7 @@ const RegisterPage: React.FC = () => {
                             >
                               <button
                                 type="button"
+                                onClick={() => handleOAuthLogin("instagram")}
                                 className={`w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[#405DE6] via-[#5851DB] via-[#833AB4] via-[#C13584] via-[#E1306C] via-[#FD1D1D] to-[#F56040] hover:from-[#365BCE] hover:via-[#4A47C3] hover:via-[#76339F] hover:via-[#AD307A] hover:via-[#CA2B61] hover:via-[#E51A1A] hover:to-[#DC5639] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E1306C] transition duration-150 ease-in-out ${
                                   !termsAccepted &&
                                   "opacity-50 cursor-not-allowed"
