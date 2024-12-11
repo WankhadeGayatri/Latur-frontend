@@ -165,20 +165,17 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     {
       title: "Welcome to Latur Hostel",
       description: "Your home away from home",
-      image:
-        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      image: "/Images/about/about-1.jpg",
     },
     {
       title: "Modern Amenities",
       description: "Enjoy comfort and convenience",
-      image:
-        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      image: "/Images/about/about-3.jpg",
     },
     {
       title: "Study Environment",
       description: "Focused spaces for academic success",
-      image:
-        "https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      image: "/Images/about/about-2.jpg",
     },
   ];
 
@@ -584,19 +581,34 @@ const MobileApp: React.FC = () => {
 
           {/* Bottom Navigation */}
           <div className="absolute bottom-2 left-2 right-2 h-[50px] sm:h-[60px] bg-gray-800 rounded-[25px] sm:rounded-[30px] flex justify-around items-center shadow-lg">
-            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+            <button
+              aria-label="Home"
+              className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors"
+            >
               <Home size={20} className="text-white" />
             </button>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+            <button
+              aria-label="Coffee Break"
+              className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors"
+            >
               <Coffee size={20} className="text-white" />
             </button>
-            <button className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-full flex items-center justify-center -mt-4 sm:-mt-6 hover:bg-gray-600 transition-colors shadow-lg">
+            <button
+              aria-label="Lock Screen"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-full flex items-center justify-center -mt-4 sm:-mt-6 hover:bg-gray-600 transition-colors shadow-lg"
+            >
               <Lock size={20} className="text-white" />
             </button>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+            <button
+              aria-label="Layout Settings"
+              className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors"
+            >
               <Layout size={20} className="text-white" />
             </button>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors">
+            <button
+              aria-label="Additional Coffee"
+              className="p-1.5 sm:p-2 hover:bg-gray-700 rounded-full transition-colors"
+            >
               <Coffee size={20} className="text-white" />
             </button>
           </div>
