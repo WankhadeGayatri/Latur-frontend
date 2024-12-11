@@ -669,7 +669,7 @@ const HomePage: React.FC = () => {
                     <HostelCardLoader />
                   </>
                 ) : (
-                  <AnimatePresence>
+                  <AnimatePresence mode="popLayout">
                     {hostels.length > 0 ? (
                       <motion.div
                         initial={{ opacity: 0 }}
@@ -682,6 +682,7 @@ const HomePage: React.FC = () => {
                             key={hostel._id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
                             transition={{
                               delay: Math.min(index * 0.1, 0.5),
                               duration: 0.3,

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
-import { ApolloWrapper } from "./providers/ApolloWrapper";
 
 export const metadata: Metadata = {
   title: "Latur Hostel",
@@ -92,9 +91,7 @@ export default function RootLayout({
         />
       </head>
 
-      <body>
-        <ApolloWrapper>{children}</ApolloWrapper>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { ApolloWrapper } from "./providers/ApolloWrapper";
 
 // Optimize imports with better loading states
 const Navbar = dynamic(() => import("./Component/mainpage/Navbar"), {
@@ -27,19 +28,21 @@ const LoadingState = () => (
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-sky-50 to-white">
-      <div className="max-w-[2000px] mx-auto ">
-        <Suspense fallback={<nav className="h-16 bg-white" />}>
-          <Navbar />
-        </Suspense>
-
-        <main>
-          <Suspense fallback={<LoadingState />}>
-            <HomePageContent />
+    <ApolloWrapper>
+      <div className="min-h-screen bg-gradient-to-r from-sky-50 to-white">
+        <div className="max-w-[2000px] mx-auto ">
+          <Suspense fallback={<nav className="h-16 bg-white" />}>
+            <Navbar />
           </Suspense>
-        </main>
+
+          <main>
+            <Suspense fallback={<LoadingState />}>
+              <HomePageContent />
+            </Suspense>
+          </main>
+        </div>
       </div>
-    </div>
+    </ApolloWrapper>
   );
 };
 

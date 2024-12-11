@@ -12,20 +12,6 @@ const MobileHostelworldLanding: React.FC<MobileHostelworldLandingProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const images = [
-    "/Images/banner/about-1.jpg",
-    // "/Images/banner/about-2.jpg",
-    // "/Images/banner/about-3.jpg",
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(searchQuery, "");
