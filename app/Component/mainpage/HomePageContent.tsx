@@ -539,7 +539,92 @@ const HomePage: React.FC = () => {
       </div>
     );
   };
-
+  const sliderItems = [
+    {
+      src: "/Images/galary/s1.jpeg",
+      alt: "Sharda Hostel",
+      name: "Sharda Hostel",
+      price: 2649,
+      rating: 4.3,
+    },
+    {
+      src: "/Images/galary/ami.jpeg",
+      alt: "Neha Hostel",
+      name: "Neha Hostel",
+      price: 2499,
+      rating: 4.0,
+    },
+    {
+      src: "/Images/galary/avan.jpeg",
+      alt: "Avani Hostel",
+      name: "Avani Hostel",
+      price: 2799,
+      rating: 4.2,
+    },
+    {
+      src: "/Images/galary/b5.png",
+      alt: "Sagar Hostel",
+      name: "Sagar Hostel",
+      price: 2299,
+      rating: 3.9,
+    },
+    {
+      src: "/Images/galary/nea.jpeg",
+      alt: "Samarth Hostel",
+      name: "Samarth Hostel",
+      price: 2599,
+      rating: 4.1,
+    },
+    {
+      src: "/Images/galary/raman.jpeg",
+      alt: "Raman Hostel",
+      name: "Raman Hostel",
+      price: 2199,
+      rating: 3.7,
+    },
+    {
+      src: "/Images/galary/saar.png",
+      alt: "Sanichit Hostel",
+      name: "Sanichit Hostel",
+      price: 2399,
+      rating: 4.0,
+    },
+    {
+      src: "/Images/galary/s1.jpeg",
+      alt: "Sharda Hostel",
+      name: "Sharda Hostel",
+      price: 2649,
+      rating: 4.3,
+    },
+    {
+      src: "/Images/galary/A15.jpg",
+      alt: "Shiv Hostel",
+      name: "Shiv Hostel",
+      price: 2299,
+      rating: 3.8,
+    },
+    {
+      src: "/Images/galary/b4.png",
+      alt: "Shourya Hostel",
+      name: "Shourya Hostel",
+      price: 2499,
+      rating: 4.1,
+    },
+    {
+      src: "/Images/galary/b.jpeg",
+      alt: "Amit Hostel",
+      name: "Amit Hostel",
+      price: 2199,
+      rating: 3.6,
+    },
+    {
+      src: "/Images/galary/b6.png",
+      alt: "Venutai Hostel",
+      name: "Venutai Hostel",
+      price: 2549,
+      rating: 4.2,
+    },
+  ];
   return (
     <>
       <div className="sticky top-0 z-10 bg-white">
@@ -678,7 +763,7 @@ const HomePage: React.FC = () => {
           </Typography>
 
           <div className="mt-8 md:mt-12">
-            <InfiniteCardCarousel />
+            <InfiniteCardCarousel items={sliderItems} />
           </div>
         </div>
       </motion.section>

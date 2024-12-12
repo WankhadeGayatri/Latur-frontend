@@ -312,7 +312,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
     <div className="mt-4">
       <Typography
         variant="h2"
-        className="text-sm md:text-2sm font-light text-sky-500 mb-2"
+        className="text-sm md:text-2sm font-light text-sky-700 mb-2"
       >
         Rent Structure:
       </Typography>
@@ -472,7 +472,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
             <div className="mt-1">
               <Typography
                 variant="h2"
-                className="text-sm md:text-2sm font-light text-sky-500 mb-1"
+                className="text-sm md:text-2sm font-light text-sky-700 mb-1"
               >
                 Amenities:
               </Typography>
