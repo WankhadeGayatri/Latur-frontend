@@ -310,7 +310,10 @@ const HostelCard: React.FC<HostelCardProps> = ({
 
   const RentStructureDisplay: React.FC = () => (
     <div className="mt-4">
-      <Typography variant="subtitle1" className="text-sky-600 mb-2">
+      <Typography
+        variant="h2"
+        className="text-sm md:text-2sm font-light text-sky-500 mb-2"
+      >
         Rent Structure:
       </Typography>
       {isLoggedIn ? (
@@ -407,8 +410,8 @@ const HostelCard: React.FC<HostelCardProps> = ({
             {/* Title and Verified Badge */}
             <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
               <Typography
-                variant="h3"
-                className="text-xl md:text-2xl font-semibold text-sky-600"
+                variant="h1"
+                className="text-xl md:text-2xl font-semibold text-sky-700"
               >
                 {name}
               </Typography>
@@ -426,7 +429,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
             {/* Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-2">
               <Typography
-                variant="body2"
+                variant="h2"
                 className="text-sm text-gray-600 flex items-center flex-wrap"
               >
                 <LocationIcon
@@ -434,12 +437,12 @@ const HostelCard: React.FC<HostelCardProps> = ({
                   fontSize="small"
                 />
                 <span className="whitespace-nowrap">Address: </span>
-                <span className="font-semibold text-gray-800 ml-1 break-words">
+                <span className="font-semibold text-gray-600 ml-1 break-words">
                   {address}
                 </span>
               </Typography>
               <Typography
-                variant="body2"
+                variant="h2"
                 className="text-sm text-gray-600 flex items-center flex-wrap"
               >
                 <GenderIcon
@@ -447,7 +450,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                   fontSize="small"
                 />
                 <span className="whitespace-nowrap">Type: </span>
-                <span className="font-semibold text-gray-800 ml-1">
+                <span className="font-semibold text-gray-600 ml-1">
                   {hostelType}
                 </span>
                 {/* <Typography
@@ -467,7 +470,10 @@ const HostelCard: React.FC<HostelCardProps> = ({
             {/* Amenities */}
 
             <div className="mt-1">
-              <Typography variant="subtitle1" className="text-sky-600 mb-1">
+              <Typography
+                variant="h2"
+                className="text-sm md:text-2sm font-light text-sky-500 mb-1"
+              >
                 Amenities:
               </Typography>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">

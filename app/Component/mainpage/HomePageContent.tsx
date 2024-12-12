@@ -256,93 +256,6 @@ const HomePage: React.FC = () => {
     setFilters(newFilters);
   }, []);
 
-  const sliderItems = [
-    {
-      src: "/Images/galary/s1.jpeg",
-      alt: "Sharda Hostel",
-      name: "Sharda Hostel",
-      price: 2649,
-      rating: 4.3,
-    },
-    {
-      src: "/Images/galary/ami.jpeg",
-      alt: "Neha Hostel",
-      name: "Neha Hostel",
-      price: 2499,
-      rating: 4.0,
-    },
-    {
-      src: "/Images/galary/avan.jpeg",
-      alt: "Avani Hostel",
-      name: "Avani Hostel",
-      price: 2799,
-      rating: 4.2,
-    },
-    {
-      src: "/Images/galary/b5.png",
-      alt: "Sagar Hostel",
-      name: "Sagar Hostel",
-      price: 2299,
-      rating: 3.9,
-    },
-    {
-      src: "/Images/galary/nea.jpeg",
-      alt: "Samarth Hostel",
-      name: "Samarth Hostel",
-      price: 2599,
-      rating: 4.1,
-    },
-    {
-      src: "/Images/galary/raman.jpeg",
-      alt: "Raman Hostel",
-      name: "Raman Hostel",
-      price: 2199,
-      rating: 3.7,
-    },
-    {
-      src: "/Images/galary/saar.png",
-      alt: "Sanichit Hostel",
-      name: "Sanichit Hostel",
-      price: 2399,
-      rating: 4.0,
-    },
-    {
-      src: "/Images/galary/s1.jpeg",
-      alt: "Sharda Hostel",
-      name: "Sharda Hostel",
-      price: 2649,
-      rating: 4.3,
-    },
-    {
-      src: "/Images/galary/A15.jpg",
-      alt: "Shiv Hostel",
-      name: "Shiv Hostel",
-      price: 2299,
-      rating: 3.8,
-    },
-    {
-      src: "/Images/galary/b4.png",
-      alt: "Shourya Hostel",
-      name: "Shourya Hostel",
-      price: 2499,
-      rating: 4.1,
-    },
-    {
-      src: "/Images/galary/b.jpeg",
-      alt: "Amit Hostel",
-      name: "Amit Hostel",
-      price: 2199,
-      rating: 3.6,
-    },
-    {
-      src: "/Images/galary/b6.png",
-      alt: "Venutai Hostel",
-      name: "Venutai Hostel",
-      price: 2549,
-      rating: 4.2,
-    },
-  ];
-
   const criticalCSS = `
   .MuiToolbar-root {
     height: 60px;
@@ -759,13 +672,13 @@ const HomePage: React.FC = () => {
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
+          <Typography className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
             Our Hostel Gallery
             <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
-          </h1>
+          </Typography>
 
           <div className="mt-8 md:mt-12">
-            <InfiniteCardCarousel items={sliderItems} />
+            <InfiniteCardCarousel />
           </div>
         </div>
       </motion.section>

@@ -183,7 +183,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
         onClick={handleSearch}
         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
       >
-        <Search size={24} />
+        <Search size={24} aria-label="search" />
       </button>
     </div>
   );
@@ -284,7 +284,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
         className="flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 w-40 h-12"
       >
         Sort By:{" "}
-        <span className="text-[#87CEEB] ml-1">
+        <span className="text-[#4A7E8E] ml-1">
           {filters.sortByRatings ? "Ratings" : "Popularity"}
         </span>
       </button>
@@ -322,7 +322,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
                   }}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-500 hover:text-sky-600"
                 >
-                  <Search size={20} />
+                  <Search size={20} aria-label="search" />
                 </button>
               </div>
             ) : (
@@ -330,7 +330,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
                 onClick={() => setIsSearchExpanded(true)}
                 className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500 hover:bg-gray-100"
               >
-                <Search size={20} />
+                <Search size={20} aria-label="search" />
               </button>
             )}
 
@@ -442,13 +442,13 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
               } h-12`}
             >
               Sort By:{" "}
-              <span className="text-[#87CEEB] ml-1">
+              <span className="text-[#4A7E8E] ml-1">
                 {filters.sortByRatings ? "Ratings" : "Popularity"}
               </span>
             </button>
             <button
               onClick={clearAllFilters}
-              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-red-300 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300 ${
+              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-red-100 text-red-#EC130F hover:bg-red-200 hover:text-white transition-colors duration-300 ${
                 deviceType === "tablet" ? "w-32" : "w-40"
               } h-12`}
             >
@@ -644,13 +644,13 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
               className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2 border-gray-300"
             >
               Sort By:{" "}
-              <span className="text-[#87CEEB]">
+              <span className="text-[#4A7E8E]">
                 {filters.sortByRatings ? "Ratings" : "Popularity"}
               </span>
             </button>
             <button
               onClick={clearAllFilters}
-              className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2 border-red-300 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-300"
+              className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2  text-red-#EB1808 hover:bg-red-200 hover:text-black transition-colors duration-300"
             >
               Clear Filters
             </button>

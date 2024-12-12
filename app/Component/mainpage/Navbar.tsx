@@ -375,7 +375,7 @@ const Navbar: React.FC = React.memo(() => {
   };
 
   const getHostelOwnerTextColor = () => {
-    return isHostelOwnerPage ? "#ffffff" : "#d32f2f";
+    return isHostelOwnerPage ? "#ffffff" : "#D21B16";
   };
 
   return (

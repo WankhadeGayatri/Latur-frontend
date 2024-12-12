@@ -480,27 +480,33 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
 const MobileApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState("welcome");
-  const [time, setTime] = useState<string>(() => {
-    return new Date().toLocaleTimeString([], {
+  const [timeState, setTimeState] = useState<{
+    current: string;
+    previous: string | null;
+  }>({
+    current: new Date().toLocaleTimeString([], {
       hour: "numeric",
       minute: "2-digit",
-    });
+    }),
+    previous: null,
   });
   const appRef = useRef(null);
   const screens = ["welcome", "home", "support"];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(
-        new Date().toLocaleTimeString([], {
+      setTimeState((prevState) => ({
+        current: new Date().toLocaleTimeString([], {
           hour: "numeric",
           minute: "2-digit",
-        })
-      );
+        }),
+        previous: prevState.current,
+      }));
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
+
   const handleNextScreen = useCallback((): void => {
     setCurrentScreen((prevScreen) => {
       const currentIndex = screens.indexOf(prevScreen);
@@ -529,7 +535,9 @@ const MobileApp: React.FC = () => {
         <div className="w-full h-full bg-white rounded-[28px] sm:rounded-[35px] overflow-hidden relative">
           {/* Status Bar */}
           <div className="sticky top-0 left-0 right-0 h-[36px] sm:h-[44px] bg-white flex items-center justify-between px-4 sm:px-6 text-black z-30 border-b border-gray-100">
-            <span className="text-[10px] sm:text-xs font-semibold">{time}</span>
+            <span className="text-[10px] sm:text-xs font-semibold">
+              {timeState.previous}
+            </span>
             <div className="flex items-center space-x-1">
               <div className="w-4 sm:w-6 h-2 sm:h-3 bg-black rounded-sm relative">
                 <div className="absolute right-[2px] top-[2px] bottom-[2px] left-[6px] sm:left-[9px] bg-white rounded-sm"></div>

@@ -1,11 +1,102 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { Star, ArrowRight, ArrowLeft } from "lucide-react";
 
-// Placeholder shimmer component
+// Define the item type
+interface HostelItem {
+  src: string;
+  alt: string;
+  name: string;
+  price: number;
+  rating: number;
+}
+
+// Slider items data
+const sliderItems: HostelItem[] = [
+  {
+    src: "/Images/galary/s1.jpeg",
+    alt: "Sharda Hostel",
+    name: "Sharda Hostel",
+    price: 2649,
+    rating: 4.3,
+  },
+  {
+    src: "/Images/galary/ami.jpeg",
+    alt: "Neha Hostel",
+    name: "Neha Hostel",
+    price: 2499,
+    rating: 4.0,
+  },
+  {
+    src: "/Images/galary/avan.jpeg",
+    alt: "Avani Hostel",
+    name: "Avani Hostel",
+    price: 2799,
+    rating: 4.2,
+  },
+  {
+    src: "/Images/galary/b5.png",
+    alt: "Sagar Hostel",
+    name: "Sagar Hostel",
+    price: 2299,
+    rating: 3.9,
+  },
+  {
+    src: "/Images/galary/nea.jpeg",
+    alt: "Samarth Hostel",
+    name: "Samarth Hostel",
+    price: 2599,
+    rating: 4.1,
+  },
+  {
+    src: "/Images/galary/raman.jpeg",
+    alt: "Raman Hostel",
+    name: "Raman Hostel",
+    price: 2199,
+    rating: 3.7,
+  },
+  {
+    src: "/Images/galary/saar.png",
+    alt: "Sanichit Hostel",
+    name: "Sanichit Hostel",
+    price: 2399,
+    rating: 4.0,
+  },
+  {
+    src: "/Images/galary/A15.jpg",
+    alt: "Shiv Hostel",
+    name: "Shiv Hostel",
+    price: 2299,
+    rating: 3.8,
+  },
+  {
+    src: "/Images/galary/b4.png",
+    alt: "Shourya Hostel",
+    name: "Shourya Hostel",
+    price: 2499,
+    rating: 4.1,
+  },
+  {
+    src: "/Images/galary/b.jpeg",
+    alt: "Amit Hostel",
+    name: "Amit Hostel",
+    price: 2199,
+    rating: 3.6,
+  },
+  {
+    src: "/Images/galary/b6.png",
+    alt: "Venutai Hostel",
+    name: "Venutai Hostel",
+    price: 2549,
+    rating: 4.2,
+  },
+];
+
+// Shimmer Effect Component
 const ShimmerEffect = () => (
   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
 );
 
+// Optimized Card Component
 const OptimizedCard = memo(
   ({
     src,
@@ -27,9 +118,8 @@ const OptimizedCard = memo(
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
 
-    // Pre-calculate image dimensions to prevent layout shift
     const aspectRatio = "aspect-square";
-    const baseWidth = 320; // w-80
+    const baseWidth = 320;
     const baseHeight = 320;
 
     return (
@@ -99,20 +189,23 @@ const OptimizedCard = memo(
                 {name}
               </h3>
 
-              <div className="flex items-center space-x-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < rating
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
-                <span className="ml-2 text-sm text-white/90">
-                  {rating.toFixed(1)}
-                </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i < Math.floor(rating)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                  <span className="ml-2 text-sm text-white/90">
+                    {rating.toFixed(1)}
+                  </span>
+                </div>
+                <span className="text-white font-semibold">₹{price}</span>
               </div>
             </div>
           </div>
@@ -124,26 +217,17 @@ const OptimizedCard = memo(
 
 OptimizedCard.displayName = "OptimizedCard";
 
-const InfiniteCardCarousel = ({
-  items,
-}: {
-  items: Array<{
-    src: string;
-    alt: string;
-    name: string;
-    price: number;
-    rating: number;
-  }>;
-}) => {
+// Infinite Carousel Component
+const InfiniteCardCarousel: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
 
-  const extendedItems = [...items, ...items, ...items];
+  // Extend items for infinite scrolling
+  const extendedItems = [...sliderItems, ...sliderItems, ...sliderItems];
   const cardWidth = 320; // w-80
   const cardGap = 16; // gap-4
-  const itemWidth = cardWidth + cardGap;
 
   // Calculate visible cards based on container width
   useEffect(() => {
@@ -171,6 +255,7 @@ const InfiniteCardCarousel = ({
   );
   const totalWidth = extendedItems.length * responsiveItemWidth;
 
+  // Handle scrolling
   const handleScroll = useCallback(
     (direction: "prev" | "next") => {
       setIsAutoScrolling(false);
@@ -186,9 +271,10 @@ const InfiniteCardCarousel = ({
     [extendedItems.length, responsiveItemWidth]
   );
 
-  // Auto-scroll with RAF for smooth animation
+  // Auto-scroll effect
   useEffect(() => {
     if (!isAutoScrolling) return;
+
     let rafId: number;
     let lastTime = performance.now();
     const interval = 3000;
@@ -208,7 +294,7 @@ const InfiniteCardCarousel = ({
   return (
     <div className="relative w-full bg-white py-8">
       <div className="max-w-[90rem] mx-auto px-4 relative isolate">
-        {/* Navigation buttons with adjusted z-index */}
+        {/* Navigation buttons */}
         <div className="absolute inset-0 pointer-events-none z-[5]">
           <button
             onClick={() => handleScroll("prev")}
@@ -231,7 +317,8 @@ const InfiniteCardCarousel = ({
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
-        {/* Cards container with responsive width */}
+
+        {/* Cards container */}
         <div
           className="overflow-hidden mx-auto"
           style={{
@@ -268,4 +355,4 @@ const InfiniteCardCarousel = ({
   );
 };
 
-export default memo(InfiniteCardCarousel);
+export default InfiniteCardCarousel;

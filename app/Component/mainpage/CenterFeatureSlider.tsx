@@ -8,52 +8,141 @@ import {
 import { FaUtensils, FaBus } from "react-icons/fa";
 import { MdCleaningServices } from "react-icons/md";
 
+// Enhanced Feature interface with additional properties
 interface Feature {
   icon: React.ElementType;
   title: string;
-  color: string;
+  color: {
+    background: string;
+    icon: string;
+    border: string;
+  };
+  description?: string;
 }
 
+// Refined color palette with more professional gradients
 const features: Feature[] = [
-  { icon: BsHouseDoorFill, title: "Student Friendly", color: "bg-red-100" },
+  {
+    icon: BsHouseDoorFill,
+    title: "Student Friendly",
+    color: {
+      background: "bg-gradient-to-br from-red-50 to-red-100",
+      icon: "text-red-500",
+      border: "border-red-200",
+    },
+  },
   {
     icon: BsLightningChargeFill,
     title: "Power Backup",
-    color: "bg-orange-100",
+    color: {
+      background: "bg-gradient-to-br from-orange-50 to-orange-100",
+      icon: "text-orange-500",
+      border: "border-orange-200",
+    },
   },
-  { icon: MdCleaningServices, title: "Hygiene", color: "bg-green-100" },
-  { icon: BsShieldFillCheck, title: "24/7 Security", color: "bg-purple-100" },
-  { icon: FaUtensils, title: "Food & Mess", color: "bg-yellow-100" },
-  { icon: FaBus, title: "Pick Up & Drop", color: "bg-blue-100" },
+  {
+    icon: MdCleaningServices,
+    title: "Hygiene",
+    color: {
+      background: "bg-gradient-to-br from-green-50 to-green-100",
+      icon: "text-green-500",
+      border: "border-green-200",
+    },
+  },
+  {
+    icon: BsShieldFillCheck,
+    title: "24/7 Security",
+    color: {
+      background: "bg-gradient-to-br from-purple-50 to-purple-100",
+      icon: "text-purple-500",
+      border: "border-purple-200",
+    },
+  },
+  {
+    icon: FaUtensils,
+    title: "Food & Mess",
+    color: {
+      background: "bg-gradient-to-br from-yellow-50 to-yellow-100",
+      icon: "text-yellow-600",
+      border: "border-yellow-200",
+    },
+  },
+  {
+    icon: FaBus,
+    title: "Pick Up & Drop",
+    color: {
+      background: "bg-gradient-to-br from-blue-50 to-blue-100",
+      icon: "text-blue-500",
+      border: "border-blue-200",
+    },
+  },
 ];
 
-const FeatureCard: React.FC<Feature> = ({ icon: Icon, title, color }) => (
+// Enhanced FeatureCard with more dynamic styling
+const FeatureCard: React.FC<Feature> = ({
+  icon: Icon,
+  title,
+  color,
+  description,
+}) => (
   <div
-    className={`flex flex-col items-center justify-center p-2 sm:p-3 md:p-4 ${color} rounded-lg shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border hover:border-sky-300`}
-    style={{
-      width: "clamp(120px, 22vw, 220px)",
-      height: "clamp(80px, 15vw, 150px)",
-    }}
+    className={`
+        flex flex-col items-center justify-center
+        p-1 sm:p-3
+        space-y-1 sm:space-y-2
+        ${color.background}
+        rounded-2xl
+        shadow-md
+        border
+        ${color.border}
+        transform transition-all
+        duration-300
+        hover:scale-[1.02]
+        hover:shadow-lg
+        hover:border-opacity-75
+        w-full
+        max-w-[220px]
+        min-h-[110px]
+        sm:min-h-[110px]
+        md:min-h-[100px]
+      `}
   >
-    <Icon
-      className="text-orange-500 mb-1 sm:mb-2"
-      style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}
-    />
-    <h3
-      className="font-semibold text-center"
-      style={{ fontSize: "clamp(0.75rem, 1.5vw, 1rem)" }}
+    <div
+      className={`
+          p-2 sm:p-2
+          rounded-full 
+          bg-white 
+          shadow-sm
+          mb-1 sm:mb-2
+          ${color.icon}
+          transition-transform
+          group-hover:scale-110
+        `}
+    >
+      <Icon className="text-xl sm:text-2xl text-center" />
+    </div>
+    <h4
+      className="
+        text-base sm:text-lg 
+        font-semibold 
+        text-center 
+        text-gray-800 
+        tracking-tight
+        line-clamp-2
+      "
     >
       {title}
-    </h3>
+    </h4>
   </div>
 );
 
+// Slider Component with Refined Animation
 const FeatureSlider: React.FC = () => {
   const totalWidth = features.length * 240;
   const animationDuration = features.length * 5;
 
   return (
-    <div className="w-full  overflow-hidden py-4 sm:py-6 md:py-8">
+    <div className="w-full overflow-hidden py-7">
       <div
         className="flex"
         style={{
@@ -64,8 +153,8 @@ const FeatureSlider: React.FC = () => {
         {[...features, ...features, ...features].map((feature, index) => (
           <div
             key={index}
-            className="flex-none mx-2 sm:mx-3"
-            style={{ width: "clamp(120px, 22vw, 220px)" }}
+            className="flex-none mx-2"
+            style={{ width: "clamp(180px, 22vw, 250px)" }}
           >
             <FeatureCard {...feature} />
           </div>
@@ -75,8 +164,9 @@ const FeatureSlider: React.FC = () => {
   );
 };
 
+// Centered Slider with Global Styles
 const CenteredFeatureSlider: React.FC = () => (
-  <div className="flex items-center  justify-center w-full overflow-hidden">
+  <div className="flex items-center justify-center w-full overflow-hidden">
     <style jsx global>{`
       @keyframes slide {
         0% {
