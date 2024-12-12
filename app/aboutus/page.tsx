@@ -3,6 +3,9 @@ import React from "react";
 import Navbar from "../Component/mainpage/Navbar";
 import Footer from "../Component/mainpage/Footer";
 
+import { Telescope } from "lucide-react";
+
+import { Target } from "lucide-react"; // Import the appropriate icons
 const AboutPage = () => {
   const features = [
     {
@@ -13,7 +16,13 @@ const AboutPage = () => {
         "No middle man between students and hostel owners",
         "Direct communication for faster problem resolution",
       ],
-      icon: "/Images/about/mission.png",
+      icon: (
+        <Target
+          className="text-sky-400"
+          size={80}
+          strokeWidth={1.5} // Making the icon slightly thinner for better match
+        />
+      ),
     },
     {
       title: "Our Vision",
@@ -23,7 +32,7 @@ const AboutPage = () => {
         "Quality assurance standards",
         "Seamless booking experience",
       ],
-      icon: "/Images/about/vision.png",
+      icon: <Telescope className="text-sky-400" size={80} strokeWidth={1.5} />,
     },
   ];
 
@@ -55,7 +64,7 @@ const AboutPage = () => {
       <Navbar />
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <div className="relative bg-sky-50 py-24">
+        <div className="relative bg-sky-50 py-16 ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -71,7 +80,7 @@ const AboutPage = () => {
         </div>
 
         {/* Main Content Section */}
-        <div className="py-16">
+        <div className="py-8 mb-0">
           <div className="max-w-7.5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Column - Grid Layout */}
@@ -85,9 +94,9 @@ const AboutPage = () => {
                     style={{ animationDelay: "0.1s" }}
                   >
                     <img
-                      src="/Images/about/about-1.jpg"
+                      src="/Images/about/about-1.webp"
                       alt="Hotel view 1"
-                      className="rounded-xl shadow-lg w-full h-[200px] object-cover"
+                      className="rounded-xl shadow-lg w-full h-[150px] object-cover sm:h-[180px] md:h-[200px]"
                     />
                   </div>
                   <div
@@ -95,9 +104,9 @@ const AboutPage = () => {
                     style={{ animationDelay: "0.3s" }}
                   >
                     <img
-                      src="/Images/about/about-3.jpg"
+                      src="/Images/about/about-3.webp"
                       alt="Hotel view 2"
-                      className="rounded-xl shadow-lg w-full h-[200px] object-cover"
+                      className="rounded-xl shadow-lg w-full h-[150px] object-cover sm:h-[180px] md:h-[200px]"
                     />
                   </div>
                   <div className="flex gap-3">
@@ -106,9 +115,9 @@ const AboutPage = () => {
                       style={{ animationDelay: "0.5s" }}
                     >
                       <img
-                        src="/Images/about/about-2.jpg"
+                        src="/Images/about/about-2.webp"
                         alt="Hotel view 3"
-                        className="rounded-xl shadow-lg w-full h-[150px] object-cover"
+                        className="rounded-xl shadow-lg w-full h-[100px] object-cover sm:h-[120px] md:h-[150px]"
                       />
                     </div>
                     <div
@@ -116,9 +125,9 @@ const AboutPage = () => {
                       style={{ animationDelay: "0.7s" }}
                     >
                       <img
-                        src="/Images/about/about-4.jpg"
+                        src="/Images/about/about-4.webp"
                         alt="Hotel view 4"
-                        className="rounded-xl shadow-lg w-full h-[150px] object-cover"
+                        className="rounded-xl shadow-lg w-full h-[100px] object-cover sm:h-[120px] md:h-[150px]"
                       />
                     </div>
                   </div>
@@ -129,13 +138,13 @@ const AboutPage = () => {
                   {/* Left Column */}
                   <div className="space-y-4 text-right">
                     <div
-                      className="relative inline-block w-[85%] mt-[25%] animate-zoomIn"
+                      className="relative inline-block w-[85%] mt-[10%] animate-zoomIn"
                       style={{ animationDelay: "0.1s" }}
                     >
                       <img
-                        src="/Images/about/about-1.jpg"
+                        src="/Images/about/about-1.webp"
                         alt="Hotel view 1"
-                        className="rounded-xl shadow-xl h-[300px] w-full object-cover"
+                        className="rounded-xl shadow-xl h-[200px] w-full object-cover lg:h-[200px] xl:h-[250px]"
                       />
                     </div>
                     <div
@@ -143,9 +152,9 @@ const AboutPage = () => {
                       style={{ animationDelay: "0.5s" }}
                     >
                       <img
-                        src="/Images/about/about-2.jpg"
+                        src="/Images/about/about-2.webp"
                         alt="Hotel view 3"
-                        className="rounded-xl shadow-xl h-[200px] w-full object-cover"
+                        className="rounded-xl shadow-xl h-[150px] w-full object-cover lg:h-[150px] xl:h-[180px]"
                       />
                     </div>
                   </div>
@@ -156,9 +165,9 @@ const AboutPage = () => {
                       style={{ animationDelay: "0.3s" }}
                     >
                       <img
-                        src="/Images/about/about-3.jpg"
+                        src="/Images/about/about-3.webp"
                         alt="Hotel view 2"
-                        className="rounded-xl shadow-xl h-[350px] w-full object-cover"
+                        className="rounded-xl shadow-xl h-[250px] w-full object-cover lg:h-[250px] xl:h-[280px]"
                       />
                     </div>
                     <div
@@ -166,9 +175,9 @@ const AboutPage = () => {
                       style={{ animationDelay: "0.7s" }}
                     >
                       <img
-                        src="/Images/about/about-4.jpg"
+                        src="/Images/about/about-4.webp"
                         alt="Hotel view 4"
-                        className="rounded-xl shadow-xl h-[200px] w-full object-cover"
+                        className="rounded-xl shadow-xl h-[150px] w-full object-cover lg:h-[180px] xl:h-[200px]"
                       />
                     </div>
                   </div>
@@ -206,7 +215,7 @@ const AboutPage = () => {
                   </p>
                 </div>
 
-                <div className="container px-1 py-2">
+                <div className="container px-1 py-2 mb-0">
                   <div className="space-y-2">
                     {features.map((feature, index) => (
                       <div
@@ -214,11 +223,7 @@ const AboutPage = () => {
                         className="grid grid-cols-1 md:grid-cols-12 "
                       >
                         <div className="md:col-span-3 p-1 flex items-center justify-center bg-sky-50 rounded-xl">
-                          <img
-                            src={feature.icon}
-                            alt={feature.title}
-                            className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-38 lg:h-38 xl:w-44 xl:h-44 2xl:w-56 2xl:h-56 object-contain transition-all duration-300"
-                          />
+                          {feature.icon}
                         </div>
                         <div className="md:col-span-9">
                           <div className="bg-sky-50 p-6  h-full">
@@ -255,7 +260,7 @@ const AboutPage = () => {
         </div>
         {/* Why Choose Us Section */}
         {/* Why Choose Us Section */}
-        <div className="py-16 bg-white">
+        <div className="py-12 bg-white ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900">
@@ -383,7 +388,7 @@ const AboutPage = () => {
         {/* Team Section */}
 
         {/* Get in Touch Section */}
-        <div className="py-8 sm:py-12 md:py-16 bg-white">
+        <div className="relative bg-sky-50 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-sky-50 rounded-xl sm:rounded-2xl p-4 sm:p-8 md:p-12">
               <div className="max-w-3xl mx-auto">

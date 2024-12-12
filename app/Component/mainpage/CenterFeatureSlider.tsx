@@ -87,73 +87,69 @@ const FeatureCard: React.FC<Feature> = ({
 }) => (
   <div
     className={`
-        flex flex-col items-center justify-center
-        p-1 sm:p-3
-        space-y-1 sm:space-y-2
-        ${color.background}
-        rounded-2xl
-        shadow-md
-        border
-        ${color.border}
-        transform transition-all
-        duration-300
-        hover:scale-[1.02]
-        hover:shadow-lg
-        hover:border-opacity-75
-        w-full
-        max-w-[220px]
-        min-h-[110px]
-        sm:min-h-[110px]
-        md:min-h-[100px]
-      `}
+    flex flex-col items-center justify-center
+    p-1 sm:p-3
+    space-y-1 sm:space-y-2
+    ${color.background}
+    rounded-2xl
+    shadow-md
+    border
+    ${color.border}
+    transform transition-all
+    duration-300
+    hover:scale-[1.02]
+    hover:shadow-lg
+    hover:border-opacity-75
+    w-full
+    max-w-[220px]
+    min-h-[110px]
+    sm:min-h-[110px]
+    md:min-h-[100px]
+  `}
   >
     <div
       className={`
-          p-2 sm:p-2
-          rounded-full 
-          bg-white 
-          shadow-sm
-          mb-1 sm:mb-2
-          ${color.icon}
-          transition-transform
-          group-hover:scale-110
-        `}
+      p-2 sm:p-2
+      rounded-full 
+      bg-white
+      shadow-sm
+      mb-1 sm:mb-2
+      ${color.icon}
+      transition-transform
+      group-hover:scale-110
+    `}
     >
       <Icon className="text-xl sm:text-2xl text-center" />
     </div>
-    <h4
+    <p
       className="
-        text-base sm:text-lg 
-        font-semibold 
-        text-center 
-        text-gray-800 
-        tracking-tight
-        line-clamp-2
-      "
+      prose-sm
+      font-semibold 
+      text-center 
+      text-gray-800 
+      tracking-tight 
+      line-clamp-2
+      text-base sm:text-sm
+    "
     >
       {title}
-    </h4>
+    </p>
   </div>
 );
 
-// Slider Component with Refined Animation
 const FeatureSlider: React.FC = () => {
-  const totalWidth = features.length * 240;
-  const animationDuration = features.length * 5;
-
   return (
     <div className="w-full overflow-hidden py-7">
       <div
-        className="flex"
+        className="flex animate-slow-infinite-scroll"
         style={{
-          width: `${totalWidth * 3}px`,
-          animation: `slide ${animationDuration}s linear infinite`,
+          width: `${features.length * 240 * 3}px`,
         }}
       >
         {[...features, ...features, ...features].map((feature, index) => (
           <div
             key={index}
-            className="flex-none mx-2"
+            className="flex-none mx-1"
             style={{ width: "clamp(180px, 22vw, 250px)" }}
           >
             <FeatureCard {...feature} />
@@ -168,13 +164,17 @@ const FeatureSlider: React.FC = () => {
 const CenteredFeatureSlider: React.FC = () => (
   <div className="flex items-center justify-center w-full overflow-hidden">
     <style jsx global>{`
-      @keyframes slide {
-        0% {
+      @keyframes slowInfiniteScroll {
+        from {
           transform: translateX(0);
         }
-        100% {
+        to {
           transform: translateX(-33.33%);
         }
+      }
+
+      .animate-slow-infinite-scroll {
+        animation: slowInfiniteScroll 20s linear infinite;
       }
     `}</style>
     <FeatureSlider />

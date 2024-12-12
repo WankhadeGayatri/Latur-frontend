@@ -15,6 +15,31 @@ interface FilterBarProps {
   onSearch: (query: string, location: string) => void;
 }
 
+// Add this style block at the top of your component
+const styles = `
+  .filter-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .filter-button:hover + .filter-dropdown,
+  .filter-dropdown:hover {
+  display: block;
+  }
+  
+  .filter-option:hover {
+  background-color: #87CEEB;
+  color: white;
+  }`;
+
 interface Filters {
   searchName: string;
   type: string;
@@ -189,47 +214,69 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   );
 
   // Modified filter buttons with responsive sizes
-  const renderFilterButtons = () => (
-    <>
-      {filterButtons.map((filter) => (
-        <div key={filter} className="relative">
-          <button
-            onClick={() => toggleDropdown(filter)}
-            className={`flex items-center justify-between px-4 py-2 text-sm hover:bg-[#87CEEB] hover:text-white rounded-full border-2 border-gray-300 ${
-              deviceType === "tablet" ? "w-36" : "w-44"
-            } h-12`}
+  const renderFilterButtons = () => {
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+    return (
+      <>
+        {filterButtons.map((filter) => (
+          <div
+            key={filter}
+            className="relative group"
+            onMouseEnter={() => setActiveDropdown(filter)}
           >
-            <span className="truncate">
-              {filter}:{" "}
-              {filter === "Type"
-                ? filters.type
-                : filter === "Students/Room"
-                ? filters.studentsPerRoom
-                : "Any"}
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 ml-1 transition-transform duration-200 ${
-                openDropdown === filter ? "transform rotate-180" : ""
-              }`}
-            />
-          </button>
-          {openDropdown === filter && (
-            <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-              {filterOptions[filter].map((option, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-2 text-sm hover:bg-[#87CEEB] hover:text-white cursor-pointer"
-                  onClick={() => handleFilterSelect(filter, option)}
-                >
-                  {option}
-                </div>
-              ))}
+            <button
+              className={`filter-button flex items-center justify-between px-4 py-2 
+                       text-sm hover:bg-[#87CEEB] hover:text-white rounded-full border-2 
+                       border-gray-300 ${
+                         deviceType === "tablet" ? "w-36" : "w-44"
+                       } h-12`}
+            >
+              <span className="truncate">
+                {filter}:{" "}
+                {filter === "Type"
+                  ? filters.type
+                  : filter === "Students/Room"
+                  ? filters.studentsPerRoom
+                  : "Any"}
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 ml-1 transition-transform duration-200 
+                  ${activeDropdown === filter ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            <div
+              className={`
+                absolute z-10 w-full border border-gray-200 bg-white 
+                shadow-lg rounded-md mt-1 overflow-hidden
+                ${activeDropdown === filter ? "block" : "hidden"}
+                group-hover:block
+              `}
+              onMouseEnter={() => setActiveDropdown(filter)}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              {filterOptions[filter as keyof FilterOptions].map(
+                (option, index) => (
+                  <div
+                    key={index}
+                    className="filter-option px-4 py-2 text-sm cursor-pointer 
+                             hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      handleFilterSelect(filter, option);
+                      setActiveDropdown(null);
+                    }}
+                  >
+                    {option}
+                  </div>
+                )
+              )}
             </div>
-          )}
-        </div>
-      ))}
-    </>
-  );
+          </div>
+        ))}
+      </>
+    );
+  };
 
   const renderDesktopFilters = () => (
     <>
@@ -394,20 +441,23 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   };
 
   return (
-    <div
-      ref={filterBarRef}
-      className={`p-4 md:p-6 bg-white transition-all duration-300 ${
-        isSticky ? "fixed top-0 left-0 right-0 z-50 shadow-md" : ""
-      }`}
-      style={{
-        position: isSticky ? "fixed" : "static",
-        top: isSticky ? "0" : "auto",
-        left: 0,
-        right: 0,
-      }}
-    >
+    <>
+      <style>{styles}</style>
+
       <div
-        className={`
+        ref={filterBarRef}
+        className={`p-4 md:p-6 bg-white transition-all duration-300 ${
+          isSticky ? "fixed top-0 left-0 right-0 z-50 shadow-md" : ""
+        }`}
+        style={{
+          position: isSticky ? "fixed" : "static",
+          top: isSticky ? "0" : "auto",
+          left: 0,
+          right: 0,
+        }}
+      >
+        <div
+          className={`
           flex items-center
           ${
             deviceType === "mobile"
@@ -417,253 +467,260 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
               : "space-x-6 justify-center"
           }
         `}
-      >
-        {deviceType !== "mobile" && renderSearchBar()}
-        {deviceType === "mobile" ? (
-          renderMobileFilters()
-        ) : (
-          <>
-            {renderFilterButtons()}
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
-                deviceType === "tablet" ? "w-32" : "w-40"
-              } h-12`}
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              More Filters
-            </button>
-            <button
-              onClick={() =>
-                handleFilterChange("sortByRatings", !filters.sortByRatings)
-              }
-              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
-                deviceType === "tablet" ? "w-32" : "w-40"
-              } h-12`}
-            >
-              Sort By:{" "}
-              <span className="text-[#4A7E8E] ml-1">
-                {filters.sortByRatings ? "Ratings" : "Popularity"}
-              </span>
-            </button>
-            <button
-              onClick={clearAllFilters}
-              className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-red-100 text-red-#EC130F hover:bg-red-200 hover:text-white transition-colors duration-300 ${
-                deviceType === "tablet" ? "w-32" : "w-40"
-              } h-12`}
-            >
-              <X className="w-4 h-4 mr-2" />
-              Clear Filters
-            </button>
-          </>
-        )}
-      </div>
-
-      {isModalOpen && !isMobile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div
-            ref={modalRef}
-            className="bg-white p-6 rounded-lg w-[400px] max-h-[80vh] overflow-y-auto"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">More Filters</h2>
+        >
+          {deviceType !== "mobile" && renderSearchBar()}
+          {deviceType === "mobile" ? (
+            renderMobileFilters()
+          ) : (
+            <>
+              {renderFilterButtons()}
               <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setIsModalOpen(true)}
+                className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
+                  deviceType === "tablet" ? "w-32" : "w-40"
+                } h-12`}
               >
-                <X size={24} />
+                <Filter className="w-4 h-4 mr-2" />
+                More Filters
               </button>
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold mb-2">Amenities</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  "food",
-                  "wifi",
-                  "ac",
-                  "mess",
-                  "solar",
-                  "studyRoom",
-                  "tuition",
-                ].map((amenity) => (
-                  <label key={amenity} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={filters[amenity as keyof Filters] as boolean}
-                      onChange={(e) =>
-                        handleFilterChange(
-                          amenity as keyof Filters,
-                          e.target.checked
-                        )
-                      }
-                    />
-                    {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold mb-2">Rent Range</h3>
-              <input
-                type="range"
-                min="0"
-                max="10000"
-                value={filters.rentRange[1]}
-                onChange={(e) =>
-                  handleFilterChange("rentRange", [0, parseInt(e.target.value)])
+              <button
+                onClick={() =>
+                  handleFilterChange("sortByRatings", !filters.sortByRatings)
                 }
-                className="w-full"
-              />
-              <div className="flex justify-between">
-                <span>₹0</span>
-                <span>₹{filters.rentRange[1]}</span>
-              </div>
-            </div>
-            <label className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={filters.verified}
-                onChange={(e) =>
-                  handleFilterChange("verified", e.target.checked)
-                }
-              />
-              Verified Only
-            </label>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="w-full bg-[#87CEEB] text-white px-4 py-2 rounded-full"
-            >
-              Apply Filters
-            </button>
-          </div>
+                className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-gray-300 ${
+                  deviceType === "tablet" ? "w-32" : "w-40"
+                } h-12`}
+              >
+                Sort By:{" "}
+                <span className="text-[#4A7E8E] ml-1">
+                  {filters.sortByRatings ? "Ratings" : "Popularity"}
+                </span>
+              </button>
+              <button
+                onClick={clearAllFilters}
+                className={`flex items-center px-4 py-2 text-sm rounded-full border-2 border-red-100 text-red-#EC130F hover:bg-red-200 hover:text-white transition-colors duration-300 ${
+                  deviceType === "tablet" ? "w-32" : "w-40"
+                } h-12`}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Clear Filters
+              </button>
+            </>
+          )}
         </div>
-      )}
-      {isModalOpen && isMobile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-50">
-          <div
-            ref={modalRef}
-            className="bg-white p-6 rounded-t-lg w-full max-h-[80vh] overflow-y-auto transition-transform duration-300 transform translate-y-0"
-            style={{
-              transform: isModalOpen ? "translateY(0)" : "translateY(100%)",
-            }}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Filters</h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            {filterButtons.map((filter) => (
-              <div key={filter} className="mb-4">
-                <h3 className="font-semibold mb-2">{filter}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {filterOptions[filter].map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleFilterSelect(filter, option)}
-                      className={`px-4 py-2 text-sm rounded-full border ${
-                        (filter === "Type" && filters.type === option) ||
-                        (filter === "Students/Room" &&
-                          filters.studentsPerRoom === option)
-                          ? "bg-[#87CEEB] text-white border-[#87CEEB]"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {option}
-                    </button>
+
+        {isModalOpen && !isMobile && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div
+              ref={modalRef}
+              className="bg-white p-6 rounded-lg w-[400px] max-h-[80vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">More Filters</h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <div className="mb-4">
+                <h3 className="font-semibold mb-2">Amenities</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "food",
+                    "wifi",
+                    "ac",
+                    "mess",
+                    "solar",
+                    "studyRoom",
+                    "tuition",
+                  ].map((amenity) => (
+                    <label key={amenity} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={filters[amenity as keyof Filters] as boolean}
+                        onChange={(e) =>
+                          handleFilterChange(
+                            amenity as keyof Filters,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
+                    </label>
                   ))}
                 </div>
               </div>
-            ))}
-            <div className="mb-4">
-              <h3 className="font-semibold mb-2">Amenities</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  "food",
-                  "wifi",
-                  "ac",
-                  "mess",
-                  "solar",
-                  "studyRoom",
-                  "tuition",
-                ].map((amenity) => (
-                  <label key={amenity} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={filters[amenity as keyof Filters] as boolean}
-                      onChange={(e) =>
-                        handleFilterChange(
-                          amenity as keyof Filters,
-                          e.target.checked
-                        )
-                      }
-                    />
-                    {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
-                  </label>
-                ))}
+              <div className="mb-4">
+                <h3 className="font-semibold mb-2">Rent Range</h3>
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  value={filters.rentRange[1]}
+                  onChange={(e) =>
+                    handleFilterChange("rentRange", [
+                      0,
+                      parseInt(e.target.value),
+                    ])
+                  }
+                  className="w-full"
+                />
+                <div className="flex justify-between">
+                  <span>₹0</span>
+                  <span>₹{filters.rentRange[1]}</span>
+                </div>
               </div>
+              <label className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={filters.verified}
+                  onChange={(e) =>
+                    handleFilterChange("verified", e.target.checked)
+                  }
+                />
+                Verified Only
+              </label>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-full bg-[#87CEEB] text-white px-4 py-2 rounded-full"
+              >
+                Apply Filters
+              </button>
             </div>
-            <div className="mb-4">
-              <h3 className="font-semibold mb-2">Rent Range</h3>
-              <input
-                type="range"
-                min="0"
-                max="10000"
-                value={filters.rentRange[1]}
-                onChange={(e) =>
-                  handleFilterChange("rentRange", [0, parseInt(e.target.value)])
-                }
-                className="w-full"
-              />
-              <div className="flex justify-between">
-                <span>₹0</span>
-                <span>₹{filters.rentRange[1]}</span>
-              </div>
-            </div>
-            <label className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={filters.verified}
-                onChange={(e) =>
-                  handleFilterChange("verified", e.target.checked)
-                }
-              />
-              Verified Only
-            </label>
-            <button
-              onClick={() =>
-                handleFilterChange("sortByRatings", !filters.sortByRatings)
-              }
-              className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2 border-gray-300"
-            >
-              Sort By:{" "}
-              <span className="text-[#4A7E8E]">
-                {filters.sortByRatings ? "Ratings" : "Popularity"}
-              </span>
-            </button>
-            <button
-              onClick={clearAllFilters}
-              className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2  text-red-#EB1808 hover:bg-red-200 hover:text-black transition-colors duration-300"
-            >
-              Clear Filters
-            </button>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="w-full bg-[#87CEEB] text-white px-4 py-2 rounded-full"
-            >
-              Apply Filters
-            </button>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+        {isModalOpen && isMobile && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-50">
+            <div
+              ref={modalRef}
+              className="bg-white p-6 rounded-t-lg w-full max-h-[80vh] overflow-y-auto transition-transform duration-300 transform translate-y-0"
+              style={{
+                transform: isModalOpen ? "translateY(0)" : "translateY(100%)",
+              }}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Filters</h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              {filterButtons.map((filter) => (
+                <div key={filter} className="mb-4">
+                  <h3 className="font-semibold mb-2">{filter}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions[filter].map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleFilterSelect(filter, option)}
+                        className={`px-4 py-2 text-sm rounded-full border ${
+                          (filter === "Type" && filters.type === option) ||
+                          (filter === "Students/Room" &&
+                            filters.studentsPerRoom === option)
+                            ? "bg-[#87CEEB] text-white border-[#87CEEB]"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="mb-4">
+                <h3 className="font-semibold mb-2">Amenities</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "food",
+                    "wifi",
+                    "ac",
+                    "mess",
+                    "solar",
+                    "studyRoom",
+                    "tuition",
+                  ].map((amenity) => (
+                    <label key={amenity} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={filters[amenity as keyof Filters] as boolean}
+                        onChange={(e) =>
+                          handleFilterChange(
+                            amenity as keyof Filters,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-4">
+                <h3 className="font-semibold mb-2">Rent Range</h3>
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  value={filters.rentRange[1]}
+                  onChange={(e) =>
+                    handleFilterChange("rentRange", [
+                      0,
+                      parseInt(e.target.value),
+                    ])
+                  }
+                  className="w-full"
+                />
+                <div className="flex justify-between">
+                  <span>₹0</span>
+                  <span>₹{filters.rentRange[1]}</span>
+                </div>
+              </div>
+              <label className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={filters.verified}
+                  onChange={(e) =>
+                    handleFilterChange("verified", e.target.checked)
+                  }
+                />
+                Verified Only
+              </label>
+              <button
+                onClick={() =>
+                  handleFilterChange("sortByRatings", !filters.sortByRatings)
+                }
+                className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2 border-gray-300"
+              >
+                Sort By:{" "}
+                <span className="text-[#4A7E8E]">
+                  {filters.sortByRatings ? "Ratings" : "Popularity"}
+                </span>
+              </button>
+              <button
+                onClick={clearAllFilters}
+                className="w-full mb-4 px-4 py-2 text-sm rounded-full border-2  text-red-#EB1808 hover:bg-red-200 hover:text-black transition-colors duration-300"
+              >
+                Clear Filters
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-full bg-[#87CEEB] text-white px-4 py-2 rounded-full"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

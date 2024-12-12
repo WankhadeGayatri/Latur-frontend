@@ -166,18 +166,18 @@ const ImageGallery = () => {
 
   // Keep all your existing image arrays and handlers the same...
   const galleryImages = [
-    "/Images/galary/a10.jpg",
-    "/Images/galary/ami.jpeg",
-    "/Images/galary/avan.jpeg",
-    "/Images/galary/b5.png",
-    "/Images/galary/nea.jpeg",
-    "/Images/galary/raman.jpeg",
-    "/Images/galary/saar.png",
-    "/Images/galary/s1.jpeg",
-    "/Images/galary/A15.jpg",
-    "/Images/galary/b4.png",
-    "/Images/galary/b.jpeg",
-    "/Images/galary/b6.png",
+    "/Images/gallery/a10.webp",
+    "/Images/gallery/ami.webp",
+    "/Images/gallery/avan.webp",
+    "/Images/gallery/b5.webp",
+    "/Images/gallery/nea.webp",
+    "/Images/gallery/raman.webp",
+    "/Images/gallery/saar.webp",
+    "/Images/gallery/s1.webp",
+    "/Images/gallery/A15.webp",
+    "/Images/gallery/b4.webp",
+    "/Images/gallery/b.webp",
+    "/Images/gallery/b6.webp",
   ];
 
   const imageDetails = [
