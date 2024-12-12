@@ -96,66 +96,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
   const [isGenderOpen, setIsGenderOpen] = useState(false);
   const filterButtons = Object.keys(filterOptions) as (keyof FilterOptions)[];
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">(
     "desktop"
   );
-
-  useEffect(() => {
-    const filterBar = filterBarRef.current;
-    if (!filterBar) return;
-
-    let filterBarTop =
-      filterBar.getBoundingClientRect().top + window.pageYOffset;
-
-    const handleScroll = () => {
-      const scrollPosition = window.pageYOffset;
-      setIsSticky(scrollPosition > filterBarTop);
-    };
-
-    const handleResize = () => {
-      if (filterBar) {
-        filterBarTop =
-          filterBar.getBoundingClientRect().top + window.pageYOffset;
-      }
-
-      // Enhanced responsive breakpoints
-      const width = window.innerWidth;
-      if (width < 768) {
-        setDeviceType("mobile");
-        setIsMobile(true);
-      } else if (width >= 768 && width <= 1024) {
-        setDeviceType("tablet");
-        setIsMobile(false); // Keep desktop layout for tablet but with adjustments
-      } else {
-        setDeviceType("desktop");
-        setIsMobile(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-
-    // Initial device check
-    handleResize();
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        setIsModalOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const handleFilterChange = (key: keyof Filters, value: any) => {
     const newFilters = { ...filters, [key]: value };
@@ -215,8 +159,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
 
   // Modified filter buttons with responsive sizes
   const renderFilterButtons = () => {
-    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-
     return (
       <>
         {filterButtons.map((filter) => (
@@ -224,6 +166,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
             key={filter}
             className="relative group"
             onMouseEnter={() => setActiveDropdown(filter)}
+            onMouseLeave={() => setActiveDropdown(null)}
           >
             <button
               className={`filter-button flex items-center justify-between px-4 py-2 
@@ -242,26 +185,24 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
               </span>
               <ChevronDown
                 className={`w-4 h-4 ml-1 transition-transform duration-200 
-                  ${activeDropdown === filter ? "rotate-180" : ""}`}
+                ${activeDropdown === filter ? "rotate-180" : ""}`}
               />
             </button>
 
             <div
               className={`
-                absolute z-10 w-full border border-gray-200 bg-white 
-                shadow-lg rounded-md mt-1 overflow-hidden
-                ${activeDropdown === filter ? "block" : "hidden"}
-                group-hover:block
-              `}
-              onMouseEnter={() => setActiveDropdown(filter)}
-              onMouseLeave={() => setActiveDropdown(null)}
+              absolute z-10 w-full border border-gray-200 bg-white 
+              shadow-lg rounded-md mt-1 overflow-hidden
+              ${activeDropdown === filter ? "block" : "hidden"}
+              group-hover:block
+            `}
             >
               {filterOptions[filter as keyof FilterOptions].map(
                 (option, index) => (
                   <div
                     key={index}
                     className="filter-option px-4 py-2 text-sm cursor-pointer 
-                             hover:bg-gray-100 transition-colors"
+                           hover:bg-gray-100 transition-colors"
                     onClick={() => {
                       handleFilterSelect(filter, option);
                       setActiveDropdown(null);
@@ -439,6 +380,61 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
       </div>
     );
   };
+  useEffect(() => {
+    const filterBar = filterBarRef.current;
+    if (!filterBar) return;
+
+    let filterBarTop =
+      filterBar.getBoundingClientRect().top + window.pageYOffset;
+
+    const handleScroll = () => {
+      const scrollPosition = window.pageYOffset;
+      setIsSticky(scrollPosition > filterBarTop);
+    };
+
+    const handleResize = () => {
+      if (filterBar) {
+        filterBarTop =
+          filterBar.getBoundingClientRect().top + window.pageYOffset;
+      }
+
+      // Enhanced responsive breakpoints
+      const width = window.innerWidth;
+      if (width < 768) {
+        setDeviceType("mobile");
+        setIsMobile(true);
+      } else if (width >= 768 && width <= 1024) {
+        setDeviceType("tablet");
+        setIsMobile(false); // Keep desktop layout for tablet but with adjustments
+      } else {
+        setDeviceType("desktop");
+        setIsMobile(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+
+    // Initial device check
+    handleResize();
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsModalOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>

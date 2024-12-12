@@ -259,7 +259,7 @@ const NavigationContent: React.FC<{
     { text: "Home", path: "/" },
     { text: "About Us", path: "/aboutus" },
     { text: "Amenities", path: "/amenities" },
-    { text: "ContactUs", path: "/contactus" },
+    { text: "Contact", path: "/contactus" },
     { text: "Gallery", path: "/gallery" },
     { text: "Sign-in", path: "/login" },
     { text: "Register", path: "/register" },
@@ -280,7 +280,7 @@ const NavigationContent: React.FC<{
               ${isMobile ? "px-3 py-2 my-0.5 rounded-lg w-full" : ""}
               ${
                 isActive(item.path)
-                  ? "bg-sky-50 shadow-sm"
+                  ? "text-sky-700 font-semibold"
                   : "hover:bg-sky-50/50"
               }
               transition-all duration-300 ease-in-out cursor-pointer
@@ -303,7 +303,7 @@ const NavigationContent: React.FC<{
           </Box>
           {isActive(item.path) && !isMobile && (
             <motion.div
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-sky-500"
+              className="absolute bottom-0 left-0 w-full h-0.5 "
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.3 }}

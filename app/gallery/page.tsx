@@ -3,6 +3,7 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import Footer from "../Component/mainpage/Footer";
 import Navbar from "../Component/mainpage/Navbar";
+import { Typography } from "@mui/material";
 
 const fadeIn = keyframes`
   from {
@@ -26,9 +27,8 @@ const fadeInBox = keyframes`
   }
 `;
 
-// Keep all your existing styled components the same...
 const Container = styled.div`
-  min-height: 200vh;
+  min-height: 100vh;
   max-width: 100%;
   padding: 2rem;
   background: #f7fafc;
@@ -49,7 +49,7 @@ const GalleryContainer = styled("div")({
 
 const GalleryItem = styled("div")({
   position: "relative",
-  borderRadius: "15px",
+  // Removed borderRadius
   overflow: "hidden",
   aspectRatio: "1.2",
   cursor: "pointer",
@@ -73,7 +73,7 @@ const Image = styled("img")({
   height: "100%",
   objectFit: "cover",
   transition: "all 0.5s ease",
-  borderRadius: "15px",
+  // Removed borderRadius
 });
 
 const ImageOverlay = styled("div")({
@@ -91,10 +91,10 @@ const ImageOverlay = styled("div")({
   opacity: 0,
   transition: "opacity 0.3s ease",
   padding: "1rem",
-  borderRadius: "15px",
-  "& h3": {
-    color: "white",
-    fontSize: "1.75rem",
+  // Removed borderRadius
+  "& h2": {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: "1.25rem", // Decreased font size from 1.75rem
     fontWeight: 600,
     marginBottom: "0.5rem",
     textShadow: "1px 1px 4px rgba(0, 0, 0, 0.5)",
@@ -126,7 +126,6 @@ const LightboxContent = styled("div")({
   maxWidth: "90%",
   maxHeight: "90vh",
   position: "relative",
-  borderRadius: "15px",
   overflow: "hidden",
   boxShadow: "0 15px 40px rgba(0, 0, 0, 0.2)",
 });
@@ -134,7 +133,7 @@ const LightboxContent = styled("div")({
 const LightboxImage = styled("img")({
   maxHeight: "90vh",
   maxWidth: "100%",
-  borderRadius: "15px",
+  // Removed borderRadius
   transition: "all 0.4s ease",
 });
 
@@ -162,9 +161,8 @@ const CloseButton = styled("button")({
 
 const ImageGallery = () => {
   const [selectedImage, setSelectedImage] = React.useState<number | null>(null);
-  const maxImages = 12; // Move this inside the component
+  const maxImages = 12;
 
-  // Keep all your existing image arrays and handlers the same...
   const galleryImages = [
     "/Images/gallery/a10.webp",
     "/Images/gallery/ami.webp",
@@ -182,20 +180,20 @@ const ImageGallery = () => {
 
   const imageDetails = [
     {
-      title: "Hostel",
-      description: "Dinning Room",
+      title: "Yash Hostel",
+      description: "Boys hostel",
     },
-    { title: "Neha Hostel", description: "Bed Room" },
-    { title: "Sagar Hostel", description: "Dining Rooms" },
-    { title: "Avani Hostel", description: "Reading Hall" },
-    { title: "Samarth Hostel", description: "Passage Area" },
-    { title: "Sharda Hostel", description: "Entrance" },
-    { title: "Sanichit Hostel", description: "Dining Rooms" },
-    { title: "Venutai Hostel", description: "Bed Rooms" },
-    { title: "Shiv Hostel", description: "Passage Area" },
-    { title: "Shourya Hostel", description: "Dining Area" },
-    { title: "Amit Hostel", description: "Bed room" },
-    { title: "RamanHostel", description: "Study room" },
+    { title: "Neha Hostel", description: "Girls hostel" },
+    { title: "Sagar Hostel", description: "Boys hostel" },
+    { title: "Avani Hostel", description: "Girls hostel" },
+    { title: "Samarth Hostel", description: "Boys hostel" },
+    { title: "Sharda Hostel", description: "Girls hostel" },
+    { title: "Sanichit Hostel", description: "Boys hostel" },
+    { title: "Venutai Hostel", description: "Girls hostel" },
+    { title: "Shiv Hostel", description: "Boys hostel" },
+    { title: "Shourya Hostel", description: "Girls hostel" },
+    { title: "Amit Hostel", description: "Boys hostel" },
+    { title: "RamanHostel", description: "Girls hostel" },
   ];
 
   const handleImageClick = (index: number) => {
@@ -209,26 +207,34 @@ const ImageGallery = () => {
   return (
     <>
       <Navbar />
-      <Container>
-        <div className="relative bg-sky-50 py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Gallery <span className="text-sky-600">Latur Hostel</span>
-              </h1>
-              <p className="max-w-2xl mx-auto text-lg text-gray-600">
-                Explore our modern hostel facilities through our gallery. See
-                the comfortable rooms and vibrant spaces designed for students.
-              </p>
-            </div>
+      <div className="relative bg-sky-50 py-16">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <Typography
+              variant="h2"
+              className="text-100xl md:text-5xl font-bold text-gray-900 mb-6"
+            >
+              Gallery <span className="text-sky-800">Latur Hostel</span>
+            </Typography>
+            <p className="text-center w-full text-lg text-gray-900">
+              Explore our modern hostel facilities through our gallery.See the
+              comfortable rooms and vibrant spaces designed for students.
+            </p>
           </div>
         </div>
-        <GalleryContainer>
+      </div>
+      <Container>
+        <GalleryContainer className="mt-0">
           {galleryImages.slice(0, maxImages).map((imagePath, index) => (
             <GalleryItem key={index} onClick={() => handleImageClick(index)}>
               <Image src={imagePath} alt={`Hostel Image ${index + 1}`} />
               <ImageOverlay className="overlay">
-                <h3>{imageDetails[index]?.title}</h3>
+                <Typography
+                  variant="h3"
+                  className="text-sm md:text-2sm font-light text-#000080 mb-1"
+                >
+                  {imageDetails[index]?.title}
+                </Typography>
                 <p>{imageDetails[index]?.description}</p>
               </ImageOverlay>
             </GalleryItem>
