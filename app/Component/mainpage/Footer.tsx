@@ -43,9 +43,9 @@ const Footer = () => {
             {/* Horizontal Contact Form */}
             <div className="w-full max-w-3xl">
               <div className="rounded-lg p-2 bg-gray-900/50 backdrop-blur-sm">
-                <h4 className="text-lg font-semibold text-gray-200 mb-2 text-center">
+                <h2 className="text-[28px] font-semibold text-gray-200 mb-2 text-center">
                   Contact Us
-                </h4>
+                </h2>
                 <form
                   onSubmit={handleSubmit}
                   className="flex flex-col md:flex-row items-center gap-2"

@@ -136,6 +136,19 @@ const AmenitiesPage = () => {
   return (
     <>
       <Navbar />
+      <div className="relative bg-sky-50 py-16 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
+              Hostel <span className="text-sky-600">Amenities</span>
+            </h1>
+            <p className="max-w-2xl mx-auto text-lg text-gray-600">
+              Experience comfortable living with our comprehensive range of
+              amenities designed to enhance your stay and academic journey.
+            </p>
+          </div>
+        </div>
+      </div>
       <Box
         component="main"
         sx={{
@@ -147,34 +160,6 @@ const AmenitiesPage = () => {
       >
         <Container maxWidth="lg">
           {/* Header Section */}
-          <Box textAlign="center" mb={6}>
-            <Typography
-              variant="h3"
-              component="h1"
-              gutterBottom
-              sx={{
-                fontWeight: 700,
-                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                mb: 2,
-                color: "primary.main",
-              }}
-            >
-              Hostel Amenities
-            </Typography>
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={{
-                maxWidth: "800px",
-                mx: "auto",
-                mb: 4,
-                fontSize: { xs: "1rem", md: "1.125rem" },
-              }}
-            >
-              Experience comfortable living with our comprehensive range of
-              amenities designed to enhance your stay and academic journey.
-            </Typography>
-          </Box>
 
           {/* Amenities Grid */}
           <Grid container spacing={3}>

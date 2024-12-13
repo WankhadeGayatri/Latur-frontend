@@ -57,7 +57,10 @@ interface Slide {
 interface Service {
   icon: React.ReactNode;
   name: string;
-  color: string;
+  color: {
+    background: string;
+    text: string;
+  };
 }
 interface NavigationProps {
   onNext: () => void;
@@ -185,42 +188,66 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     {
       icon: <Sun size={20} className="sm:w-6 sm:h-6" />,
       name: "Solar Power",
-      color: "bg-yellow-100 text-yellow-600",
+      color: {
+        background: "bg-amber-50",
+        text: "text-amber-800",
+      },
     },
     {
       icon: <Wifi size={20} className="sm:w-6 sm:h-6" />,
       name: "High-Speed WiFi",
-      color: "bg-blue-100 text-blue-600",
+      color: {
+        background: "bg-sky-50",
+        text: "text-sky-800",
+      },
     },
     {
       icon: <Book size={20} className="sm:w-6 sm:h-6" />,
       name: "Study Rooms",
-      color: "bg-green-100 text-green-600",
+      color: {
+        background: "bg-emerald-50",
+        text: "text-emerald-800",
+      },
     },
     {
       icon: <Shield size={20} className="sm:w-6 sm:h-6" />,
       name: "24/7 Security",
-      color: "bg-red-100 text-red-600",
+      color: {
+        background: "bg-rose-50",
+        text: "text-rose-800",
+      },
     },
     {
       icon: <Wind size={20} className="sm:w-6 sm:h-6" />,
       name: "AC Rooms",
-      color: "bg-purple-100 text-purple-600",
+      color: {
+        background: "bg-violet-50",
+        text: "text-violet-800",
+      },
     },
     {
       icon: <Users size={20} className="sm:w-6 sm:h-6" />,
       name: "Community Areas",
-      color: "bg-indigo-100 text-indigo-600",
+      color: {
+        background: "bg-indigo-50",
+        text: "text-indigo-800",
+      },
     },
     {
       icon: <Utensils size={20} className="sm:w-6 sm:h-6" />,
       name: "Quality Mess",
-      color: "bg-orange-100 text-orange-600",
+      color: {
+        background: "bg-orange-50",
+        text: "text-orange-800",
+      },
     },
     {
       icon: <Power size={20} className="sm:w-6 sm:h-6" />,
       name: "Power Backup",
-      color: "bg-gray-100 text-gray-600",
+      color: {
+        background: "bg-slate-50",
+        text: "text-slate-800",
+      },
     },
   ];
 
@@ -289,12 +316,14 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className={`${service.color} rounded-lg p-3 sm:p-4 shadow-md flex items-center`}
+              className={`${service.color.background} rounded-lg p-3 sm:p-4 shadow-md flex items-center`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               {service.icon}
-              <span className="ml-2 sm:ml-3 font-medium text-xs sm:text-base">
+              <span
+                className={` ${service.color.text}ml-2 sm:ml-3 font-medium text-xs sm:text-base`}
+              >
                 {service.name}
               </span>
             </motion.div>

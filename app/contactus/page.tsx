@@ -78,24 +78,24 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <div className="max-w-7xl mx-auto min-h-screen bg-white px-4">
-        <div className="relative bg-sky-50 py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
-                Contact Us About Our{" "}
-                <span className="text-sky-600">Hostel Services</span>
-              </h1>
-              <p className="max-w-2xl mx-auto text-lg text-gray-600">
-                We'd love to help you find the perfect accommodation for your
-                stay. Whether you need information about rooms, rates, or
-                facilities, our team is here to assist you. Here are a few ways
-                to reach us.
-              </p>
-            </div>
+      <div className="relative bg-sky-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
+              Contact Us About Our{" "}
+              <span className="text-sky-600">Hostel Services</span>
+            </h1>
+            <p className="max-w-2xl mx-auto text-lg text-gray-600">
+              We'd love to help you find the perfect accommodation for your
+              stay. Whether you need information about rooms, rates, or
+              facilities, our team is here to assist you. Here are a few ways to
+              reach us.
+            </p>
           </div>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto min-h-screen bg-white ">
         <div className="grid md:grid-cols-2 gap-1 items-center">
           {/* Left Content */}
           <div className="space-y-6 relative h-[450px] rounded-lg overflow-hidden">
