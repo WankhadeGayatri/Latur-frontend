@@ -119,12 +119,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
       <div className="px-6 py-4">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-xl font-semibold text-blue-700">
+          <h2 className="text-[28px] font-semibold text-sky-600">
             Welcome To Latur Hostel
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <span className="text-sm text-gray-600 mt-1">
             Find Your Dream Home Today With Our Expert Assistance
-          </p>
+          </span>
         </div>
 
         {/* Form */}
@@ -137,7 +137,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               placeholder="Name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-100 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+              className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-700"
               required
             />
           </div>
@@ -150,7 +150,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               placeholder="Email Id"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-100 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+              className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-700"
               required
             />
           </div>
@@ -158,11 +158,16 @@ const ContactForm: React.FC<ContactFormProps> = ({
           {/* Country and Phone Container */}
           <div className="flex gap-3">
             {/* Country Select */}
+            <label htmlFor="country-select" className="sr-only">
+              Select your country
+            </label>
             <select
+              id="country-select"
               name="country"
               value={formData.country}
               onChange={handleChange}
-              className="w-1/3 p-3 bg-gray-100 rounded-xl border-none focus:ring-1 focus:ring-blue-500 text-gray-500"
+              className="w-60% p-3 bg-gray-50 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-700"
+              required
             >
               <option value="India">India</option>
               <option value="Other">Other</option>
@@ -175,7 +180,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               placeholder="Phone"
               value={formData.phone}
               onChange={handleChange}
-              className="w-2/3 p-3 bg-gray-100 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+              className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-1 focus:ring-blue-500 placeholder-gray-700"
               required
             />
           </div>
@@ -190,7 +195,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               onChange={handleChange}
               className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
             />
-            <label htmlFor="notifications" className="text-sm text-gray-600">
+            <label htmlFor="notifications" className="text-sm text-gray-700">
               Allow Notifications and Updates
             </label>
           </div>
@@ -198,7 +203,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full p-3 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition-colors duration-200 text-sm font-semibold uppercase disabled:opacity-70"
+            className="w-full p-3 bg-[#00509E] text-white rounded-full hover:bg-blue-900 transition-colors duration-200 text-sm font-semibold uppercase disabled:opacity-70"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Sending..." : "Submit"}

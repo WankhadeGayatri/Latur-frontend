@@ -86,9 +86,9 @@ const OptimizedCard = memo(
           {/* Content overlay with fixed dimensions */}
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="relative h-full">
-              <h3 className="text-lg font-bold text-white mb-2 truncate">
+              <h2 className="text-[28px] font-bold text-white mb-2 truncate">
                 {name}
-              </h3>
+              </h2>
 
               <div className="flex items-center space-x-1">
                 {[...Array(5)].map((_, i) => (

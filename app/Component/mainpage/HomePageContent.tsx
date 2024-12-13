@@ -183,6 +183,7 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [prefetchedData, setPrefetchedData] = useState<Hostel[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     searchName: "",
     type: "All",
@@ -207,7 +208,7 @@ const HomePage: React.FC = () => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     hostels = [],
     loading,

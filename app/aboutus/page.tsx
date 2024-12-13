@@ -36,29 +36,6 @@ const AboutPage = () => {
     },
   ];
 
-  const teamMembers = [
-    {
-      name: "",
-      role: "Founder & CEO",
-      image: "/Images/about/team-1.jpg",
-    },
-    {
-      name: "",
-      role: "Operations Director",
-      image: "/Images/about/team-2.jpg",
-    },
-    {
-      name: "",
-      role: "Customer Relations",
-      image: "/Images/about/team-3.jpg",
-    },
-    {
-      name: "",
-      role: "Technology Head",
-      image: "/Images/about/team-4.jpg",
-    },
-  ];
-
   return (
     <>
       <Navbar />
@@ -67,7 +44,7 @@ const AboutPage = () => {
         <div className="relative bg-sky-50 py-16 ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
                 About <span className="text-sky-600">Latur Hostel</span>
               </h1>
               <p className="max-w-2xl mx-auto text-lg text-gray-600">
@@ -96,6 +73,7 @@ const AboutPage = () => {
                     <img
                       src="/Images/about/about-1.webp"
                       alt="Hotel view 1"
+                      loading="eager"
                       className="rounded-xl shadow-lg w-full h-[150px] object-cover sm:h-[180px] md:h-[200px]"
                     />
                   </div>
@@ -106,6 +84,7 @@ const AboutPage = () => {
                     <img
                       src="/Images/about/about-3.webp"
                       alt="Hotel view 2"
+                      loading="lazy"
                       className="rounded-xl shadow-lg w-full h-[150px] object-cover sm:h-[180px] md:h-[200px]"
                     />
                   </div>
@@ -117,6 +96,7 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-2.webp"
                         alt="Hotel view 3"
+                        loading="lazy"
                         className="rounded-xl shadow-lg w-full h-[100px] object-cover sm:h-[120px] md:h-[150px]"
                       />
                     </div>
@@ -127,6 +107,7 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-4.webp"
                         alt="Hotel view 4"
+                        loading="lazy"
                         className="rounded-xl shadow-lg w-full h-[100px] object-cover sm:h-[120px] md:h-[150px]"
                       />
                     </div>
@@ -144,6 +125,7 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-1.webp"
                         alt="Hotel view 1"
+                        loading="eager"
                         className="rounded-xl shadow-xl h-[200px] w-full object-cover lg:h-[200px] xl:h-[250px]"
                       />
                     </div>
@@ -154,6 +136,7 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-2.webp"
                         alt="Hotel view 3"
+                        loading="lazy"
                         className="rounded-xl shadow-xl h-[150px] w-full object-cover lg:h-[150px] xl:h-[180px]"
                       />
                     </div>
@@ -167,7 +150,8 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-3.webp"
                         alt="Hotel view 2"
-                        className="rounded-xl shadow-xl h-[250px] w-full object-cover lg:h-[250px] xl:h-[280px]"
+                        loading="lazy"
+                        className="rounded-xl shadow-xl h-[250px] w-full  lg:h-[250px] xl:h-[280px]"
                       />
                     </div>
                     <div
@@ -177,6 +161,7 @@ const AboutPage = () => {
                       <img
                         src="/Images/about/about-4.webp"
                         alt="Hotel view 4"
+                        loading="lazy"
                         className="rounded-xl shadow-xl h-[150px] w-full object-cover lg:h-[180px] xl:h-[200px]"
                       />
                     </div>
@@ -204,15 +189,15 @@ const AboutPage = () => {
               {/* Right Column - Content */}
               <div className="space-y-2">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-[28px] font-bold text-gray-900 mb-4">
                     Creating Better Living Spaces for Students
                   </h2>
-                  <p className="text-gray-600 leading-relaxed">
+                  <span className="text-gray-600 leading-relaxed">
                     At Latur Hostel, we understand the challenges students face
                     when looking for accommodation. Our platform bridges the gap
                     between students and quality hostel facilities, ensuring a
                     smooth and trustworthy booking experience.
-                  </p>
+                  </span>
                 </div>
 
                 <div className="container px-1 py-2 mb-0">
@@ -263,13 +248,13 @@ const AboutPage = () => {
         <div className="py-12 bg-white ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-[28px] font-bold text-gray-900">
                 Why Choose Us?
               </h2>
-              <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+              <span className="mt-4 text-gray-600 max-w-2xl mx-auto">
                 We provide the best hostel experience with our comprehensive
                 services and dedication to student comfort
-              </p>
+              </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

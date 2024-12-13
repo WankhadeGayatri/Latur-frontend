@@ -92,14 +92,14 @@ const ImageOverlay = styled("div")({
   transition: "opacity 0.3s ease",
   padding: "1rem",
   // Removed borderRadius
-  "& h3": {
+  "& h2": {
     color: "rgba(255, 255, 255, 0.9)",
     fontSize: "1.25rem", // Decreased font size from 1.75rem
     fontWeight: 600,
     marginBottom: "0.5rem",
     textShadow: "1px 1px 4px rgba(0, 0, 0, 0.5)",
   },
-  "& p": {
+  "& h3": {
     color: "rgba(255, 255, 255, 0.9)",
     fontSize: "1.1rem",
   },
@@ -207,35 +207,34 @@ const ImageGallery = () => {
   return (
     <>
       <Navbar />
-      <div className="relative bg-sky-50 py-16">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+      {/* Hero Section */}
+      <div className="relative bg-sky-50 py-16 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Typography
-              variant="h2"
-              className="text-100xl md:text-5xl font-bold text-gray-900 mb-6"
-            >
-              Gallery <span className="text-sky-800">Latur Hostel</span>
-            </Typography>
-            <p className="text-center w-full text-lg text-gray-900">
-              Explore our modern hostel facilities through our gallery.See the
-              comfortable rooms and vibrant spaces designed for students.
-            </p>
+            <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
+              Gallery <span className="text-sky-600">Latur Hostel</span>
+            </h1>
+            <span className="max-w-2xl mx-auto text-lg text-gray-600 text-center sm:text-left">
+              Explore our modern hostel facilities through our gallery. See the
+              comfortable rooms <br className="hidden sm:block" /> and vibrant
+              spaces designed for students.
+            </span>
           </div>
         </div>
       </div>
+
       <Container>
         <GalleryContainer className="mt-0">
           {galleryImages.slice(0, maxImages).map((imagePath, index) => (
             <GalleryItem key={index} onClick={() => handleImageClick(index)}>
               <Image src={imagePath} alt={`Hostel Image ${index + 1}`} />
               <ImageOverlay className="overlay">
-                <Typography
-                  variant="h3"
-                  className="text-sm md:text-2sm font-light text-#000080 mb-1"
-                >
+                <h2 className="text-[28px] md:text-[24px] font-semibold text-white mb-1">
                   {imageDetails[index]?.title}
-                </Typography>
-                <p>{imageDetails[index]?.description}</p>
+                </h2>
+                <h3 className="text-[24px] text-white">
+                  {imageDetails[index]?.description}
+                </h3>
               </ImageOverlay>
             </GalleryItem>
           ))}
@@ -246,6 +245,7 @@ const ImageGallery = () => {
             <LightboxImage
               src={galleryImages[selectedImage!]}
               alt={`Hostel Image ${selectedImage! + 1}`}
+              loading="lazy"
             />
             <CloseButton onClick={handleClose}>✕</CloseButton>
           </LightboxContent>
