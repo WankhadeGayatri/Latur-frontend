@@ -35,17 +35,17 @@ const OptimizedCard = memo(
     return (
       <div
         className={`
-          relative
-          w-80 
-          ${aspectRatio}
-          bg-gray-100
-          rounded-xl
-          overflow-hidden
-          transition-transform duration-300 ease-out
-          group
-          hover:shadow-lg
-          ${isVisible ? "opacity-100" : "opacity-0"}
-        `}
+        relative
+        w-80
+        ${aspectRatio}
+        bg-gray-100
+        rounded-xl
+        overflow-hidden
+        transition-transform duration-300 ease-out
+        group
+        hover:shadow-lg
+        ${isVisible ? "opacity-100" : "opacity-0"}
+      `}
         style={{
           containIntrinsicSize: `${baseWidth}px ${baseHeight}px`,
           contain: "size layout",
@@ -60,37 +60,28 @@ const OptimizedCard = memo(
         </div>
 
         <div className="absolute inset-0">
-          <picture>
-            <source
-              type="image/avif"
-              srcSet={`${src}?w=320&fmt=avif 320w, ${src}?w=480&fmt=avif 480w`}
-              sizes="320px"
-            />
-            <source
-              type="image/webp"
-              srcSet={`${src}?w=320&fmt=webp 320w, ${src}?w=480&fmt=webp 480w`}
-              sizes="320px"
-            />
-            <img
-              src={`${src}?w=320&fmt=avif`}
-              alt={alt}
-              width={baseWidth}
-              height={baseHeight}
-              loading={index < 3 ? "eager" : "lazy"}
-              decoding="async"
-              className={`
-                w-full h-full
-                object-cover
-                transition-opacity duration-300
-                ${isLoaded ? "opacity-100" : "opacity-0"}
-              `}
-              onLoad={() => setIsLoaded(true)}
-              onError={() => {
-                setError(true);
-                setIsLoaded(true);
-              }}
-            />
-          </picture>
+          <img
+            src={src}
+            alt={alt}
+            className={`
+            w-full 
+            h-full 
+            object-cover 
+            ${isLoaded ? "opacity-100" : "opacity-0"}
+          `}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => {
+              setIsLoaded(false);
+              setError(true);
+            }}
+          />
+
+          {/* Error state */}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+              <p className="text-red-500">Image failed to load</p>
+            </div>
+          )}
 
           {/* Content overlay with fixed dimensions */}
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent p-4">

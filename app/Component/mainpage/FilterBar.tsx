@@ -13,6 +13,8 @@ import Navbar from "./Navbar";
 interface FilterBarProps {
   onFilterChange: (filters: Filters) => void;
   onSearch: (query: string, location: string) => void;
+  isModalOpen?: boolean;
+  setIsModalOpen: (open: boolean) => void;
 }
 
 // Add this style block at the top of your component
@@ -84,8 +86,12 @@ const initialFilters: Filters = {
   tuition: false,
 };
 
-const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+const FilterBar: React.FC<FilterBarProps> = ({
+  onFilterChange,
+  onSearch,
+  isModalOpen,
+  setIsModalOpen,
+}) => {
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const filterBarRef = useRef<HTMLDivElement | null>(null);
@@ -590,10 +596,11 @@ const FilterBar: React.FC<FilterBarProps> = ({ onFilterChange, onSearch }) => {
           </div>
         )}
         {isModalOpen && isMobile && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end items-end z-[100]">
+            {" "}
             <div
               ref={modalRef}
-              className="bg-white p-6 rounded-t-lg w-full max-h-[80vh] overflow-y-auto transition-transform duration-300 transform translate-y-0"
+              className="bg-white p-6 rounded-t-lg w-full max-h-[80vh] overflow-y-auto transition-transform duration-300 transform translate-y-0 fixed bottom-0 left-0 right-0 z-[110]" // Add fixed positioning and higher z-index
               style={{
                 transform: isModalOpen ? "translateY(0)" : "translateY(100%)",
               }}

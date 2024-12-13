@@ -46,7 +46,9 @@ type ScreenName = "welcome" | "home" | "support";
 interface ExamBubble {
   name: string;
   color: string;
+  textColor: string;
 }
+
 interface Slide {
   title: string;
   description: string;
@@ -98,13 +100,14 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     setMounted(true);
   }, []);
 
+  // Softer color palette with light backgrounds and dark text
   const examBubbles: ExamBubble[] = [
-    { name: "NEET", color: "bg-blue-400" },
-    { name: "JEE", color: "bg-green-400" },
-    { name: "CA", color: "bg-yellow-400" },
-    { name: "GATE", color: "bg-red-400" },
-    { name: "UPSC", color: "bg-purple-400" },
-    { name: "CAT", color: "bg-pink-400" },
+    { name: "NEET", color: "bg-blue-100", textColor: "text-blue-800" },
+    { name: "JEE", color: "bg-green-100", textColor: "text-green-800" },
+    { name: "CA", color: "bg-yellow-100", textColor: "text-yellow-800" },
+    { name: "GATE", color: "bg-red-100", textColor: "text-red-800" },
+    { name: "UPSC", color: "bg-purple-100", textColor: "text-purple-800" },
+    { name: "CAT", color: "bg-pink-100", textColor: "text-pink-800" },
   ];
 
   // Preset exact positions to avoid floating-point variations
@@ -119,9 +122,9 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
 
   return (
     <div className="relative h-full pb-16 sm:pb-20 px-2 flex flex-col items-center justify-center bg-white">
-      <h1 className="text-lg sm:text-xl mt-2 font-bold mb-2 text-blue-800">
+      <h2 className="text-lg sm:text-xl mt-2 font-bold mb-2 text-blue-800">
         Welcome to Latur Hostel
-      </h1>
+      </h2>
       <div className="relative w-52 h-52 sm:w-64 sm:h-64">
         <Player
           autoplay
@@ -132,7 +135,7 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
         {examBubbles.map((bubble, index) => (
           <div
             key={bubble.name}
-            className={`exam-bubble absolute ${bubble.color} rounded-full p-1.5 sm:p-2 text-white text-[10px] sm:text-xs font-semibold shadow-lg transform transition-all duration-300 hover:scale-110`}
+            className={`exam-bubble absolute ${bubble.color} ${bubble.textColor} rounded-full p-1.5 sm:p-2 font-semibold shadow-lg transform transition-all duration-300 hover:scale-110`}
             style={{
               top: fixedPositions[index].top,
               left: fixedPositions[index].left,
@@ -157,7 +160,6 @@ const WelcomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     </div>
   );
 };
-
 const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
@@ -271,7 +273,7 @@ const HomeScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
             <Home size={18} className="mr-2" />
             <span>Book a Room</span>
           </button>
-          <button className="bg-green-600 text-white rounded-lg p-3 sm:p-4 shadow-md flex items-center justify-center text-sm sm:text-base">
+          <button className="bg-blue-600 text-white rounded-lg p-3 sm:p-4 shadow-md flex items-center justify-center text-sm sm:text-base">
             <Coffee size={18} className="mr-2" />
             <span>View Amenities</span>
           </button>
@@ -409,9 +411,9 @@ const SupportScreen: React.FC<NavigationProps> = ({ onNext, onPrev }) => {
     <div className="relative h-full pt-8 sm:pt-12 pb-16 sm:pb-20 px-3 sm:px-4 bg-gradient-to-br from-blue-50 to-purple-50">
       {/* <NavigationButtons onNext={onNext} onPrev={onPrev} /> */}
       <div className="flex justify-center items-center mb-4 sm:mb-6">
-        <h1 className="text-lg sm:text-xl font-bold text-blue-800">
+        <h2 className="text-lg sm:text-xl font-bold text-blue-800">
           Steps to get hostel
-        </h1>
+        </h2>
       </div>
 
       {/* Autoplay Slider */}

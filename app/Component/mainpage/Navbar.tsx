@@ -278,11 +278,7 @@ const NavigationContent: React.FC<{
             onClick={() => onNavigate(item.path)}
             className={`
               ${isMobile ? "px-3 py-2 my-0.5 rounded-lg w-full" : ""}
-              ${
-                isActive(item.path)
-                  ? "text-sky-700 font-semibold"
-                  : "hover:bg-sky-50/50"
-              }
+              ${isActive(item.path) ? "text-sky-700 font-semibold" : ""}
               transition-all duration-300 ease-in-out cursor-pointer
             `}
           >

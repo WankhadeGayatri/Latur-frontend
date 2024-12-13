@@ -169,7 +169,7 @@ const Login: React.FC = () => {
           {/* Right side with login form */}
           <div className="w-full md:w-3/5 p-4 md:p-8">
             <div className="flex justify-between items-center mb-4 md:mb-6">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+              <h2 className="text-[28px] md:text-2[28px] font-semibold text-gray-800">
                 Login to Stay Home
               </h2>
             </div>

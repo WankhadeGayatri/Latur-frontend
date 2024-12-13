@@ -176,7 +176,7 @@ interface GalleryImage {
 
 const HomePage: React.FC = () => {
   const router = useRouter();
-
+  const listRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const [filteredHostels, setFilteredHostels] = useState<Hostel[]>([]);
@@ -207,7 +207,7 @@ const HomePage: React.FC = () => {
   const paginationRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     hostels = [],
     loading,
@@ -223,88 +223,89 @@ const HomePage: React.FC = () => {
   const hostelsPerPage = 10;
   const sliderItems = [
     {
-      src: "/Images/gallery/s1.webp",
+      src: "/Images/gallery/image5.webp",
       alt: "Sharda Hostel",
       name: "Sharda Hostel",
       price: 2649,
       rating: 4.3,
     },
+
     {
-      src: "/Images/gallery/ami.webp",
-      alt: "Neha Hostel",
-      name: "Neha Hostel",
-      price: 2499,
-      rating: 4.0,
-    },
-    {
-      src: "/Images/gallery/avan.webp",
-      alt: "Avani Hostel",
-      name: "Avani Hostel",
-      price: 2799,
-      rating: 4.2,
-    },
-    {
-      src: "/Images/gallery/b5.webp",
-      alt: "Sagar Hostel",
-      name: "Sagar Hostel",
-      price: 2299,
-      rating: 3.9,
-    },
-    {
-      src: "/Images/gallery/nea.webp",
+      src: "/Images/gallery/image2.webp",
       alt: "Samarth Hostel",
       name: "Samarth Hostel",
       price: 2599,
       rating: 4.1,
     },
     {
-      src: "/Images/gallery/raman.webp",
+      src: "/Images/gallery/image3.webp",
       alt: "Raman Hostel",
       name: "Raman Hostel",
       price: 2199,
       rating: 3.7,
     },
     {
-      src: "/Images/gallery/saar.webp",
+      src: "/Images/gallery/image4.webp",
       alt: "Sanichit Hostel",
       name: "Sanichit Hostel",
       price: 2399,
       rating: 4.0,
     },
     {
-      src: "/Images/gallery/s1.webp",
+      src: "/Images/gallery/image5.webp",
       alt: "Sharda Hostel",
       name: "Sharda Hostel",
       price: 2649,
       rating: 4.3,
     },
     {
-      src: "/Images/gallery/A15.webp",
+      src: "/Images/gallery/image6.webp",
       alt: "Shiv Hostel",
       name: "Shiv Hostel",
       price: 2299,
       rating: 3.8,
     },
     {
-      src: "/Images/gallery/b4.webp",
+      src: "/Images/gallery/image7.webp",
       alt: "Shourya Hostel",
       name: "Shourya Hostel",
       price: 2499,
       rating: 4.1,
     },
     {
-      src: "/Images/gallery/b.webp",
+      src: "/Images/gallery/image8.webp",
       alt: "Amit Hostel",
       name: "Amit Hostel",
       price: 2199,
       rating: 3.6,
     },
     {
-      src: "/Images/gallery/b6.webp",
+      src: "/Images/gallery/image9.webp",
       alt: "Venutai Hostel",
       name: "Venutai Hostel",
       price: 2549,
       rating: 4.2,
+    },
+    {
+      src: "/Images/gallery/image10.webp",
+      alt: "Neha Hostel",
+      name: "Neha Hostel",
+      price: 2499,
+      rating: 4.0,
+    },
+    {
+      src: "/Images/gallery/image11.webp",
+      alt: "Avani Hostel",
+      name: "Avani Hostel",
+      price: 2799,
+      rating: 4.2,
+    },
+    {
+      src: "/Images/gallery/image12.webp",
+      alt: "Sagar Hostel",
+      name: "Sagar Hostel",
+      price: 2299,
+      rating: 3.9,
     },
   ];
 
@@ -347,7 +348,7 @@ const HomePage: React.FC = () => {
     height: 60px;
     min-height: 60px;
   }
-  /* Add other critical styles here */
+
 `;
 
   useEffect(() => {
@@ -511,7 +512,7 @@ const HomePage: React.FC = () => {
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+      <h2 className="text-[28px] font-semibold text-gray-700 mb-2">
         Service Unavailable
       </h2>
       <p className="text-gray-500">
@@ -568,7 +569,7 @@ const HomePage: React.FC = () => {
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </motion.svg>
       <motion.h2
-        className="text-2xl font-semibold text-gray-700 mb-2"
+        className="text-[28px] font-semibold text-gray-700 mb-2"
         animate={{ y: [0, -5, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}
       >
@@ -636,6 +637,8 @@ const HomePage: React.FC = () => {
         <FilterBar
           onFilterChange={handleFilterChange}
           onSearch={handleSearch}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
         />
       </div>
 
@@ -748,7 +751,7 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </div>
-      <ScrollIndicator listRef={hostelListRef} />
+
       <motion.section
         id="gallery"
         className="py-8 md:py-12 px-4"
@@ -758,7 +761,10 @@ const HomePage: React.FC = () => {
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto">
-          <Typography className="text-2xl md:text-3xl lg:text-4xl font-bold text-center relative">
+          <Typography
+            variant="h2"
+            className="text-[28px] md:text-3[28px] lg:text-4[28px] font-bold text-center relative"
+          >
             Our Hostel Gallery
             <span className="block h-1 w-24 bg-blue-500 mx-auto mt-2"></span>
           </Typography>
@@ -770,6 +776,7 @@ const HomePage: React.FC = () => {
       </motion.section>
 
       <Footer />
+      {!isModalOpen && <ScrollIndicator />}
     </>
   );
 };

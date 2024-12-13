@@ -410,8 +410,8 @@ const HostelCard: React.FC<HostelCardProps> = ({
             {/* Title and Verified Badge */}
             <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
               <Typography
-                variant="h1"
-                className="text-xl md:text-2xl font-semibold text-sky-700"
+                variant="h2"
+                className="text-[28px] md:text-2[28px] font-semibold text-sky-700"
               >
                 {name}
               </Typography>
@@ -476,93 +476,94 @@ const HostelCard: React.FC<HostelCardProps> = ({
               >
                 Amenities:
               </Typography>
+
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    wifi ? "bg-sky-100" : "hover:bg-sky-50"
+                    wifi ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <WifiIcon
                     style={iconStyle}
-                    className={`${wifi ? "text-sky-600" : "text-sky-500"} mb-1`}
+                    className={`${wifi ? "text-sky-700" : "text-sky-600"} mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {wifi ? "WiFi" : "No WiFi"}
                   </span>
                 </div>
 
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    ac ? "bg-sky-100" : "hover:bg-sky-50"
+                    ac ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <AcIcon
                     style={iconStyle}
-                    className={`${ac ? "text-sky-600" : "text-sky-500"} mb-1`}
+                    className={`${ac ? "text-sky-700" : "text-sky-600"} mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {ac ? "AC" : "No AC"}
                   </span>
                 </div>
 
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    mess ? "bg-sky-100" : "hover:bg-sky-50"
+                    mess ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <MessIcon
                     style={iconStyle}
-                    className={`${mess ? "text-sky-600" : "text-sky-500"} mb-1`}
+                    className={`${mess ? "text-sky-700" : "text-sky-600"} mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {mess ? "Mess" : "No Mess"}
                   </span>
                 </div>
 
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    solar ? "bg-sky-100" : "hover:bg-sky-50"
+                    solar ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <SolarIcon
                     style={iconStyle}
                     className={`${
-                      solar ? "text-sky-600" : "text-sky-500"
+                      solar ? "text-sky-700" : "text-sky-600"
                     } mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {solar ? "Solar" : "No Solar"}
                   </span>
                 </div>
 
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    studyRoom ? "bg-sky-100" : "hover:bg-sky-50"
+                    studyRoom ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <StudyRoomIcon
                     style={iconStyle}
                     className={`${
-                      studyRoom ? "text-sky-600" : "text-sky-500"
+                      studyRoom ? "text-sky-700" : "text-sky-600"
                     } mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {studyRoom ? "Study Room" : "No Study Room"}
                   </span>
                 </div>
 
                 <div
                   className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    tuition ? "bg-sky-100" : "hover:bg-sky-50"
+                    tuition ? "bg-sky-200" : "hover:bg-sky-100"
                   }`}
                 >
                   <TuitionIcon
                     style={iconStyle}
                     className={`${
-                      tuition ? "text-sky-600" : "text-sky-500"
+                      tuition ? "text-sky-700" : "text-sky-600"
                     } mb-1`}
                   />
-                  <span className="text-xs text-gray-600 text-center">
+                  <span className="text-xs text-sky-900 text-center">
                     {tuition ? "Tuition" : "No Tuition"}
                   </span>
                 </div>

@@ -92,7 +92,7 @@ const ImageOverlay = styled("div")({
   transition: "opacity 0.3s ease",
   padding: "1rem",
   // Removed borderRadius
-  "& h2": {
+  "& h3": {
     color: "rgba(255, 255, 255, 0.9)",
     fontSize: "1.25rem", // Decreased font size from 1.75rem
     fontWeight: 600,
