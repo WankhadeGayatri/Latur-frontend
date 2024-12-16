@@ -55,15 +55,21 @@ const features: Feature[] = [
 ];
 
 const FeatureCard: React.FC<Feature> = ({ icon: Icon, title }) => (
-  <div className="flex flex-col items-center space-y-1 w-full max-w-[160px]">
+  <div className="flex flex-col items-center space-y-1 w-full max-w-[160px] group">
     <div className="relative">
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
         w-4 h-4 bg-blue-300 rounded-full opacity-70"
       ></div>
-      <Icon className="relative text-gray-600 z-10" size={40} strokeWidth={1} />
+      <Icon
+        className="relative text-gray-600 z-10 transition-transform duration-300 group-hover:scale-125"
+        size={40}
+        strokeWidth={1}
+      />
     </div>
-    <p className="text-md text-gray-800 font-light text-center">{title}</p>
+    <p className="text-md text-gray-800 font-light text-center transition-all duration-300 group-hover:font-bold">
+      {title}
+    </p>
   </div>
 );
 
@@ -74,7 +80,7 @@ const FeatureSlider: React.FC = () => {
       <div
         className="flex animate-continuous-scroll"
         style={{
-          width: `${features.length * 200 * 3}px`, // Increased to ensure smooth loop
+          width: `${features.length * 200 * 2}px`, // Increased to ensure smooth loop
         }}
       >
         {[
