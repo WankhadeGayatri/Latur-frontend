@@ -44,7 +44,7 @@ const AboutPage = () => {
         <div className="relative bg-sky-50 py-16 ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-[34px] md:text-5[34px] font-bold text-gray-900 mb-6">
                 About <span className="text-sky-600">Latur Hostel</span>
               </h1>
               <p className="max-w-2xl mx-auto text-lg text-gray-600">
@@ -192,12 +192,12 @@ const AboutPage = () => {
                   <h2 className="text-[28px] font-bold text-gray-900 mb-4">
                     Creating Better Living Spaces for Students
                   </h2>
-                  <span className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     At Latur Hostel, we understand the challenges students face
                     when looking for accommodation. Our platform bridges the gap
                     between students and quality hostel facilities, ensuring a
                     smooth and trustworthy booking experience.
-                  </span>
+                  </p>
                 </div>
 
                 <div className="container px-1 py-2 mb-0">
@@ -251,10 +251,10 @@ const AboutPage = () => {
               <h2 className="text-[28px] font-bold text-gray-900">
                 Why Choose Us?
               </h2>
-              <span className="mt-4 text-gray-600 max-w-2xl mx-auto">
+              <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
                 We provide the best hostel experience with our comprehensive
                 services and dedication to student comfort
-              </span>
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

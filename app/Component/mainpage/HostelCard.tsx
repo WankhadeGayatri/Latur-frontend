@@ -360,12 +360,12 @@ const HostelCard: React.FC<HostelCardProps> = ({
     <>
       <Card className="bg-white p-3 md:p-6 rounded-xl shadow-lg flex flex-col md:flex-row w-full border border-gray-200 hover:border-sky-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-sky-200">
         {/* Image Section */}
-        <Box className="w-full md:w-1/3 relative overflow-hidden mb-4 md:mb-0">
+        <Box className="w-full mt-5 md:w-1/3 relative overflow-hidden mb-4 md:mb-0 md:mr-6">
           <Swiper
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
-            className="w-full h-54 md:h-70 rounded-lg shadow-md"
+            className="w-full h-54 md:h-70 rounded-xl shadow-md"
             style={{ aspectRatio: "4/3" }}
           >
             {images && images.length > 0 ? (
@@ -376,7 +376,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                     alt={`${name} - ${index + 1}`}
                     width={400}
                     height={300}
-                    className="w-full h-full object-cover object-center rounded-lg"
+                    className="w-full h-full  object-cover object-center rounded-lg"
                   />
                 </SwiperSlide>
               ))
@@ -394,7 +394,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
             <IconButton
               onClick={handleWishlistToggle}
               className="absolute top-2 right-2 bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-300 ease-in-out transform hover:scale-110 z-10"
-              style={{ color: isInWishlist ? "#ef4444" : "#6b7280" }}
+              style={{ color: isInWishlist ? "#ef4444" : "#ef4444" }}
             >
               {isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
@@ -402,13 +402,10 @@ const HostelCard: React.FC<HostelCardProps> = ({
         </Box>
 
         {/* Content Section */}
-        <CardContent
-          className="w-full md:w-2/3 pl-0 md:pl-6 flex flex-col justify-between"
-          style={{ minHeight: "300px" }}
-        >
-          <div>
-            {/* Title and Verified Badge */}
-            <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
+        <CardContent className="w-full md:w-2/3 pl-0 flex flex-col">
+          {/* Title and Verified Badge - Now in the same line */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
               <Typography
                 variant="h2"
                 className="text-[28px] md:text-2[28px] font-semibold text-sky-700"
@@ -425,149 +422,122 @@ const HostelCard: React.FC<HostelCardProps> = ({
                 />
               )}
             </div>
+          </div>
 
-            {/* Details Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-2">
-              <Typography
-                variant="h2"
-                className="text-sm text-gray-600 flex items-center flex-wrap"
-              >
-                <LocationIcon
-                  className="text-sky-500 mr-2 shrink-0"
-                  fontSize="small"
-                />
-                <span className="whitespace-nowrap">Address: </span>
-                <span className="font-semibold text-gray-600 ml-1 break-words">
-                  {address}
-                </span>
-              </Typography>
-              <Typography
-                variant="h2"
-                className="text-sm text-gray-600 flex items-center flex-wrap"
-              >
-                <GenderIcon
-                  className="text-sky-500 mr-2 shrink-0"
-                  fontSize="small"
-                />
-                <span className="whitespace-nowrap">Type: </span>
-                <span className="font-semibold text-gray-600 ml-1">
-                  {hostelType}
-                </span>
-                {/* <Typography
+          {/* Details Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 mb-2">
+            <Typography
+              variant="h2"
+              className="text-sm text-gray-600 flex items-center flex-wrap"
+            >
+              <LocationIcon
+                className="text-sky-500 mr-2 shrink-0"
+                fontSize="small"
+              />
+              <span className="whitespace-nowrap">Address: </span>
+              <span className="font-semibold text-gray-600 ml-1 break-words">
+                {address}
+              </span>
+            </Typography>
+            <Typography
+              variant="h2"
+              className="text-sm text-gray-600 flex items-center flex-wrap"
+            >
+              <GenderIcon
+                className="text-sky-500 mr-2 shrink-0"
+                fontSize="small"
+              />
+              <span className="whitespace-nowrap">Type: </span>
+              <span className="font-semibold text-gray-600 ml-1">
+                {hostelType}
+              </span>
+              {/* <Typography
                   variant="body2"
                   className="text-sm ml-5 text-gray-600 flex items-center"
                 >
                   <StarRating value={calculateAverageRating()} />
                 </Typography> */}
-              </Typography>
-            </div>
+            </Typography>
+          </div>
 
-            {/* Rent Structure */}
-            <div className="mt-4">
-              <RentStructureDisplay />
-            </div>
+          {/* Rent Structure */}
+          <div className="mt-4">
+            <RentStructureDisplay />
+          </div>
 
-            {/* Amenities */}
+          {/* Amenities */}
+
+          <div className="mt-1">
+            <Typography
+              variant="h2"
+              className="text-sm md:text-2sm font-light text-#000080 mb-1"
+            >
+              Amenities:
+            </Typography>
 
             <div className="mt-1">
-              <Typography
-                variant="h2"
-                className="text-sm md:text-2sm font-light text-#000080 mb-1"
-              >
-                Amenities:
-              </Typography>
-
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    wifi ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <WifiIcon
-                    style={iconStyle}
-                    className={`${wifi ? "text-sky-700" : "text-sky-600"} mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {wifi ? "WiFi" : "No WiFi"}
-                  </span>
+              {[
+                { Icon: WifiIcon, label: "WiFi", status: wifi },
+                { Icon: AcIcon, label: "AC", status: ac },
+                { Icon: MessIcon, label: "Mess", status: mess },
+                { Icon: SolarIcon, label: "Solar", status: solar },
+                {
+                  Icon: StudyRoomIcon,
+                  label: "Study Room",
+                  status: studyRoom,
+                },
+                { Icon: TuitionIcon, label: "Tuition", status: tuition },
+              ].filter((item) => item.status).length > 0 ? (
+                <>
+                  <Typography
+                    variant="h2"
+                    className="text-sm md:text-2sm font-light text-#000080 mb-1"
+                  >
+                    Amenities:
+                  </Typography>
+                  <div className="grid grid-cols-4 gap-2 w-auto">
+                    {[
+                      { Icon: WifiIcon, label: "WiFi", status: wifi },
+                      { Icon: AcIcon, label: "AC", status: ac },
+                      { Icon: MessIcon, label: "Mess", status: mess },
+                      { Icon: SolarIcon, label: "Solar", status: solar },
+                      {
+                        Icon: StudyRoomIcon,
+                        label: "Study Room",
+                        status: studyRoom,
+                      },
+                      {
+                        Icon: TuitionIcon,
+                        label: "Tuition",
+                        status: tuition,
+                      },
+                    ]
+                      .filter((item) => item.status)
+                      .map(({ Icon, label }) => (
+                        <div
+                          key={label}
+                          className={`
+                flex items-center 
+                p-1.5 rounded-xl 
+                bg-sky-200 
+                space-x-2
+                w-full
+              `}
+                        >
+                          <Icon
+                            style={{ width: 20, height: 20 }}
+                            className="text-sky-700"
+                          />
+                          <span className="text-xs text-sky-900">{label}</span>
+                        </div>
+                      ))}
+                  </div>
+                </>
+              ) : (
+                <div className="text-sm text-gray-500 italic p-2 bg-gray-50 rounded-lg">
+                  No specific amenities currently available for this hostel.
                 </div>
-
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    ac ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <AcIcon
-                    style={iconStyle}
-                    className={`${ac ? "text-sky-700" : "text-sky-600"} mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {ac ? "AC" : "No AC"}
-                  </span>
-                </div>
-
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    mess ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <MessIcon
-                    style={iconStyle}
-                    className={`${mess ? "text-sky-700" : "text-sky-600"} mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {mess ? "Mess" : "No Mess"}
-                  </span>
-                </div>
-
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    solar ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <SolarIcon
-                    style={iconStyle}
-                    className={`${
-                      solar ? "text-sky-700" : "text-sky-600"
-                    } mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {solar ? "Solar" : "No Solar"}
-                  </span>
-                </div>
-
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    studyRoom ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <StudyRoomIcon
-                    style={iconStyle}
-                    className={`${
-                      studyRoom ? "text-sky-700" : "text-sky-600"
-                    } mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {studyRoom ? "Study Room" : "No Study Room"}
-                  </span>
-                </div>
-
-                <div
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
-                    tuition ? "bg-sky-200" : "hover:bg-sky-100"
-                  }`}
-                >
-                  <TuitionIcon
-                    style={iconStyle}
-                    className={`${
-                      tuition ? "text-sky-700" : "text-sky-600"
-                    } mb-1`}
-                  />
-                  <span className="text-xs text-sky-900 text-center">
-                    {tuition ? "Tuition" : "No Tuition"}
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 

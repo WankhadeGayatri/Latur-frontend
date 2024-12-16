@@ -1,8 +1,16 @@
-"use client";
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { ApolloWrapper } from "./providers/ApolloWrapper";
+import { Metadata } from "next";
+import Head from "next/head";
 
+export const metadata: Metadata = {
+  title: "Latur Hostel - Home",
+  description: "Welcome to Latur Hostel",
+  verification: {
+    google: "m0Xdhlzg1dE0kFe_Q_zCE5eFyvhxE3xPjQ3-wuWBiNY",
+  },
+};
 // Optimize imports with better loading states
 const Navbar = dynamic(() => import("./Component/mainpage/Navbar"), {
   loading: () => <nav className="h-16 bg-white" />,
@@ -28,21 +36,30 @@ const LoadingState = () => (
 
 const HomePage = () => {
   return (
-    <ApolloWrapper>
-      <div className="min-h-screen bg-gradient-to-r from-sky-50 to-white">
-        <div className="max-w-[2000px] mx-auto ">
-          <Suspense fallback={<nav className="h-16 bg-white" />}>
-            <Navbar />
-          </Suspense>
-
-          <main>
-            <Suspense fallback={<LoadingState />}>
-              <HomePageContent />
+    <>
+      {" "}
+      <Head>
+        <meta
+          name="google-site-verification"
+          content="m0Xdhlzg1dE0kFe_Q_zCE5eFyvhxE3xPjQ3-wuWBiNY"
+        />
+      </Head>
+      <ApolloWrapper>
+        <div className="min-h-screen bg-gradient-to-r from-sky-50 to-white">
+          <div className="max-w-[2000px] mx-auto ">
+            <Suspense fallback={<nav className="h-16 bg-white" />}>
+              <Navbar />
             </Suspense>
-          </main>
+
+            <main>
+              <Suspense fallback={<LoadingState />}>
+                <HomePageContent />
+              </Suspense>
+            </main>
+          </div>
         </div>
-      </div>
-    </ApolloWrapper>
+      </ApolloWrapper>
+    </>
   );
 };
 

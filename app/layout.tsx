@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import GoogleAnalytics from "./Privatefiles/GoogleAnalytics";
 
 export const metadata: Metadata = {
   title: "Latur Hostel",
@@ -44,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <GoogleAnalytics />
         {/* Larger favicon sizes */}
         <link
           rel="icon"

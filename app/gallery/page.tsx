@@ -211,7 +211,7 @@ const ImageGallery = () => {
       <div className="relative bg-sky-50 py-16 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-[34px] md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-[34px] md:text-5[34px] font-bold text-gray-900 mb-6">
               Gallery <span className="text-sky-600">Latur Hostel</span>
             </h1>
             <span className="max-w-2xl mx-auto text-lg text-gray-600 text-center sm:text-left">

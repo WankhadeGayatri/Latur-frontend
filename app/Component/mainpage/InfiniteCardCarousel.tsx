@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
+import Image from "next/image";
 import { Star, ArrowRight, ArrowLeft } from "lucide-react";
 
-// Placeholder shimmer component
-const ShimmerEffect = () => (
+// Placeholder shimmer component with Tailwind animation
+const ShimmerEffect = memo(() => (
   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-);
+));
 
 const OptimizedCard = memo(
   ({
@@ -29,7 +30,7 @@ const OptimizedCard = memo(
 
     // Pre-calculate image dimensions to prevent layout shift
     const aspectRatio = "aspect-square";
-    const baseWidth = 320; // w-80
+    const baseWidth = 320;
     const baseHeight = 320;
 
     return (
@@ -38,8 +39,8 @@ const OptimizedCard = memo(
         relative
         w-80
         ${aspectRatio}
-        bg-gray-100
-        rounded-xl
+        bg-muted
+        rounded-lg
         overflow-hidden
         transition-transform duration-300 ease-out
         group
@@ -53,23 +54,24 @@ const OptimizedCard = memo(
       >
         {/* Placeholder with exact dimensions */}
         <div
-          className="absolute inset-0 bg-gray-200"
+          className="absolute inset-0 bg-muted/50"
           style={{ aspectRatio: "1/1" }}
         >
           {!isLoaded && <ShimmerEffect />}
         </div>
 
         <div className="absolute inset-0">
-          <img
+          <Image
             src={src}
             alt={alt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className={`
-            w-full 
-            h-full 
             object-cover 
             ${isLoaded ? "opacity-100" : "opacity-0"}
           `}
-            onLoad={() => setIsLoaded(true)}
+            onLoadingComplete={() => setIsLoaded(true)}
             onError={() => {
               setIsLoaded(false);
               setError(true);
@@ -78,8 +80,8 @@ const OptimizedCard = memo(
 
           {/* Error state */}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-              <p className="text-red-500">Image failed to load</p>
+            <div className="absolute inset-0 flex items-center justify-center bg-muted">
+              <p className="text-destructive">Image failed to load</p>
             </div>
           )}
 
@@ -97,7 +99,7 @@ const OptimizedCard = memo(
                     className={`w-4 h-4 ${
                       i < rating
                         ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
+                        : "text-muted-foreground"
                     }`}
                   />
                 ))}
@@ -131,7 +133,16 @@ const InfiniteCardCarousel = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
 
-  const extendedItems = [...items, ...items, ...items];
+  // Create an extended array with more repetitions for smoother infinite scrolling
+  const extendedItems = [
+    ...items,
+    ...items,
+    ...items,
+    ...items,
+    ...items,
+    ...items,
+  ];
+
   const cardWidth = 320; // w-80
   const cardGap = 16; // gap-4
   const itemWidth = cardWidth + cardGap;
@@ -177,27 +188,19 @@ const InfiniteCardCarousel = ({
     [extendedItems.length, responsiveItemWidth]
   );
 
-  // Auto-scroll with RAF for smooth animation
+  // Improved auto-scroll with smoother transition
   useEffect(() => {
     if (!isAutoScrolling) return;
-    let rafId: number;
-    let lastTime = performance.now();
-    const interval = 3000;
 
-    const animate = (timestamp: number) => {
-      if (timestamp - lastTime >= interval) {
-        handleScroll("next");
-        lastTime = timestamp;
-      }
-      rafId = requestAnimationFrame(animate);
-    };
+    const autoScrollInterval = setInterval(() => {
+      handleScroll("next");
+    }, 3000);
 
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
+    return () => clearInterval(autoScrollInterval);
   }, [isAutoScrolling, handleScroll]);
 
   return (
-    <div className="relative w-full bg-white py-8">
+    <div className="relative w-full bg-background py-8">
       <div className="max-w-[90rem] mx-auto px-4 relative isolate">
         {/* Navigation buttons with adjusted z-index */}
         <div className="absolute inset-0 pointer-events-none z-[5]">
@@ -205,7 +208,7 @@ const InfiniteCardCarousel = ({
             onClick={() => handleScroll("prev")}
             className="absolute left-4 top-1/2 -translate-y-1/2 
                      bg-white/90 backdrop-blur-sm rounded-full p-2
-                     shadow-lg hover:bg-purple-600 hover:text-white
+                     shadow-lg hover:bg-primary hover:text-primary-foreground
                      transition-colors pointer-events-auto"
             aria-label="Previous"
           >
@@ -215,7 +218,7 @@ const InfiniteCardCarousel = ({
             onClick={() => handleScroll("next")}
             className="absolute right-4 top-1/2 -translate-y-1/2 
                      bg-white/90 backdrop-blur-sm rounded-full p-2
-                     shadow-lg hover:bg-purple-600 hover:text-white
+                     shadow-lg hover:bg-primary hover:text-primary-foreground
                      transition-colors pointer-events-auto"
             aria-label="Next"
           >
