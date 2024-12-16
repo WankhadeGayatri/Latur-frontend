@@ -461,84 +461,76 @@ const HostelCard: React.FC<HostelCardProps> = ({
           </div>
 
           {/* Rent Structure */}
-          <div className="mt-4">
+          <div className="mt-1">
             <RentStructureDisplay />
           </div>
 
           {/* Amenities */}
 
           <div className="mt-1">
-            <Typography
-              variant="h2"
-              className="text-sm md:text-2sm font-light text-#000080 mb-1"
-            >
-              Amenities:
-            </Typography>
-
-            <div className="mt-1">
-              {[
-                { Icon: WifiIcon, label: "WiFi", status: wifi },
-                { Icon: AcIcon, label: "AC", status: ac },
-                { Icon: MessIcon, label: "Mess", status: mess },
-                { Icon: SolarIcon, label: "Solar", status: solar },
-                {
-                  Icon: StudyRoomIcon,
-                  label: "Study Room",
-                  status: studyRoom,
-                },
-                { Icon: TuitionIcon, label: "Tuition", status: tuition },
-              ].filter((item) => item.status).length > 0 ? (
-                <>
-                  <Typography
-                    variant="h2"
-                    className="text-sm md:text-2sm font-light text-#000080 mb-1"
-                  >
-                    Amenities:
-                  </Typography>
-                  <div className="grid grid-cols-4 gap-2 w-auto">
-                    {[
-                      { Icon: WifiIcon, label: "WiFi", status: wifi },
-                      { Icon: AcIcon, label: "AC", status: ac },
-                      { Icon: MessIcon, label: "Mess", status: mess },
-                      { Icon: SolarIcon, label: "Solar", status: solar },
-                      {
-                        Icon: StudyRoomIcon,
-                        label: "Study Room",
-                        status: studyRoom,
-                      },
-                      {
-                        Icon: TuitionIcon,
-                        label: "Tuition",
-                        status: tuition,
-                      },
-                    ]
-                      .filter((item) => item.status)
-                      .map(({ Icon, label }) => (
-                        <div
-                          key={label}
-                          className={`
+            {[
+              { Icon: WifiIcon, label: "WiFi", status: wifi },
+              { Icon: AcIcon, label: "AC", status: ac },
+              { Icon: MessIcon, label: "Mess", status: mess },
+              { Icon: SolarIcon, label: "Solar", status: solar },
+              {
+                Icon: StudyRoomIcon,
+                label: "Study Room",
+                status: studyRoom,
+              },
+              { Icon: TuitionIcon, label: "Tuition", status: tuition },
+            ].filter((item) => item.status).length > 0 ? (
+              <>
+                <Typography
+                  variant="h2"
+                  className="text-sm md:text-2sm font-light text-#000080 mb-1"
+                >
+                  Amenities:
+                </Typography>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                  {[
+                    { Icon: WifiIcon, label: "WiFi", status: wifi },
+                    { Icon: AcIcon, label: "AC", status: ac },
+                    { Icon: MessIcon, label: "Mess", status: mess },
+                    { Icon: SolarIcon, label: "Solar", status: solar },
+                    {
+                      Icon: StudyRoomIcon,
+                      label: "Study Room",
+                      status: studyRoom,
+                    },
+                    {
+                      Icon: TuitionIcon,
+                      label: "Tuition",
+                      status: tuition,
+                    },
+                  ]
+                    .filter((item) => item.status)
+                    .map(({ Icon, label }) => (
+                      <div
+                        key={label}
+                        className={`
                 flex items-center 
                 p-1.5 rounded-xl 
                 bg-sky-200 
-                space-x-2
+                space-x-3
                 w-full
+
               `}
-                        >
-                          <Icon
-                            style={{ width: 20, height: 20 }}
-                            className="text-sky-700"
-                          />
-                          <span className="text-xs text-sky-900">{label}</span>
-                        </div>
-                      ))}
-                  </div>
-                </>
-              ) : (
-                <div className="text-sm text-gray-500 italic p-2 bg-gray-50 rounded-lg">
-                  No specific amenities currently available for this hostel.
+                      >
+                        <Icon
+                          style={{ width: 20, height: 20 }}
+                          className="text-sky-700"
+                        />
+                        <span className="text-xs text-sky-900 ">{label}</span>
+                      </div>
+                    ))}
                 </div>
-              )}
-            </div>
+              </>
+            ) : (
+              <div className="text-sm text-gray-500 italic p-2 bg-gray-50 rounded-lg">
+                No specific amenities currently available for this hostel.
+              </div>
+            )}
           </div>
 
           {/* Action Button */}
@@ -615,7 +607,7 @@ const HostelCard: React.FC<HostelCardProps> = ({
                   label="Verified"
                   size="small"
                   color="primary"
-                  className="ml-2 bg-sky-600"
+                  className="ml-2 bg-sky-600 "
                 />
               )}
             </DialogTitle>
