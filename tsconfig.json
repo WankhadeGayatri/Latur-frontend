@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "types": ["testing-library__jest-dom"],  // Ensure this type is included
+    "esModuleInterop": true,                  // Ensure compatibility with CommonJS modules
+    "moduleResolution": "node",               // Resolves modules using Node.js module resolution
+    "lib": ["dom", "dom.iterable", "esnext"], // Provide typings for DOM and ESNext features
+    "allowJs": true,                          // Allow JavaScript files
+    "skipLibCheck": true,                     // Skip type checking of declaration files
+    "strict": true,                           // Enable strict type checking options
+    "noEmit": true,                           // Do not emit output (we're just using TypeScript for types)
+    "module": "esnext",                       // Module system for ESNext
+    "resolveJsonModule": true,                // Allow importing JSON modules
+    "isolatedModules": true,                  // Ensures all files can be safely transpiled individually
+    "jsx": "preserve",                       // Keep JSX as-is for React
+    "incremental": true,                     // Enable incremental compilation for faster builds
     "plugins": [
       {
         "name": "next"
@@ -21,6 +22,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/tests/All.test.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
