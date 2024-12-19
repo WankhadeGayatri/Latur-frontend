@@ -1,49 +1,41 @@
-# Stage 1: Development and Testing
-FROM node:18-alpine AS development
-
-# Set the working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install all dependencies (including devDependencies)
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Run tests
-RUN npm test
-
-# Stage 2: Production Build
+# Use Node 18 as base
 FROM node:18-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
+# Install dependencies first (better layer caching)
 COPY package*.json ./
+RUN npm ci
 
-# Install only production dependencies
-RUN npm install --only=production
-
+# Copy all files
 COPY . .
+
+# Set environment variable for Next.js optimization
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
+
+# Add React as global for Next.js build
+RUN echo "global.React = require('react');" > ./global.js
+ENV NODE_OPTIONS='--require ./global.js'
 
 # Build the application
 RUN npm run build
 
-# Stage 3: Production Runtime
+# Production stage
 FROM node:18-alpine AS production
-
 WORKDIR /app
 
-# Copy built assets from builder stage
+# Copy only necessary files
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 
-# Expose the port
-EXPOSE 8189
+# Set production environment
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Start the application
+EXPOSE 8189
 CMD ["npm", "start"]

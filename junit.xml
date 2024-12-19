@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="9" failures="0" errors="0" time="4.482">
-  <testsuite name="Navbar Component" errors="0" failures="0" skipped="0" timestamp="2024-12-19T05:16:38" time="3.472" tests="9">
-    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders logo correctly" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders logo correctly" time="0.322">
+<testsuites name="jest tests" tests="9" failures="0" errors="0" time="4.392">
+  <testsuite name="Navbar Component" errors="0" failures="0" skipped="0" timestamp="2024-12-19T05:45:27" time="3.393" tests="9">
+    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders logo correctly" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders logo correctly" time="0.32">
     </testcase>
-    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders all navigation items in desktop view" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders all navigation items in desktop view" time="0.046">
+    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders all navigation items in desktop view" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders all navigation items in desktop view" time="0.045">
     </testcase>
-    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders hostel owner button" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders hostel owner button" time="0.021">
+    <testcase classname="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders hostel owner button" name="Navbar Component [NAVBAR] Desktop View [NAVBAR] renders hostel owner button" time="0.017">
     </testcase>
-    <testcase classname="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates correctly in desktop view" name="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates correctly in desktop view" time="0.061">
+    <testcase classname="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates correctly in desktop view" name="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates correctly in desktop view" time="0.052">
     </testcase>
-    <testcase classname="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates to hostel owner login" name="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates to hostel owner login" time="0.018">
+    <testcase classname="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates to hostel owner login" name="Navbar Component [NAVBAR] Navigation Functionality [NAVBAR] navigates to hostel owner login" time="0.021">
     </testcase>
-    <testcase classname="ContactForm Component [CONTACT FORM] renders contact form with all input fields" name="ContactForm Component [CONTACT FORM] renders contact form with all input fields" time="0.049">
+    <testcase classname="ContactForm Component [CONTACT FORM] renders contact form with all input fields" name="ContactForm Component [CONTACT FORM] renders contact form with all input fields" time="0.043">
     </testcase>
-    <testcase classname="ContactForm Component [CONTACT FORM] allows typing in input fields" name="ContactForm Component [CONTACT FORM] allows typing in input fields" time="0.018">
+    <testcase classname="ContactForm Component [CONTACT FORM] allows typing in input fields" name="ContactForm Component [CONTACT FORM] allows typing in input fields" time="0.019">
     </testcase>
-    <testcase classname="ContactForm Component [CONTACT FORM] shows form submission behavior" name="ContactForm Component [CONTACT FORM] shows form submission behavior" time="0.111">
+    <testcase classname="ContactForm Component [CONTACT FORM] shows form submission behavior" name="ContactForm Component [CONTACT FORM] shows form submission behavior" time="0.106">
     </testcase>
-    <testcase classname="ContactForm Component [CONTACT FORM] renders image with correct properties" name="ContactForm Component [CONTACT FORM] renders image with correct properties" time="0.018">
+    <testcase classname="ContactForm Component [CONTACT FORM] renders image with correct properties" name="ContactForm Component [CONTACT FORM] renders image with correct properties" time="0.016">
     </testcase>
   </testsuite>
 </testsuites>
