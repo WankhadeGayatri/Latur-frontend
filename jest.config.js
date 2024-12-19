@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverage: true,
-  coverageReporters: ["text", "lcov", "html", "cobertura"],
+  coverageReporters: ["text", "lcov", "html"],
   coverageDirectory: "coverage",
   testResultsProcessor: "jest-junit",
   preset: 'ts-jest', // Stick with ts-jest for TypeScript (optional, based on your project setup)
@@ -27,7 +27,9 @@ module.exports = {
       outputDirectory: 'test-results',
       outputName: 'jest-junit.xml',
       classNameTemplate: "{classname}",
-      titleTemplate: "{title}"
+      titleTemplate: "{title}",
+      ancestorSeparator: " › ",
+      usePathForSuiteName: true
     }]
   ]
 };
