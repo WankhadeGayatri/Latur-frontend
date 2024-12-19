@@ -10,7 +10,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',  // This should be sufficient
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/(.*)$': 'D:/frontend/hostel-project-webUI/src/$1',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy', // Handle CSS imports
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js', // Handle image imports
   },
