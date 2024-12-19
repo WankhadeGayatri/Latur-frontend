@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverage: true,
-  coverageReporters: ["text", "lcov"],
+  coverageReporters: ["text", "lcov", "html", "cobertura"],
   coverageDirectory: "coverage",
   testResultsProcessor: "jest-junit",
   preset: 'ts-jest', // Stick with ts-jest for TypeScript (optional, based on your project setup)
@@ -21,4 +21,11 @@ module.exports = {
     '!src/pages/_app.tsx',
     '!src/pages/_document.tsx',
   ],
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: 'test-results',
+      outputName: 'jest-junit.xml',
+    }]
+  ]
 };
