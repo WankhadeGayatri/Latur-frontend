@@ -31,13 +31,10 @@ module.exports = {
       titleTemplate: "{title}",
       ancestorSeparator: " › ",
       usePathForSuiteName: true
+    }],
+    ['jest-html-reporter', {
+      pageTitle: 'Test Report',
+      outputPath: 'test-results/test-report.html',
     }]
-    [
-      'jest-html-reporter',
-      {
-        pageTitle: 'Test Report',
-        outputPath: 'test-results/test-report.html',
-      }
-    ]
   ]
 };
