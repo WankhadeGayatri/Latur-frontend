@@ -35,6 +35,52 @@ module.exports = {
     ['jest-html-reporter', {
       pageTitle: 'Test Report',
       outputPath: 'test-results/test-report.html',
-    }]
-  ]
+      includeFailureMsg: true,
+      includeConsoleLog: true,
+      customCss: `
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f9;
+          margin: 0;
+          padding: 20px;
+        }
+
+        h1, h2, h3 {
+          color: #333;
+          text-align: center;
+        }
+
+        .test-suite {
+          margin: 20px auto;
+          max-width: 800px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background: #fff;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+        }
+
+        .test-case {
+          padding: 10px;
+          border-bottom: 1px solid #eee;
+        }
+
+        .test-case:last-child {
+          border-bottom: none;
+        }
+
+        .passed {
+          color: green;
+        }
+
+        .failed {
+          color: red;
+        }
+
+        .pending {
+          color: orange;
+        }
+      `,
+    }],
+  ],
 };
