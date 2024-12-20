@@ -7,6 +7,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'], // Ensure this path is correct
   transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest', // Use ts-jest for TypeScript files
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',  // This should be sufficient
   },
   moduleNameMapper: {
@@ -31,5 +32,12 @@ module.exports = {
       ancestorSeparator: " › ",
       usePathForSuiteName: true
     }]
+    [
+      'jest-html-reporter',
+      {
+        pageTitle: 'Test Report',
+        outputPath: 'test-results/test-report.html',
+      }
+    ]
   ]
 };

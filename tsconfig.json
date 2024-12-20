@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "types": ["@testing-library/jest-dom"],  // Ensure this type is included
     "esModuleInterop": true,                  // Ensure compatibility with CommonJS modules
     "moduleResolution": "node",               // Resolves modules using Node.js module resolution
