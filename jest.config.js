@@ -36,7 +36,7 @@ module.exports = {
       pageTitle: 'Test Report',
       outputPath: 'test-results/test-report.html',
       theme: 'lightTheme', // Options: lightTheme, darkTheme, or defaultTheme
-      styleOverridePath: '<rootDir>/test-results/custom-styles.css', // Add custom CSS
+      styleOverridePath: './test-results/custom-styles.css', // Add custom CSS
       includeFailureMsg: true,
       includeConsoleLog: true,
       executionTime: true,
