@@ -11,14 +11,14 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',  // This should be sufficient
   },
   moduleNameMapper: {
-    '^@/(.)$': '<rootDir>/src/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less|sass|scss)$': 'identity-obj-proxy', // Handle CSS imports
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/mocks/fileMock.js', // Handle image imports
   },
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   collectCoverageFrom: [
-    'src/**/.{js,jsx,ts,tsx}',
-    '!src/*/.d.ts',
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
     '!src/pages/_app.tsx',
     '!src/pages/_document.tsx',
   ],
@@ -35,6 +35,11 @@ module.exports = {
     ['jest-html-reporter', {
       pageTitle: 'Test Report',
       outputPath: 'test-results/test-report.html',
+      theme: 'lightTheme', // Options: lightTheme, darkTheme, or defaultTheme
+      styleOverridePath: './test-results/custom-styles.css', // Add custom CSS
+      includeFailureMsg: true,
+      includeConsoleLog: true,
+      executionTime: true,
     }]
   ]
 };
