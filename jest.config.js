@@ -1,20 +1,25 @@
 module.exports = {
+  rootDir: ".",
   collectCoverage: true,
   coverageReporters: ["text", "lcov", "html"],
   coverageDirectory: "coverage",
   testResultsProcessor: "jest-junit",
-  preset: 'ts-jest', // Stick with ts-jest for TypeScript (optional, based on your project setup)
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'], // Ensure this path is correct
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest', // Use ts-jest for TypeScript files
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',  // This should be sufficient
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less|sass|scss)$': 'identity-obj-proxy', // Handle CSS imports
-    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/mocks/fileMock.js', // Handle image imports
-  },
+  
+    moduleNameMapper: {
+    "^@/config/(.*)$": "<rootDir>/config/$1",  // This will correctly map to /config folder
+    "^@/(.*)$": "<rootDir>/app/$1",
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+    "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/mocks/fileMock.js"
+    }
+  ,
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
@@ -35,8 +40,8 @@ module.exports = {
     ['jest-html-reporter', {
       pageTitle: 'Test Report',
       outputPath: 'test-results/test-report.html',
-      theme: 'lightTheme', // Options: lightTheme, darkTheme, or defaultTheme
-      styleOverridePath: './test-results/custom-styles.css', // Add custom CSS
+      theme: 'lightTheme',
+      styleOverridePath: './test-results/custom-styles.css',
       includeFailureMsg: true,
       includeConsoleLog: true,
       executionTime: true,

@@ -24,8 +24,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { ChevronRight } from "lucide-react";
-import Navbar from "../Component/mainpage/Navbar";
-import Footer from "../Component/mainpage/Footer";
+import Navbar from "@/Component/mainpage/Navbar";
+import Footer from "@/Component/mainpage/Footer";
 import { API_BASE_URL } from "@/config/api";
 
 const Login: React.FC = () => {

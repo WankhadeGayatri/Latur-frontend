@@ -1,5 +1,5 @@
 {
-  "name": "Latur hostel",
+  "name": "latur-hostel",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p 8189",
     "lint": "next lint",
-    "test": "jest --ci --coverage --testEnvironment=jsdom --reporters=default --reporters=jest-junit",
+    "test": "jest --config jest.config.js --ci --coverage --testEnvironment=jsdom --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
@@ -82,6 +82,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.13",
+    "@types/react-dom": "^18.3.5",
     "@types/react-slick": "^0.23.13",
     "@types/testing-library__react": "^10.2.0",
     "babel-jest": "^29.7.0",

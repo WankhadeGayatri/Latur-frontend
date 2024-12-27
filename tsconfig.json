@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "types": ["@testing-library/jest-dom"],  // Ensure this type is included
+    "baseUrl": ".",
+    "types": ["jest", "@testing-library/jest-dom"],  // Ensure this type is included
     "esModuleInterop": true,                  // Ensure compatibility with CommonJS modules
     "moduleResolution": "node",               // Resolves modules using Node.js module resolution
     "lib": ["dom", "dom.iterable", "esnext"], // Provide typings for DOM and ESNext features
@@ -12,7 +12,7 @@
     "module": "esnext",                       // Module system for ESNext
     "resolveJsonModule": true,                // Allow importing JSON modules
     "isolatedModules": true,                  // Ensures all files can be safely transpiled individually
-    "jsx": "react-jsx",                       // Keep JSX as-is for React
+    "jsx": "react",                       // Keep JSX as-is for React
     "incremental": true,                     // Enable incremental compilation for faster builds
     "plugins": [
       {
@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/tests/All.test.js"
+    "app/tests/All.test.tsx"
   ],
   "exclude": [
     "node_modules"

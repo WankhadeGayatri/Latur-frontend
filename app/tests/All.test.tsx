@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -6,18 +5,37 @@ import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Navbar from '../Component/mainpage/Navbar';
 import ContactForm from '../contactus/component/ContactForm';
+import Login from '../login/page';
+import { ToastContainer } from 'react-toastify';
+
+jest.mock('../Component/mainpage/Footer', () => {
+  return {
+    __esModule: true,
+    default: () => <div data-testid="footer-mock">Footer</div>
+  }
+});
 
 // Existing Navbar mocks
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => <img {...props} />,
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
 jest.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }) => <div {...props}>{children}</div>,
+    div: ({ children, ...props }: { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
+      <div {...props}>{children}</div>
+    ),
   },
-  AnimatePresence: ({ children }) => <>{children}</>,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+jest.mock('lucide-react', () => ({
+  Hand: () => <div data-testid="hand-icon" />,
+  Mail: () => <div data-testid="mail-icon" />,
+  ChevronRight: () => <div data-testid="chevron-right-icon" />,
+  Send: () => <div data-testid="send-icon" />,
+  CircularProgress: () => <div data-testid="circular-progress" />
 }));
 
 jest.mock('lucide-react', () => ({
@@ -28,9 +46,9 @@ jest.mock('lucide-react', () => ({
 // Mock next/navigation hooks
 jest.mock('next/navigation', () => ({
   usePathname: () => '/',
-  useRouter: () => ({
+  useRouter: jest.fn(() => ({
     push: jest.fn(),
-  }),
+  })),
 }));
 
 // Mock useMediaQuery
@@ -42,6 +60,12 @@ jest.mock('@mui/material/useMediaQuery', () => ({
   }),
 }));
 
+// app/tests/All.test.tsx
+
+// Mock API base URL
+jest.mock("@/config/api", () => ({
+  API_BASE_URL: "http://mockapi.com",
+}));
 // ==================== NAVBAR TESTS ====================
 describe('Navbar Component', () => {
   const theme = createTheme();
@@ -64,7 +88,7 @@ describe('Navbar Component', () => {
     const useMediaQueryMock = require('@mui/material/useMediaQuery').default;
     
     // Update media query mocks based on viewport
-    useMediaQueryMock.mockImplementation((query) => {
+    useMediaQueryMock.mockImplementation((query: string) => {
       if (query === '(max-width:600px)') return isMobile;
       return false;
     });
@@ -134,7 +158,6 @@ describe('ContactForm Component', () => {
   test('[CONTACT FORM] renders contact form with all input fields', () => {
     render(<ContactForm />);
     
-    // Update placeholders to match the actual component
     expect(screen.getByPlaceholderText(/Name/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Email Id/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Phone/i)).toBeInTheDocument();
@@ -148,18 +171,16 @@ describe('ContactForm Component', () => {
     const emailInput = screen.getByPlaceholderText(/Email Id/i);
     const phoneInput = screen.getByPlaceholderText(/Phone/i);
 
-    // Simulate user typing
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
     fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
     fireEvent.change(phoneInput, { target: { value: '1234567890' } });
 
-    // Check if input values are updated
     expect(nameInput).toHaveValue('John Doe');
     expect(emailInput).toHaveValue('john@example.com');
     expect(phoneInput).toHaveValue('1234567890');
   });
 
-  // Test form validation (basic client-side validation)
+  // Test form validation
   test('[CONTACT FORM] shows form submission behavior', async () => {
     const mockOnSubmit = jest.fn();
     
@@ -167,7 +188,6 @@ describe('ContactForm Component', () => {
     
     const submitButton = screen.getByRole('button', { name: /submit/i });
     
-    // Fill out the form with valid inputs
     const nameInput = screen.getByPlaceholderText(/Name/i);
     const emailInput = screen.getByPlaceholderText(/Email Id/i);
     const phoneInput = screen.getByPlaceholderText(/Phone/i);
@@ -176,11 +196,8 @@ describe('ContactForm Component', () => {
     fireEvent.change(emailInput, { target: { value: 'jane@example.com' } });
     fireEvent.change(phoneInput, { target: { value: '0987654321' } });
 
-    // Submit the form
     fireEvent.click(submitButton);
 
-    // Since the actual form uses emailjs and shows an alert, we can't directly check onSubmit
-    // This test just ensures form can be submitted without errors
     expect(submitButton).toBeInTheDocument();
   });
 
@@ -196,20 +213,62 @@ describe('ContactForm Component', () => {
       />
     );
 
-    // Find the container div that has both width and height classes
     const containers = screen.getAllByRole('img');
-    
-    // Verify the image element
     const image = containers[0];
     
-    // Check image attributes
     expect(image).toHaveAttribute('src', expect.stringContaining('/logo/lb.svg'));
     expect(image).toHaveClass('object-contain');
     expect(image).toHaveClass('object-center');
 
-    // Check parent div's classes (assuming it's the closest parent div)
     const parentDiv = image.closest('div');
     expect(parentDiv).toHaveClass('h-52');
     expect(parentDiv).toHaveClass('w-full');
+  });
+});
+
+// ==================== LOGIN TESTS ====================
+describe('Login Component', () => {
+  beforeEach(() => {
+    // Reset any mocks before each test
+    jest.clearAllMocks();
+  });
+
+  const renderLogin = () => {
+    return render(
+      <MemoryRouter>
+        <ThemeProvider theme={createTheme()}>
+          <ToastContainer />
+          <Login />
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+  };
+
+  it('[LOGIN] should allow typing in email field', () => {
+    renderLogin();
+    const emailInput = screen.getByPlaceholderText('Email Address');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    expect(emailInput).toHaveValue('test@example.com');
+  });
+
+  it('[LOGIN] should allow typing in password field', () => {
+    renderLogin();
+    const passwordInput = screen.getByPlaceholderText('Password');
+    fireEvent.change(passwordInput, { target: { value: 'mypassword123' } });
+    expect(passwordInput).toHaveValue('mypassword123');
+  });
+
+  it('[LOGIN] should toggle between email and phone login methods', () => {
+    renderLogin();
+    
+    const phoneButton = screen.getByText('Phone');
+    fireEvent.click(phoneButton);
+    const phoneNumberInput = screen.getByPlaceholderText('Phone Number');
+    expect(phoneNumberInput).toBeInTheDocument();
+    
+    const emailButton = screen.getByText('Email');
+    fireEvent.click(emailButton);
+    const emailInput = screen.getByPlaceholderText('Email Address');
+    expect(emailInput).toBeInTheDocument();
   });
 });
